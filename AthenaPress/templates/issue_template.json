@@ -1,0 +1,22 @@
+{
+  "id": "",
+  "status": "draft",
+
+  "issueNumber": 1,
+  "title": "Athena Botenblatt",
+  "subtitle": "",
+  "editionName": "",
+
+  "cover": {
+    "mainArticleId": "",
+    "image": "placeholders/no_image.png"
+  },
+
+  "articles": [],
+
+  "createdAt": "",
+  "updatedAt": "",
+  "publishedAt": null,
+
+  "deliveredToSubscribers": false
+}

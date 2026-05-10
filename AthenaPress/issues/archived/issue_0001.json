@@ -1,0 +1,21 @@
+{
+  "id": "issue_0001",
+  "status": "archived",
+  "issueNumber": 1,
+  "title": "Athena Botenblatt",
+  "subtitle": "Die erste Ausgabe aus der Farmwelt",
+  "editionName": "Pilot-Ausgabe",
+  "cover": {
+    "mainArticleId": "article_0001",
+    "image": "placeholders/dating.png"
+  },
+  "articles": [
+    "article_0001"
+  ],
+  "createdAt": "2026-05-10T18:30:00+02:00",
+  "updatedAt": "2026-05-10T16:02:03+02:00",
+  "publishedAt": null,
+  "deliveredToSubscribers": false,
+  "archivedAt": "2026-05-10T16:02:03+02:00",
+  "previousStatus": "draft"
+}

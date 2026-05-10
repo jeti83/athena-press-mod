@@ -1,0 +1,33 @@
+{
+  "id": "article_0003",
+  "status": "archived",
+  "categoryId": "server_news",
+  "title": "Archiv-Testartikel",
+  "subtitle": "",
+  "teaser": "",
+  "author": {
+    "playerName": "Jeti",
+    "playerUuid": "unknown"
+  },
+  "body": "",
+  "image": {
+    "file": "placeholders/no_image.png",
+    "caption": "",
+    "credit": "",
+    "sourceType": "placeholder"
+  },
+  "location": {
+    "enabled": false,
+    "world": "",
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "tags": [],
+  "createdAt": "2026-05-10T16:29:54+02:00",
+  "updatedAt": "2026-05-10T16:54:24+02:00",
+  "publishedAt": null,
+  "archivedAt": "2026-05-10T16:30:23+02:00",
+  "previousStatus": "draft",
+  "archiveReason": "Testarchivierung über presslib"
+}

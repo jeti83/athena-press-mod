@@ -1,0 +1,34 @@
+{
+  "id": "article_0001",
+  "status": "published",
+  "categoryId": "dating",
+  "title": "Builder sucht Builderin",
+  "subtitle": "Gemeinsames Bauen nicht ausgeschlossen",
+  "teaser": "Ein einsamer Baumeister sucht kreative Unterstützung für Plot, Herz und eventuell NPC.",
+  "author": {
+    "playerName": "Jeti",
+    "playerUuid": "unknown"
+  },
+  "body": "Gesucht wird eine Builderin mit Sinn für schöne Dächer, saubere Wegeführung und gelegentliche Eskalationen beim Dekorieren. Ziel ist zunächst ein gemeinsames Bauprojekt. Bei gegenseitiger Sympathie könnte eventuell ein NPC entstehen. Zuschriften bitte per /msg oder über den Briefkasten am Spawn.",
+  "image": {
+    "file": "placeholders/dating.png",
+    "caption": "Symbolbild: Zwei Herzen, ein Plot und viel zu wenig Lagerplatz.",
+    "credit": "Athena Botenblatt",
+    "sourceType": "placeholder"
+  },
+  "location": {
+    "enabled": false,
+    "world": "",
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "tags": [
+    "dating",
+    "kleinanzeige",
+    "builder"
+  ],
+  "createdAt": "2026-05-10T13:50:00+02:00",
+  "updatedAt": "2026-05-10T14:38:00+02:00",
+  "publishedAt": "2026-05-10T14:38:00+02:00"
+}

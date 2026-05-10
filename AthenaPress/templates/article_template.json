@@ -1,0 +1,38 @@
+{
+  "id": "",
+  "status": "draft",
+
+  "categoryId": "server_news",
+
+  "title": "",
+  "subtitle": "",
+  "teaser": "",
+
+  "author": {
+    "playerName": "",
+    "playerUuid": ""
+  },
+
+  "body": "",
+
+  "image": {
+    "file": "placeholders/no_image.png",
+    "caption": "",
+    "credit": "",
+    "sourceType": "placeholder"
+  },
+
+  "location": {
+    "enabled": false,
+    "world": "",
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+
+  "tags": [],
+
+  "createdAt": "",
+  "updatedAt": "",
+  "publishedAt": null
+}

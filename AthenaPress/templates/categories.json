@@ -1,0 +1,46 @@
+{
+  "categories": [
+    {
+      "id": "headline",
+      "name": "Schlagzeile",
+      "description": "Große Server-News und wichtige Ereignisse",
+      "defaultImage": "placeholders/breaking_news.png",
+      "enabled": true
+    },
+    {
+      "id": "server_news",
+      "name": "Server-News",
+      "description": "Updates, Änderungen und Ankündigungen",
+      "defaultImage": "placeholders/no_image.png",
+      "enabled": true
+    },
+    {
+      "id": "build_projects",
+      "name": "Bauprojekte",
+      "description": "Vorstellungen von Gebäuden, Plots und Bauideen",
+      "defaultImage": "placeholders/no_image.png",
+      "enabled": true
+    },
+    {
+      "id": "economy",
+      "name": "Wirtschaft & Handel",
+      "description": "Shoppreise, Angebote, Auktionen und Marktereignisse",
+      "defaultImage": "placeholders/no_image.png",
+      "enabled": true
+    },
+    {
+      "id": "classifieds",
+      "name": "Kleinanzeigen",
+      "description": "Suche, biete, tausche, vermiete, verschenkt",
+      "defaultImage": "placeholders/kleinanzeigen.png",
+      "enabled": true
+    },
+    {
+      "id": "dating",
+      "name": "Herzblatt der Farmwelt",
+      "description": "Builder sucht Builderin, eventuell zwecks gemeinsamer NPC-Planung",
+      "defaultImage": "placeholders/dating.png",
+      "enabled": true
+    }
+  ]
+}

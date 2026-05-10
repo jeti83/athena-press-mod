@@ -1,0 +1,44 @@
+{
+  "subscribers": [
+    {
+      "playerName": "Jeti",
+      "playerUuid": "unknown",
+      "subscribed": true,
+      "deliveryMode": "item_and_notification",
+      "subscribedAt": "2026-05-10T14:49:47+02:00",
+      "updatedAt": "2026-05-10T15:36:33+02:00",
+      "lastReceivedIssueId": "issue_0002",
+      "unreadIssues": [
+        "issue_0002"
+      ],
+      "lastDeliveryMode": "item_and_notification",
+      "lastDeliveredAt": "2026-05-10T14:56:47+02:00",
+      "unsubscribedAt": "2026-05-10T15:34:19+02:00"
+    },
+    {
+      "playerName": "HF_jeti83",
+      "playerUuid": "unknown",
+      "subscribed": true,
+      "deliveryMode": "mailbox",
+      "subscribedAt": "2026-05-10T14:53:21+02:00",
+      "updatedAt": "2026-05-10T15:21:39+02:00",
+      "lastReceivedIssueId": "issue_0002",
+      "unreadIssues": [],
+      "lastDeliveryMode": "mailbox",
+      "lastDeliveredAt": "2026-05-10T14:56:47+02:00",
+      "lastReadIssueId": "issue_0002",
+      "lastReadAt": "2026-05-10T15:21:39+02:00"
+    },
+    {
+      "playerName": "TestUser",
+      "playerUuid": "unknown",
+      "subscribed": false,
+      "deliveryMode": "item_and_notification",
+      "subscribedAt": "2026-05-10T17:02:35+02:00",
+      "updatedAt": "2026-05-10T17:02:35+02:00",
+      "lastReceivedIssueId": null,
+      "unreadIssues": [],
+      "unsubscribedAt": "2026-05-10T17:02:35+02:00"
+    }
+  ]
+}

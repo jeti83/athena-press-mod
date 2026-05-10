@@ -1,0 +1,27 @@
+{
+  "newspaperName": "Athena Botenblatt",
+  "serverName": "Athena",
+  "defaultLanguage": "de_DE",
+  "defaultPlaceholderImage": "placeholders/no_image.png",
+
+  "articleIdPrefix": "article",
+  "issueIdPrefix": "issue",
+
+  "allowDrafts": true,
+  "requirePublishPermission": true,
+
+  "delivery": {
+    "onPublish": true,
+    "onPlayerLogin": true,
+    "giveItem": true,
+    "sendChatNotification": true,
+    "storeUnreadIssues": true
+  },
+
+  "images": {
+    "allowUploadedImages": true,
+    "allowedExtensions": ["png", "jpg", "jpeg", "webp"],
+    "maxFileSizeMb": 8,
+    "generateThumbnails": true
+  }
+}
