@@ -188,4 +188,274 @@ class ValidationServiceTest {
                 "Expected invalid deliveryMode error, but got: " + result.errors()
         );
     }
+
+    @Test
+    void existingArticleAndIssueShouldUseValidStatuses() {
+        ArticleRepository articleRepository = new ArticleRepository(PROJECT_ROOT);
+        IssueRepository issueRepository = new IssueRepository(PROJECT_ROOT);
+        SubscriberRepository subscriberRepository = new SubscriberRepository(PROJECT_ROOT);
+
+        ValidationService validationService = new ValidationService(
+                articleRepository,
+                issueRepository,
+                subscriberRepository
+        );
+
+        var articleResult = validationService.validateArticleStatus("article_0001");
+        var issueResult = validationService.validateIssueStatus("issue_0002");
+
+        assertTrue(
+                articleResult.isValid(),
+                "article_0001 should have a valid status, but got: " + articleResult.errors()
+        );
+
+        assertTrue(
+                issueResult.isValid(),
+                "issue_0002 should have a valid status, but got: " + issueResult.errors()
+        );
+    }
+
+    @Test
+    void articleWithInvalidStatusShouldReturnValidationError(@TempDir Path tempDir) throws Exception {
+        Path athenaPressRoot = tempDir.resolve("AthenaPress");
+
+        Files.createDirectories(athenaPressRoot.resolve("articles/published"));
+        Files.createDirectories(athenaPressRoot.resolve("issues/published"));
+        Files.createDirectories(athenaPressRoot.resolve("subscriptions"));
+
+        Files.writeString(
+                athenaPressRoot.resolve("articles/published/article_invalid_status.json"),
+                """
+                {
+                  "id": "article_invalid_status",
+                  "status": "printed_on_cheese",
+                  "categoryId": "server_news",
+                  "title": "Artikel mit kaputtem Status"
+                }
+                """
+        );
+
+        Files.writeString(
+                athenaPressRoot.resolve("subscriptions/subscribers.json"),
+                """
+                {
+                  "subscribers": []
+                }
+                """
+        );
+
+        ArticleRepository articleRepository = new ArticleRepository(athenaPressRoot);
+        IssueRepository issueRepository = new IssueRepository(athenaPressRoot);
+        SubscriberRepository subscriberRepository = new SubscriberRepository(athenaPressRoot);
+
+        ValidationService validationService = new ValidationService(
+                articleRepository,
+                issueRepository,
+                subscriberRepository
+        );
+
+        var result = validationService.validateArticleStatus("article_invalid_status");
+
+        assertTrue(
+                !result.isValid(),
+                "Article with invalid status should be invalid"
+        );
+
+        assertTrue(
+                result.errors().stream().anyMatch(error -> error.contains("printed_on_cheese")),
+                "Expected invalid article status error, but got: " + result.errors()
+        );
+    }
+
+    @Test
+    void issueWithInvalidStatusShouldReturnValidationError(@TempDir Path tempDir) throws Exception {
+        Path athenaPressRoot = tempDir.resolve("AthenaPress");
+
+        Files.createDirectories(athenaPressRoot.resolve("articles/published"));
+        Files.createDirectories(athenaPressRoot.resolve("issues/published"));
+        Files.createDirectories(athenaPressRoot.resolve("subscriptions"));
+
+        Files.writeString(
+                athenaPressRoot.resolve("issues/published/issue_invalid_status.json"),
+                """
+                {
+                  "id": "issue_invalid_status",
+                  "status": "lost_in_the_void",
+                  "issueNumber": 1000,
+                  "title": "Ausgabe mit kaputtem Status",
+                  "subtitle": "Nur fuer den Validator-Test",
+                  "articles": []
+                }
+                """
+        );
+
+        Files.writeString(
+                athenaPressRoot.resolve("subscriptions/subscribers.json"),
+                """
+                {
+                  "subscribers": []
+                }
+                """
+        );
+
+        ArticleRepository articleRepository = new ArticleRepository(athenaPressRoot);
+        IssueRepository issueRepository = new IssueRepository(athenaPressRoot);
+        SubscriberRepository subscriberRepository = new SubscriberRepository(athenaPressRoot);
+
+        ValidationService validationService = new ValidationService(
+                articleRepository,
+                issueRepository,
+                subscriberRepository
+        );
+
+        var result = validationService.validateIssueStatus("issue_invalid_status");
+
+        assertTrue(
+                !result.isValid(),
+                "Issue with invalid status should be invalid"
+        );
+
+        assertTrue(
+                result.errors().stream().anyMatch(error -> error.contains("lost_in_the_void")),
+                "Expected invalid issue status error, but got: " + result.errors()
+        );
+    }
+
+    @Test
+    void existingArticleAndIssueShouldHaveRequiredFields() {
+        ArticleRepository articleRepository = new ArticleRepository(PROJECT_ROOT);
+        IssueRepository issueRepository = new IssueRepository(PROJECT_ROOT);
+        SubscriberRepository subscriberRepository = new SubscriberRepository(PROJECT_ROOT);
+
+        ValidationService validationService = new ValidationService(
+                articleRepository,
+                issueRepository,
+                subscriberRepository
+        );
+
+        var articleResult = validationService.validateArticleRequiredFields("article_0001");
+        var issueResult = validationService.validateIssueRequiredFields("issue_0002");
+
+        assertTrue(
+                articleResult.isValid(),
+                "article_0001 should have required fields, but got: " + articleResult.errors()
+        );
+
+        assertTrue(
+                issueResult.isValid(),
+                "issue_0002 should have required fields, but got: " + issueResult.errors()
+        );
+    }
+
+    @Test
+    void articleWithMissingRequiredFieldsShouldReturnValidationError(@TempDir Path tempDir) throws Exception {
+        Path athenaPressRoot = tempDir.resolve("AthenaPress");
+
+        Files.createDirectories(athenaPressRoot.resolve("articles/published"));
+        Files.createDirectories(athenaPressRoot.resolve("issues/published"));
+        Files.createDirectories(athenaPressRoot.resolve("subscriptions"));
+
+        Files.writeString(
+                athenaPressRoot.resolve("articles/published/article_missing_required.json"),
+                """
+                {
+                  "id": "article_missing_required",
+                  "status": "published",
+                  "title": "   "
+                }
+                """
+        );
+
+        Files.writeString(
+                athenaPressRoot.resolve("subscriptions/subscribers.json"),
+                """
+                {
+                  "subscribers": []
+                }
+                """
+        );
+
+        ArticleRepository articleRepository = new ArticleRepository(athenaPressRoot);
+        IssueRepository issueRepository = new IssueRepository(athenaPressRoot);
+        SubscriberRepository subscriberRepository = new SubscriberRepository(athenaPressRoot);
+
+        ValidationService validationService = new ValidationService(
+                articleRepository,
+                issueRepository,
+                subscriberRepository
+        );
+
+        var result = validationService.validateArticleRequiredFields("article_missing_required");
+
+        assertTrue(
+                !result.isValid(),
+                "Article with missing required fields should be invalid"
+        );
+
+        assertTrue(
+                result.errors().stream().anyMatch(error -> error.contains("missing title")),
+                "Expected missing title error, but got: " + result.errors()
+        );
+
+        assertTrue(
+                result.errors().stream().anyMatch(error -> error.contains("missing categoryId")),
+                "Expected missing categoryId error, but got: " + result.errors()
+        );
+    }
+
+    @Test
+    void issueWithMissingRequiredFieldsShouldReturnValidationError(@TempDir Path tempDir) throws Exception {
+        Path athenaPressRoot = tempDir.resolve("AthenaPress");
+
+        Files.createDirectories(athenaPressRoot.resolve("articles/published"));
+        Files.createDirectories(athenaPressRoot.resolve("issues/published"));
+        Files.createDirectories(athenaPressRoot.resolve("subscriptions"));
+
+        Files.writeString(
+                athenaPressRoot.resolve("issues/published/issue_missing_required.json"),
+                """
+                {
+                  "id": "issue_missing_required",
+                  "status": "published",
+                  "title": "   "
+                }
+                """
+        );
+
+        Files.writeString(
+                athenaPressRoot.resolve("subscriptions/subscribers.json"),
+                """
+                {
+                  "subscribers": []
+                }
+                """
+        );
+
+        ArticleRepository articleRepository = new ArticleRepository(athenaPressRoot);
+        IssueRepository issueRepository = new IssueRepository(athenaPressRoot);
+        SubscriberRepository subscriberRepository = new SubscriberRepository(athenaPressRoot);
+
+        ValidationService validationService = new ValidationService(
+                articleRepository,
+                issueRepository,
+                subscriberRepository
+        );
+
+        var result = validationService.validateIssueRequiredFields("issue_missing_required");
+
+        assertTrue(
+                !result.isValid(),
+                "Issue with missing required fields should be invalid"
+        );
+
+        assertTrue(
+                result.errors().stream().anyMatch(error -> error.contains("missing title")),
+                "Expected missing title error, but got: " + result.errors()
+        );
+
+        assertTrue(
+                result.errors().stream().anyMatch(error -> error.contains("missing articles")),
+                "Expected missing articles error, but got: " + result.errors()
+        );
+    }
 }
