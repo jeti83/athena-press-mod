@@ -1,7 +1,14 @@
 C:\Users\jeti8\Projekte\Hytale-Mods\athena-press-mod\java\athena-press-core\src\main\java\pro\jeti\athenapress\AthenaPressCore.java
 C:\Users\jeti8\Projekte\Hytale-Mods\athena-press-mod\java\athena-press-core\src\main\java\pro\jeti\athenapress\model\Article.java
 C:\Users\jeti8\Projekte\Hytale-Mods\athena-press-mod\java\athena-press-core\src\main\java\pro\jeti\athenapress\model\AuthorInfo.java
+C:\Users\jeti8\Projekte\Hytale-Mods\athena-press-mod\java\athena-press-core\src\main\java\pro\jeti\athenapress\model\DeliveryTarget.java
 C:\Users\jeti8\Projekte\Hytale-Mods\athena-press-mod\java\athena-press-core\src\main\java\pro\jeti\athenapress\model\ImageInfo.java
 C:\Users\jeti8\Projekte\Hytale-Mods\athena-press-mod\java\athena-press-core\src\main\java\pro\jeti\athenapress\model\Issue.java
 C:\Users\jeti8\Projekte\Hytale-Mods\athena-press-mod\java\athena-press-core\src\main\java\pro\jeti\athenapress\model\LocationInfo.java
+C:\Users\jeti8\Projekte\Hytale-Mods\athena-press-mod\java\athena-press-core\src\main\java\pro\jeti\athenapress\model\ResolvedIssue.java
 C:\Users\jeti8\Projekte\Hytale-Mods\athena-press-mod\java\athena-press-core\src\main\java\pro\jeti\athenapress\model\Subscriber.java
+C:\Users\jeti8\Projekte\Hytale-Mods\athena-press-mod\java\athena-press-core\src\main\java\pro\jeti\athenapress\repository\ArticleRepository.java
+C:\Users\jeti8\Projekte\Hytale-Mods\athena-press-mod\java\athena-press-core\src\main\java\pro\jeti\athenapress\repository\IssueRepository.java
+C:\Users\jeti8\Projekte\Hytale-Mods\athena-press-mod\java\athena-press-core\src\main\java\pro\jeti\athenapress\repository\SubscriberRepository.java
+C:\Users\jeti8\Projekte\Hytale-Mods\athena-press-mod\java\athena-press-core\src\main\java\pro\jeti\athenapress\service\DeliveryService.java
+C:\Users\jeti8\Projekte\Hytale-Mods\athena-press-mod\java\athena-press-core\src\main\java\pro\jeti\athenapress\service\PressService.java

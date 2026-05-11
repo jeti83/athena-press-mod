@@ -1,0 +1,5 @@
+pro\jeti\athenapress\repository\IssueRepositoryTest.class
+pro\jeti\athenapress\service\DeliveryServiceTest.class
+pro\jeti\athenapress\repository\ArticleRepositoryTest.class
+pro\jeti\athenapress\repository\SubscriberRepositoryTest.class
+pro\jeti\athenapress\service\PressServiceTest.class
