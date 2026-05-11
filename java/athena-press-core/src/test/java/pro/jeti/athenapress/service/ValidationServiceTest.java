@@ -478,4 +478,71 @@ class ValidationServiceTest {
                 "issue_0002 should pass overall delivery validation, but got: " + result.errors()
         );
     }
+
+    @Test
+    void issueForDeliveryWithMissingArticleShouldReturnValidationError(@TempDir Path tempDir) throws Exception {
+        Path athenaPressRoot = tempDir.resolve("AthenaPress");
+
+        Files.createDirectories(athenaPressRoot.resolve("articles/published"));
+        Files.createDirectories(athenaPressRoot.resolve("issues/published"));
+        Files.createDirectories(athenaPressRoot.resolve("subscriptions"));
+
+        Files.writeString(
+                athenaPressRoot.resolve("issues/published/issue_delivery_broken.json"),
+                """
+                {
+                  "id": "issue_delivery_broken",
+                  "status": "published",
+                  "issueNumber": 1001,
+                  "title": "Kaputte Lieferausgabe",
+                  "subtitle": "Gesamtvalidierungstest",
+                  "articles": [
+                    "article_does_not_exist"
+                  ]
+                }
+                """
+        );
+
+        Files.writeString(
+                athenaPressRoot.resolve("subscriptions/subscribers.json"),
+                """
+                {
+                  "subscribers": [
+                    {
+                      "playerName": "Jeti",
+                      "playerUuid": "unknown",
+                      "subscribed": true,
+                      "deliveryMode": "mailbox",
+                      "subscribedAt": "2026-05-10T14:49:47+02:00",
+                      "updatedAt": "2026-05-10T15:36:33+02:00",
+                      "lastReceivedIssueId": null,
+                      "unreadIssues": []
+                    }
+                  ]
+                }
+                """
+        );
+
+        ArticleRepository articleRepository = new ArticleRepository(athenaPressRoot);
+        IssueRepository issueRepository = new IssueRepository(athenaPressRoot);
+        SubscriberRepository subscriberRepository = new SubscriberRepository(athenaPressRoot);
+
+        ValidationService validationService = new ValidationService(
+                articleRepository,
+                issueRepository,
+                subscriberRepository
+        );
+
+        var result = validationService.validateIssueForDelivery("issue_delivery_broken");
+
+        assertTrue(
+                !result.isValid(),
+                "Issue with missing article should fail overall delivery validation"
+        );
+
+        assertTrue(
+                result.errors().stream().anyMatch(error -> error.contains("article_does_not_exist")),
+                "Expected missing article error in overall validation, but got: " + result.errors()
+        );
+    }
 }
