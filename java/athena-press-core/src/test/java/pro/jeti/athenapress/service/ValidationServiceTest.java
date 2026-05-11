@@ -458,4 +458,24 @@ class ValidationServiceTest {
                 "Expected missing articles error, but got: " + result.errors()
         );
     }
+
+    @Test
+    void validIssueForDeliveryShouldPassOverallValidation() {
+        ArticleRepository articleRepository = new ArticleRepository(PROJECT_ROOT);
+        IssueRepository issueRepository = new IssueRepository(PROJECT_ROOT);
+        SubscriberRepository subscriberRepository = new SubscriberRepository(PROJECT_ROOT);
+
+        ValidationService validationService = new ValidationService(
+                articleRepository,
+                issueRepository,
+                subscriberRepository
+        );
+
+        var result = validationService.validateIssueForDelivery("issue_0002");
+
+        assertTrue(
+                result.isValid(),
+                "issue_0002 should pass overall delivery validation, but got: " + result.errors()
+        );
+    }
 }

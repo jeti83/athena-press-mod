@@ -40,6 +40,21 @@ public class ValidationService {
         this.subscriberRepository = subscriberRepository;
     }
 
+    public ValidationResult validateIssueForDelivery(String issueId) {
+        List<String> errors = new ArrayList<>();
+
+        addErrors(errors, validateIssueRequiredFields(issueId));
+        addErrors(errors, validateIssueStatus(issueId));
+        addErrors(errors, validateIssueArticleReferences(issueId));
+        addErrors(errors, validateSubscriberDeliveryModes());
+
+        if (errors.isEmpty()) {
+            return ValidationResult.valid();
+        }
+
+        return ValidationResult.invalid(errors);
+    }
+
     public ValidationResult validateIssueArticleReferences(String issueId) {
         List<String> errors = new ArrayList<>();
 
@@ -246,6 +261,12 @@ public class ValidationService {
         }
 
         return ValidationResult.invalid(errors);
+    }
+
+    private void addErrors(List<String> errors, ValidationResult result) {
+        if (!result.isValid()) {
+            errors.addAll(result.errors());
+        }
     }
 
     private boolean isBlank(String value) {
