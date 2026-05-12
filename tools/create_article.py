@@ -83,6 +83,7 @@ def build_article(args) -> dict:
     template["title"] = args.title
     template["subtitle"] = args.subtitle or ""
     template["teaser"] = args.teaser or ""
+    template["summary"] = args.summary or ""
 
     template["author"] = {
         "playerName": args.author,
@@ -119,6 +120,7 @@ def parse_args():
     parser.add_argument("--uuid", default="unknown", help="Spieler-UUID des Autors, falls bekannt")
     parser.add_argument("--subtitle", default="", help="Untertitel des Artikels")
     parser.add_argument("--teaser", default="", help="Kurzer Anreißertext")
+    parser.add_argument("--summary", default="", help="Kurze Zusammenfassung für Vorschau und Ausgabeübersicht")
     parser.add_argument("--body", default="", help="Artikeltext")
     parser.add_argument("--image", default="placeholders/no_image.png", help="Bildpfad relativ zu AthenaPress/images/")
     parser.add_argument("--caption", default="", help="Bildunterschrift")

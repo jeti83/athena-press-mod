@@ -108,6 +108,7 @@ def edit_article(args):
     changed |= update_if_provided(article, "title", args.title)
     changed |= update_if_provided(article, "subtitle", args.subtitle)
     changed |= update_if_provided(article, "teaser", args.teaser)
+    changed |= update_if_provided(article, "summary", args.summary)
     changed |= update_if_provided(article, "body", args.body)
 
     changed |= update_author(article, args.author, args.uuid)
@@ -182,6 +183,7 @@ def parse_args():
     parser.add_argument("--title", default=None, help="Neuer Artikeltitel")
     parser.add_argument("--subtitle", default=None, help="Neuer Untertitel")
     parser.add_argument("--teaser", default=None, help="Neuer Teaser")
+    parser.add_argument("--summary", default=None, help="Neue kurze Zusammenfassung")
     parser.add_argument("--body", default=None, help="Neuer Artikeltext")
     parser.add_argument("--category", default=None, help="Neue Kategorie-ID")
 
