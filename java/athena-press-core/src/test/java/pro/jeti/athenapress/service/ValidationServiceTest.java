@@ -459,6 +459,61 @@ class ValidationServiceTest {
         );
     }
 
+        @Test
+        void issueWithEmptyArticlesShouldReturnValidationError(@TempDir Path tempDir) throws Exception {
+                Path athenaPressRoot = tempDir.resolve("AthenaPress");
+
+                Files.createDirectories(athenaPressRoot.resolve("articles/published"));
+                Files.createDirectories(athenaPressRoot.resolve("issues/published"));
+                Files.createDirectories(athenaPressRoot.resolve("subscriptions"));
+
+                Files.writeString(
+                        athenaPressRoot.resolve("issues/published/issue_empty_articles.json"),
+                        """
+                        {
+                          "id": "issue_empty_articles",
+                          "status": "published",
+                          "issueNumber": 1002,
+                          "title": "Ausgabe ohne Artikel",
+                          "subtitle": "Nur fuer den Validator-Test",
+                          "articles": []
+                        }
+                        """
+                );
+
+                Files.writeString(
+                        athenaPressRoot.resolve("subscriptions/subscribers.json"),
+                        """
+                        {
+                          "subscribers": []
+                        }
+                        """
+                );
+
+                ArticleRepository articleRepository = new ArticleRepository(athenaPressRoot);
+                IssueRepository issueRepository = new IssueRepository(athenaPressRoot);
+                SubscriberRepository subscriberRepository = new SubscriberRepository(athenaPressRoot);
+
+                ValidationService validationService = new ValidationService(
+                        articleRepository,
+                        issueRepository,
+                        subscriberRepository
+                );
+
+                var result = validationService.validateIssueRequiredFields("issue_empty_articles");
+
+                assertTrue(
+                        !result.isValid(),
+                        "Issue with empty articles list should be invalid"
+                );
+
+                assertTrue(
+                        result.errors().stream().anyMatch(error -> error.contains("has no articles")),
+                        "Expected no articles error, but got: " + result.errors()
+                );
+        }
+
+
     @Test
     void validIssueForDeliveryShouldPassOverallValidation() {
         ArticleRepository articleRepository = new ArticleRepository(PROJECT_ROOT);

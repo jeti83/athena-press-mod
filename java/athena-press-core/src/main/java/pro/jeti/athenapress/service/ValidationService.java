@@ -420,8 +420,10 @@ public class ValidationService {
 
         if (issue.articles() == null) {
             errors.add("Issue " + issueId + " has missing articles");
+        } else if (issue.articles().isEmpty()) {
+            errors.add("Issue " + issueId + " has no articles");
         }
-
+        
         if (errors.isEmpty()) {
             return ValidationResult.valid();
         }
