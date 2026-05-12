@@ -9,6 +9,9 @@ import pro.jeti.athenapress.model.ResolvedIssue;
 
 public class PreviewService {
 
+    private static final String LINE = "========================================";
+    private static final String SECTION_LINE = "----------------------------------------";
+
     public String createTextPreview(
             ResolvedIssue resolvedIssue,
             ValidationResult validationResult,
@@ -26,26 +29,10 @@ public class PreviewService {
 
         Issue issue = resolvedIssue.issue();
 
-        preview.append(safeText(issue.title())).append("\n");
-
-        String subtitle = emptyIfBlank(issue.subtitle());
-        if (!subtitle.isBlank()) {
-            preview.append(subtitle).append("\n");
-        }
-
-        preview.append("\n");
-        preview.append("Status: ").append(safeText(issue.status())).append("\n");
-
-        appendValidation(preview, validationResult);
-
-        preview.append("\n");
-        preview.append("Artikel:\n");
-        appendArticles(preview, resolvedIssue.articles());
-
-        preview.append("\n");
-        preview.append("Zustellplan:\n");
-        appendDeliveryTargets(preview, deliveryTargets);
-
+        appendIssueInfo(preview, issue);
+        appendValidationSection(preview, validationResult);
+        appendArticleSection(preview, resolvedIssue.articles());
+        appendDeliverySection(preview, deliveryTargets);
         appendFooter(preview);
 
         return preview.toString();
@@ -53,9 +40,30 @@ public class PreviewService {
 
     private void appendHeader(StringBuilder preview) {
         preview.append("\n");
-        preview.append("========================================\n");
+        preview.append(LINE).append("\n");
         preview.append("        ATHENA BOTENBLATT\n");
-        preview.append("========================================\n");
+        preview.append(LINE).append("\n");
+        preview.append("\n");
+    }
+
+    private void appendIssueInfo(StringBuilder preview, Issue issue) {
+        preview.append("Ausgabe\n");
+        preview.append(SECTION_LINE).append("\n");
+        preview.append("Titel: ").append(safeText(issue.title())).append("\n");
+
+        String subtitle = emptyIfBlank(issue.subtitle());
+        if (!subtitle.isBlank()) {
+            preview.append("Untertitel: ").append(subtitle).append("\n");
+        }
+
+        preview.append("Status: ").append(safeText(issue.status())).append("\n");
+        preview.append("\n");
+    }
+
+    private void appendValidationSection(StringBuilder preview, ValidationResult validationResult) {
+        preview.append("Pruefung\n");
+        preview.append(SECTION_LINE).append("\n");
+        appendValidation(preview, validationResult);
         preview.append("\n");
     }
 
@@ -70,6 +78,13 @@ public class PreviewService {
         for (String error : validationResult.errors()) {
             preview.append("- ").append(error).append("\n");
         }
+    }
+
+    private void appendArticleSection(StringBuilder preview, List<Article> articles) {
+        preview.append("Artikel\n");
+        preview.append(SECTION_LINE).append("\n");
+        appendArticles(preview, articles);
+        preview.append("\n");
     }
 
     private void appendArticles(StringBuilder preview, List<Article> articles) {
@@ -94,6 +109,12 @@ public class PreviewService {
         }
     }
 
+    private void appendDeliverySection(StringBuilder preview, List<DeliveryTarget> deliveryTargets) {
+        preview.append("Zustellplan\n");
+        preview.append(SECTION_LINE).append("\n");
+        appendDeliveryTargets(preview, deliveryTargets);
+    }
+
     private void appendDeliveryTargets(StringBuilder preview, List<DeliveryTarget> deliveryTargets) {
         if (deliveryTargets == null || deliveryTargets.isEmpty()) {
             preview.append("- Keine Empfänger\n");
@@ -113,9 +134,9 @@ public class PreviewService {
 
     private void appendFooter(StringBuilder preview) {
         preview.append("\n");
-        preview.append("========================================\n");
+        preview.append(LINE).append("\n");
         preview.append("Demo abgeschlossen.\n");
-        preview.append("========================================\n");
+        preview.append(LINE).append("\n");
         preview.append("\n");
     }
 
