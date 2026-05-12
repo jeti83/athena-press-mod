@@ -14,13 +14,7 @@ class ArticleRepositoryTest {
 
     @Test
     void shouldReadExistingArticles() throws Exception {
-        Path projectRoot = Path.of(System.getProperty("user.dir"))
-                .getParent()
-                .getParent();
-
-        Path athenaPressRoot = projectRoot.resolve("AthenaPress");
-
-        ArticleRepository repository = new ArticleRepository(athenaPressRoot);
+        ArticleRepository repository = new ArticleRepository(findAthenaPressRoot());
 
         List<Article> articles = repository.findAll();
 
@@ -30,5 +24,29 @@ class ArticleRepositoryTest {
 
         assertNotNull(article0001, "Expected article_0001 to exist.");
         assertEquals("article_0001", article0001.id());
+    }
+
+    @Test
+    void shouldReadBodyAndImageFromExistingArticleJson() throws Exception {
+        ArticleRepository repository = new ArticleRepository(findAthenaPressRoot());
+
+        Article article0002 = repository.findById("article_0002");
+
+        assertNotNull(article0002, "Expected article_0002 to exist.");
+        assertNotNull(article0002.body(), "Expected article body to be loaded.");
+        assertFalse(article0002.body().isBlank(), "Expected article body not to be blank.");
+
+        assertNotNull(article0002.image(), "Expected article image to be loaded.");
+        assertEquals("placeholders/no_image.png", article0002.image().file());
+        assertEquals("Foto: HF_jeti83", article0002.image().credit());
+        assertEquals("placeholder", article0002.image().sourceType());
+    }
+
+    private Path findAthenaPressRoot() {
+        Path projectRoot = Path.of(System.getProperty("user.dir"))
+                .getParent()
+                .getParent();
+
+        return projectRoot.resolve("AthenaPress");
     }
 }

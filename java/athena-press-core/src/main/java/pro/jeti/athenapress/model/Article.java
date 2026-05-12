@@ -10,18 +10,21 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record Article(
         String id,
+        String status,
+        String categoryId,
+
         String title,
         String subtitle,
-        String categoryId,
-        AuthorInfo author,
-        String status,
-
+        String teaser,
         String summary,
-        String content,
 
-        List<ImageInfo> images,
+        AuthorInfo author,
+
+        String body,
+        ImageInfo image,
+        LocationInfo location,
+
         List<String> tags,
-        List<LocationInfo> locations,
 
         String createdAt,
         String updatedAt,

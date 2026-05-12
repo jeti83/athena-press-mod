@@ -6,10 +6,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record ImageInfo(
-        String path,
-        String sourceType,
+        String file,
         String caption,
-        String altText,
-        String thumbnailPath
+        String credit,
+        String sourceType
 ) {
 }

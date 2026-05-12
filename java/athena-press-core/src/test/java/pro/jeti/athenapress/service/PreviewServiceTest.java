@@ -31,14 +31,15 @@ class PreviewServiceTest {
                 null
         );
 
-        Article article = new Article(
+                Article article = new Article(
                 "article_test",
+                "published",
+                "server_news",
                 "Spawnplatz feierlich eingeweiht",
                 null,
-                "server_news",
                 null,
-                "published",
                 "Kurze Meldung vom Spawnplatz.",
+                null,
                 "Heute wurde am Spawnplatz viel Konfetti getestet.",
                 null,
                 null,
