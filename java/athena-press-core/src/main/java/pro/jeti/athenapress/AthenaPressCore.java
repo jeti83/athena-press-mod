@@ -1,12 +1,85 @@
 package pro.jeti.athenapress;
 
+import java.nio.file.Path;
+
+import pro.jeti.athenapress.repository.ArticleRepository;
+import pro.jeti.athenapress.repository.IssueRepository;
+import pro.jeti.athenapress.repository.SubscriberRepository;
+import pro.jeti.athenapress.service.DeliveryService;
+import pro.jeti.athenapress.service.PressService;
+import pro.jeti.athenapress.service.PreviewService;
+import pro.jeti.athenapress.service.ValidationService;
+
 public class AthenaPressCore {
 
+    private static final String NAME = "AthenaPress Core";
+    private static final String VERSION = "0.1.0-SNAPSHOT";
+
+    private final Path athenaPressRoot;
+
+    private final ArticleRepository articleRepository;
+    private final IssueRepository issueRepository;
+    private final SubscriberRepository subscriberRepository;
+
+    private final PressService pressService;
+    private final DeliveryService deliveryService;
+    private final ValidationService validationService;
+    private final PreviewService previewService;
+
+    public AthenaPressCore(Path athenaPressRoot) {
+        this.athenaPressRoot = athenaPressRoot;
+
+        this.articleRepository = new ArticleRepository(athenaPressRoot);
+        this.issueRepository = new IssueRepository(athenaPressRoot);
+        this.subscriberRepository = new SubscriberRepository(athenaPressRoot);
+
+        this.pressService = new PressService(athenaPressRoot);
+        this.deliveryService = new DeliveryService(athenaPressRoot);
+        this.validationService = new ValidationService(
+                articleRepository,
+                issueRepository,
+                subscriberRepository
+        );
+        this.previewService = new PreviewService();
+    }
+
     public String getName() {
-        return "AthenaPress Core";
+        return NAME;
     }
 
     public String getVersion() {
-        return "0.1.0-SNAPSHOT";
+        return VERSION;
+    }
+
+    public Path getAthenaPressRoot() {
+        return athenaPressRoot;
+    }
+
+    public ArticleRepository getArticleRepository() {
+        return articleRepository;
+    }
+
+    public IssueRepository getIssueRepository() {
+        return issueRepository;
+    }
+
+    public SubscriberRepository getSubscriberRepository() {
+        return subscriberRepository;
+    }
+
+    public PressService getPressService() {
+        return pressService;
+    }
+
+    public DeliveryService getDeliveryService() {
+        return deliveryService;
+    }
+
+    public ValidationService getValidationService() {
+        return validationService;
+    }
+
+    public PreviewService getPreviewService() {
+        return previewService;
     }
 }
