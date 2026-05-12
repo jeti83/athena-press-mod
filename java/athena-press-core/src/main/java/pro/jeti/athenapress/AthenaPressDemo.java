@@ -7,17 +7,10 @@ import java.util.List;
 
 import pro.jeti.athenapress.model.DeliveryTarget;
 import pro.jeti.athenapress.model.ResolvedIssue;
-import pro.jeti.athenapress.repository.ArticleRepository;
-import pro.jeti.athenapress.repository.IssueRepository;
-import pro.jeti.athenapress.repository.SubscriberRepository;
-import pro.jeti.athenapress.service.DeliveryService;
 import pro.jeti.athenapress.service.DemoCommandService;
 import pro.jeti.athenapress.service.DemoCommandService.DemoCommand;
 import pro.jeti.athenapress.service.DemoCommandService.DemoCommandType;
-import pro.jeti.athenapress.service.PressService;
-import pro.jeti.athenapress.service.PreviewService;
 import pro.jeti.athenapress.service.ValidationResult;
-import pro.jeti.athenapress.service.ValidationService;
 
 public final class AthenaPressDemo {
 
@@ -27,18 +20,7 @@ public final class AthenaPressDemo {
     public static void main(String[] args) throws IOException {
         Path dataRoot = findDataRoot();
 
-        ArticleRepository articleRepository = new ArticleRepository(dataRoot);
-        IssueRepository issueRepository = new IssueRepository(dataRoot);
-        SubscriberRepository subscriberRepository = new SubscriberRepository(dataRoot);
-
-        PressService pressService = new PressService(dataRoot);
-        DeliveryService deliveryService = new DeliveryService(dataRoot);
-        ValidationService validationService = new ValidationService(
-                articleRepository,
-                issueRepository,
-                subscriberRepository
-        );
-        PreviewService previewService = new PreviewService();
+        AthenaPressCore core = new AthenaPressCore(dataRoot);
         DemoCommandService demoCommandService = new DemoCommandService();
 
         DemoCommand command = demoCommandService.parse(args);
@@ -50,18 +32,18 @@ public final class AthenaPressDemo {
 
         if (command.type() == DemoCommandType.LIST_PUBLISHED_ISSUES) {
             System.out.print(demoCommandService.createPublishedIssuesText(
-                    pressService.findPublishedIssues()
+                    core.getPressService().findPublishedIssues()
             ));
             return;
         }
 
         String issueId = command.issueId();
 
-        ValidationResult validationResult = validationService.validateIssueForDelivery(issueId);
-        ResolvedIssue resolvedIssue = pressService.resolveIssue(issueId);
-        List<DeliveryTarget> deliveryTargets = deliveryService.createDeliveryPlan(issueId);
+        ValidationResult validationResult = core.getValidationService().validateIssueForDelivery(issueId);
+        ResolvedIssue resolvedIssue = core.getPressService().resolveIssue(issueId);
+        List<DeliveryTarget> deliveryTargets = core.getDeliveryService().createDeliveryPlan(issueId);
 
-        String preview = previewService.createTextPreview(
+        String preview = core.getPreviewService().createTextPreview(
                 resolvedIssue,
                 validationResult,
                 deliveryTargets
