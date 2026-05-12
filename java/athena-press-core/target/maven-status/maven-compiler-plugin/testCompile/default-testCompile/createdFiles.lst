@@ -5,3 +5,4 @@ pro\jeti\athenapress\repository\SubscriberRepositoryTest.class
 pro\jeti\athenapress\service\PressServiceTest.class
 pro\jeti\athenapress\service\PreviewServiceTest.class
 pro\jeti\athenapress\service\ValidationServiceTest.class
+pro\jeti\athenapress\service\DemoCommandServiceTest.class
