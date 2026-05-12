@@ -3,6 +3,7 @@ pro\jeti\athenapress\model\Subscriber.class
 pro\jeti\athenapress\model\LocationInfo.class
 pro\jeti\athenapress\model\Article.class
 pro\jeti\athenapress\repository\IssueRepository.class
+pro\jeti\athenapress\AthenaPressDemo.class
 pro\jeti\athenapress\model\Issue.class
 pro\jeti\athenapress\repository\SubscriberRepository.class
 pro\jeti\athenapress\service\ValidationResult.class
