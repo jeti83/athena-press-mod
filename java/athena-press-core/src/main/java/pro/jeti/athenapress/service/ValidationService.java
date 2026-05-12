@@ -1,5 +1,7 @@
 package pro.jeti.athenapress.service;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -7,6 +9,7 @@ import java.util.stream.Collectors;
 
 import pro.jeti.athenapress.model.Article;
 import pro.jeti.athenapress.model.Category;
+import pro.jeti.athenapress.model.ImageInfo;
 import pro.jeti.athenapress.model.Issue;
 import pro.jeti.athenapress.model.Subscriber;
 import pro.jeti.athenapress.repository.ArticleRepository;
@@ -29,10 +32,25 @@ public class ValidationService {
             "archived"
     );
 
+    private static final Set<String> VALID_IMAGE_SOURCE_TYPES = Set.of(
+            "placeholder",
+            "uploaded",
+            "screenshot",
+            "external",
+            "camera_marker"
+    );
+
+    private static final Set<String> LOCAL_IMAGE_SOURCE_TYPES = Set.of(
+            "placeholder",
+            "uploaded",
+            "screenshot"
+    );
+
     private final ArticleRepository articleRepository;
     private final IssueRepository issueRepository;
     private final SubscriberRepository subscriberRepository;
     private final CategoryRepository categoryRepository;
+    private final Path athenaPressRoot;
 
     public ValidationService(
             ArticleRepository articleRepository,
@@ -43,6 +61,7 @@ public class ValidationService {
                 articleRepository,
                 issueRepository,
                 subscriberRepository,
+                null,
                 null
         );
     }
@@ -53,10 +72,27 @@ public class ValidationService {
             SubscriberRepository subscriberRepository,
             CategoryRepository categoryRepository
     ) {
+        this(
+                articleRepository,
+                issueRepository,
+                subscriberRepository,
+                categoryRepository,
+                null
+        );
+    }
+
+    public ValidationService(
+            ArticleRepository articleRepository,
+            IssueRepository issueRepository,
+            SubscriberRepository subscriberRepository,
+            CategoryRepository categoryRepository,
+            Path athenaPressRoot
+    ) {
         this.articleRepository = articleRepository;
         this.issueRepository = issueRepository;
         this.subscriberRepository = subscriberRepository;
         this.categoryRepository = categoryRepository;
+        this.athenaPressRoot = athenaPressRoot;
     }
 
     public ValidationResult validateIssueForDelivery(String issueId) {
@@ -66,6 +102,7 @@ public class ValidationService {
         addErrors(errors, validateIssueStatus(issueId));
         addErrors(errors, validateIssueArticleReferences(issueId));
         addErrors(errors, validateArticleCategories());
+        addErrors(errors, validateArticleImages());
         addErrors(errors, validateSubscriberDeliveryModes());
 
         if (errors.isEmpty()) {
@@ -155,6 +192,72 @@ public class ValidationService {
         }
 
         return ValidationResult.invalid(errors);
+    }
+
+    public ValidationResult validateArticleImages() {
+        List<String> errors = new ArrayList<>();
+
+        List<Article> articles;
+
+        try {
+            articles = articleRepository.findAll();
+        } catch (Exception exception) {
+            errors.add("Could not validate article images: " + exception.getMessage());
+            return ValidationResult.invalid(errors);
+        }
+
+        for (Article article : articles) {
+            String articleId = safeId(article.id());
+            ImageInfo image = article.image();
+
+            if (image == null) {
+                continue;
+            }
+
+            String sourceType = image.sourceType();
+
+            if (isBlank(sourceType)) {
+                errors.add("Article " + articleId + " has image with missing sourceType");
+                continue;
+            }
+
+            if (!VALID_IMAGE_SOURCE_TYPES.contains(sourceType)) {
+                errors.add("Article " + articleId + " has image with invalid sourceType: " + sourceType);
+                continue;
+            }
+
+            if (LOCAL_IMAGE_SOURCE_TYPES.contains(sourceType)) {
+                validateLocalImageFile(errors, articleId, image);
+            }
+        }
+
+        if (errors.isEmpty()) {
+            return ValidationResult.valid();
+        }
+
+        return ValidationResult.invalid(errors);
+    }
+
+    private void validateLocalImageFile(List<String> errors, String articleId, ImageInfo image) {
+        String file = image.file();
+
+        if (isBlank(file)) {
+            errors.add("Article " + articleId + " has local image with missing file");
+            return;
+        }
+
+        if (athenaPressRoot == null) {
+            return;
+        }
+
+        Path imagePath = athenaPressRoot
+                .resolve("images")
+                .resolve(file)
+                .normalize();
+
+        if (!Files.exists(imagePath)) {
+            errors.add("Article " + articleId + " references missing image file: " + file);
+        }
     }
 
     public ValidationResult validateSubscriberDeliveryModes() {

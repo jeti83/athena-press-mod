@@ -42,7 +42,8 @@ public class AthenaPressCore {
                 articleRepository,
                 issueRepository,
                 subscriberRepository,
-                categoryRepository
+                categoryRepository,
+                athenaPressRoot
         );
         this.previewService = new PreviewService();
     }
