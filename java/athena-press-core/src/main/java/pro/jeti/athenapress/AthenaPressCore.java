@@ -3,6 +3,7 @@ package pro.jeti.athenapress;
 import java.nio.file.Path;
 
 import pro.jeti.athenapress.repository.ArticleRepository;
+import pro.jeti.athenapress.repository.CategoryRepository;
 import pro.jeti.athenapress.repository.IssueRepository;
 import pro.jeti.athenapress.repository.SubscriberRepository;
 import pro.jeti.athenapress.service.DeliveryService;
@@ -20,6 +21,7 @@ public class AthenaPressCore {
     private final ArticleRepository articleRepository;
     private final IssueRepository issueRepository;
     private final SubscriberRepository subscriberRepository;
+    private final CategoryRepository categoryRepository;
 
     private final PressService pressService;
     private final DeliveryService deliveryService;
@@ -32,13 +34,15 @@ public class AthenaPressCore {
         this.articleRepository = new ArticleRepository(athenaPressRoot);
         this.issueRepository = new IssueRepository(athenaPressRoot);
         this.subscriberRepository = new SubscriberRepository(athenaPressRoot);
+        this.categoryRepository = new CategoryRepository(athenaPressRoot);
 
         this.pressService = new PressService(athenaPressRoot);
         this.deliveryService = new DeliveryService(athenaPressRoot);
         this.validationService = new ValidationService(
                 articleRepository,
                 issueRepository,
-                subscriberRepository
+                subscriberRepository,
+                categoryRepository
         );
         this.previewService = new PreviewService();
     }
@@ -65,6 +69,10 @@ public class AthenaPressCore {
 
     public SubscriberRepository getSubscriberRepository() {
         return subscriberRepository;
+    }
+
+    public CategoryRepository getCategoryRepository() {
+        return categoryRepository;
     }
 
     public PressService getPressService() {

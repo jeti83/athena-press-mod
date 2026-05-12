@@ -21,6 +21,7 @@ class AthenaPressCoreTest {
         assertNotNull(core.getArticleRepository());
         assertNotNull(core.getIssueRepository());
         assertNotNull(core.getSubscriberRepository());
+        assertNotNull(core.getCategoryRepository());
 
         assertNotNull(core.getPressService());
         assertNotNull(core.getDeliveryService());

@@ -3,11 +3,14 @@ package pro.jeti.athenapress.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import pro.jeti.athenapress.model.Article;
+import pro.jeti.athenapress.model.Category;
 import pro.jeti.athenapress.model.Issue;
 import pro.jeti.athenapress.model.Subscriber;
 import pro.jeti.athenapress.repository.ArticleRepository;
+import pro.jeti.athenapress.repository.CategoryRepository;
 import pro.jeti.athenapress.repository.IssueRepository;
 import pro.jeti.athenapress.repository.SubscriberRepository;
 
@@ -29,15 +32,31 @@ public class ValidationService {
     private final ArticleRepository articleRepository;
     private final IssueRepository issueRepository;
     private final SubscriberRepository subscriberRepository;
+    private final CategoryRepository categoryRepository;
 
     public ValidationService(
             ArticleRepository articleRepository,
             IssueRepository issueRepository,
             SubscriberRepository subscriberRepository
     ) {
+        this(
+                articleRepository,
+                issueRepository,
+                subscriberRepository,
+                null
+        );
+    }
+
+    public ValidationService(
+            ArticleRepository articleRepository,
+            IssueRepository issueRepository,
+            SubscriberRepository subscriberRepository,
+            CategoryRepository categoryRepository
+    ) {
         this.articleRepository = articleRepository;
         this.issueRepository = issueRepository;
         this.subscriberRepository = subscriberRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     public ValidationResult validateIssueForDelivery(String issueId) {
@@ -46,6 +65,7 @@ public class ValidationService {
         addErrors(errors, validateIssueRequiredFields(issueId));
         addErrors(errors, validateIssueStatus(issueId));
         addErrors(errors, validateIssueArticleReferences(issueId));
+        addErrors(errors, validateArticleCategories());
         addErrors(errors, validateSubscriberDeliveryModes());
 
         if (errors.isEmpty()) {
@@ -84,6 +104,49 @@ public class ValidationService {
 
             if (article == null) {
                 errors.add("Issue " + issueId + " references missing article: " + articleId);
+            }
+        }
+
+        if (errors.isEmpty()) {
+            return ValidationResult.valid();
+        }
+
+        return ValidationResult.invalid(errors);
+    }
+
+    public ValidationResult validateArticleCategories() {
+        List<String> errors = new ArrayList<>();
+
+        if (categoryRepository == null) {
+            return ValidationResult.valid();
+        }
+
+        List<Article> articles;
+        List<Category> categories;
+
+        try {
+            articles = articleRepository.findAll();
+            categories = categoryRepository.findEnabledCategories();
+        } catch (Exception exception) {
+            errors.add("Could not validate article categories: " + exception.getMessage());
+            return ValidationResult.invalid(errors);
+        }
+
+        Set<String> enabledCategoryIds = categories.stream()
+                .map(Category::id)
+                .collect(Collectors.toSet());
+
+        for (Article article : articles) {
+            String articleId = safeId(article.id());
+            String categoryId = article.categoryId();
+
+            if (isBlank(categoryId)) {
+                errors.add("Article " + articleId + " has missing categoryId");
+                continue;
+            }
+
+            if (!enabledCategoryIds.contains(categoryId)) {
+                errors.add("Article " + articleId + " has unknown or disabled categoryId: " + categoryId);
             }
         }
 
@@ -267,6 +330,14 @@ public class ValidationService {
         if (!result.isValid()) {
             errors.addAll(result.errors());
         }
+    }
+
+    private String safeId(String value) {
+        if (isBlank(value)) {
+            return "(unknown)";
+        }
+
+        return value;
     }
 
     private boolean isBlank(String value) {
