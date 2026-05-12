@@ -85,6 +85,28 @@ public final class AthenaPressDemo {
             }
         }
 
-        throw new IllegalStateException("AthenaPress-Datenordner wurde nicht gefunden.");
+        throw new IllegalStateException(createMissingDataRootMessage(candidates));
+    }
+
+    private static String createMissingDataRootMessage(List<Path> candidates) {
+        StringBuilder message = new StringBuilder();
+
+        message.append("AthenaPress-Datenordner wurde nicht gefunden.\n");
+        message.append("\n");
+        message.append("Gesuchte Pfade:\n");
+
+        for (Path candidate : candidates) {
+            message.append("- ")
+                    .append(candidate.toAbsolutePath().normalize())
+                    .append("\n");
+        }
+
+        message.append("\n");
+        message.append("Starte die Demo bitte aus dem Maven-Modulordner:\n");
+        message.append("java/athena-press-core\n");
+        message.append("\n");
+        message.append("Oder stelle sicher, dass der Ordner AthenaPress relativ erreichbar ist.");
+
+        return message.toString();
     }
 }
