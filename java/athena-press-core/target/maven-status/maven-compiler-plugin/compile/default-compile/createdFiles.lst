@@ -6,6 +6,7 @@ pro\jeti\athenapress\repository\IssueRepository.class
 pro\jeti\athenapress\AthenaPressDemo.class
 pro\jeti\athenapress\model\Issue.class
 pro\jeti\athenapress\repository\SubscriberRepository.class
+pro\jeti\athenapress\service\PreviewService.class
 pro\jeti\athenapress\service\ValidationResult.class
 pro\jeti\athenapress\service\DeliveryService.class
 pro\jeti\athenapress\AthenaPressCore.class
