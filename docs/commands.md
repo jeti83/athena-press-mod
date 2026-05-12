@@ -42,119 +42,147 @@ Umlaute werden in Befehlen bewusst vermieden:
 pruefen statt prüfen
 loeschen statt löschen
 veroeffentlichen statt veröffentlichen
-Wichtige press.py-Befehle
+
+Wichtige press.py-Befehle:
+
 System prüfen
-python press.py pruefen
+
+Deutsch:
+    python press.py pruefen
 
 Englisch:
+    python press.py validate
 
-python press.py validate
 Artikel erstellen
-python press.py artikel erstellen --titel "Neue Baumfarm eröffnet" --kategorie build_projects --autor HF_jeti83
+
+Deutsch:
+    python press.py artikel erstellen --titel "Neue Baumfarm eröffnet" --kategorie build_projects --autor HF_jeti83 --zusammenfassung "Kurze Vorschau zur neuen Baumfarm."
 
 Englisch:
+    python press.py article create --title "Neue Baumfarm eröffnet" --category build_projects --author HF_jeti83 --summary "Short preview for the new tree farm."
 
-python press.py article create --title "Neue Baumfarm eröffnet" --category build_projects --author HF_jeti83
 Artikel bearbeiten
-python press.py artikel bearbeiten article_0002 --untertitel "Vier Plots gegen die Holzknappheit"
+
+Untertitel ändern:
+    python press.py artikel bearbeiten article_0002 --untertitel "Vier Plots gegen die Holzknappheit"
+
+Zusammenfassung ändern:
+    python press.py artikel bearbeiten article_0002 --zusammenfassung "Die Baumfarm bündelt verschiedene Holzarten und verbessert die Versorgung."
 
 Artikeltext setzen:
-
-python press.py artikel bearbeiten article_0002 --text "Auf Athena entsteht eine neue Baumfarm, die verschiedene Holzarten übersichtlich und platzsparend anbauen soll."
+    python press.py artikel bearbeiten article_0002 --text "Auf Athena entsteht eine neue Baumfarm, die verschiedene Holzarten übersichtlich und platzsparend anbauen soll."
 
 Bilddaten setzen:
-
-python press.py artikel bearbeiten article_0002 --bild uploaded/baumfarm_001.png --bildquelle uploaded --bildunterschrift "Die Baumfarm im Aufbau." --nachweis "Foto: HF_jeti83"
+    python press.py artikel bearbeiten article_0002 --bild uploaded/baumfarm_001.png --bildquelle uploaded --bildunterschrift "Die Baumfarm im Aufbau." --nachweis "Foto: HF_jeti83"
 
 Tags setzen:
+    python press.py artikel bearbeiten article_0002 --tags baumfarm holz bauprojekt
 
-python press.py artikel bearbeiten article_0002 --tags baumfarm holz bauprojekt
 Artikel auflisten
-python press.py artikel liste
+    python press.py artikel liste
 
 Englisch:
+    python press.py article list
 
-python press.py article list
 Artikel archivieren
-python press.py artikel archivieren article_0003 --grund "Testarchivierung"
+    python press.py artikel archivieren article_0003 --grund "Testarchivierung"
 
 Testlauf:
 
-python press.py artikel archivieren article_0003 --test
+    python press.py artikel archivieren article_0003 --test
+
 Ausgabe erstellen
-python press.py ausgabe erstellen --untertitel "Die erste echte Testausgabe" --ausgabe-name "Farmwelt Spezial" --artikel article_0001 article_0002
+    python press.py ausgabe erstellen --untertitel "Die erste echte Testausgabe" --ausgabe-name "Farmwelt Spezial" --artikel article_0001 article_0002
 
 Mit Titelartikel:
 
-python press.py ausgabe erstellen --untertitel "Farmwelt Spezial" --ausgabe-name "Baumfarm-Ausgabe" --artikel article_0001 article_0002 --titelartikel article_0002
+    python press.py ausgabe erstellen --untertitel "Farmwelt Spezial" --ausgabe-name "Baumfarm-Ausgabe" --artikel article_0001 article_0002 --titelartikel article_0002
 
 Mit Titelbild:
 
-python press.py ausgabe erstellen --untertitel "Farmwelt Spezial" --ausgabe-name "Baumfarm-Ausgabe" --artikel article_0001 article_0002 --titelbild uploaded/baumfarm_001.png
+    python press.py ausgabe erstellen --untertitel "Farmwelt Spezial" --ausgabe-name "Baumfarm-Ausgabe" --artikel article_0001 article_0002 --titelbild uploaded/baumfarm_001.png
+
 Ausgabe veröffentlichen
 
 Testlauf:
 
-python press.py ausgabe veroeffentlichen issue_0002 --test
+    python press.py ausgabe veroeffentlichen issue_0002 --test
 
 Veröffentlichen:
 
-python press.py ausgabe veroeffentlichen issue_0002
+    python press.py ausgabe veroeffentlichen issue_0002
+
 Ausgabe lesen
 
 Kurzansicht:
 
-python press.py ausgabe lesen issue_0002
+    python press.py ausgabe lesen issue_0002
 
 Vollansicht:
 
-python press.py ausgabe lesen issue_0002 --voll
+    python press.py ausgabe lesen issue_0002 --voll
+
+
 Ausgaben auflisten
-python press.py ausgabe liste
+
+    python press.py ausgabe liste
+
 Ausgabe zustellen
 
 Testlauf:
 
-python press.py ausgabe zustellen issue_0002 --test
+    python press.py ausgabe zustellen issue_0002 --test
 
 Zustellen:
 
-python press.py ausgabe zustellen issue_0002
+    python press.py ausgabe zustellen issue_0002
 
 Erneut erzwingen:
 
-python press.py ausgabe zustellen issue_0002 --erzwingen
+    python press.py ausgabe zustellen issue_0002 --erzwingen
+
 Ausgabe archivieren
-python press.py ausgabe archivieren issue_0001 --grund "Alter Testentwurf"
+
+    python press.py ausgabe archivieren issue_0001 --grund "Alter Testentwurf"
+
 Abonnent hinzufügen
-python press.py abonnent hinzufuegen --name Jeti
+
+    python press.py abonnent hinzufuegen --name Jeti
 
 Mit Zustellmodus:
 
-python press.py abonnent hinzufuegen --name HF_jeti83 --zustellung mailbox
+    python press.py abonnent hinzufuegen --name HF_jeti83 --zustellung mailbox
+
 Abonnent deaktivieren
-python press.py abonnent deaktivieren --name Jeti
+
+    python press.py abonnent deaktivieren --name Jeti
 
 Mit Entfernen ungelesener Ausgaben:
 
-python press.py abonnent deaktivieren --name Jeti --ungelesene-loeschen
+    python press.py abonnent deaktivieren --name Jeti --ungelesene-loeschen
+
 Abonnenten auflisten
-python press.py abonnent liste
+
+    python press.py abonnent liste
+
 Ausgabe als gelesen markieren
-python press.py abonnent gelesen --name HF_jeti83 --ausgabe issue_0002
+
+    python press.py abonnent gelesen --name HF_jeti83 --ausgabe issue_0002
+
 Entwurf löschen
 
 Testlauf:
 
-python press.py entwurf loeschen artikel article_0005 --test
+    python press.py entwurf loeschen artikel article_0005 --test
 
 Löschen:
 
-python press.py entwurf loeschen artikel article_0005 --ja
+    python press.py entwurf loeschen artikel article_0005 --ja
 
 Ausgabenentwurf löschen:
 
-python press.py entwurf loeschen ausgabe issue_0003 --ja
+    python press.py entwurf loeschen ausgabe issue_0003 --ja
+
 Alias-Übersicht
 Englisch	Deutsch
 validate	pruefen
@@ -172,6 +200,7 @@ deliver	zustellen
 add	hinzufuegen, aktivieren
 remove	entfernen, deaktivieren
 delete	loeschen
+
 Options-Aliase
 Englisch	Deutsch
 --title	--titel

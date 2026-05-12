@@ -76,6 +76,7 @@ Beispiel:
   "title": "Neue Baumfarm eröffnet",
   "subtitle": "Vier Plots gegen die Holzknappheit",
   "teaser": "Auf Athena entsteht eine neue Baumfarm für verschiedene Holzarten.",
+  "summary": "Die neue Baumfarm soll verschiedene Holzarten gebündelt verfügbar machen und die Versorgung auf Athena verbessern.",
 
   "author": {
     "playerName": "HF_jeti83",
@@ -105,6 +106,13 @@ Beispiel:
   "updatedAt": "2026-05-10T14:38:00+02:00",
   "publishedAt": "2026-05-10T14:38:00+02:00"
 }
+
+Optionale Artikelfelder:
+
+| Feld | Bedeutung |
+| ---- | --------- |
+| `summary` | Kurze Zusammenfassung des Artikels für Vorschauen, Übersichten und Java-Demo-Ausgaben. Das Feld ist optional und darf leer sein. |
+
 Artikelstatus
 
 Erlaubte Werte:
