@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="pro.jeti.athenapress.service.DeliveryServiceTest" time="0.033" tests="5" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="pro.jeti.athenapress.service.PreviewServiceTest" time="0.004" tests="3" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="25"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -60,9 +60,7 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="69.0"/>
   </properties>
-  <testcase name="shouldReturnDeliveryModeForActivePlayer" classname="pro.jeti.athenapress.service.DeliveryServiceTest" time="0.005"/>
-  <testcase name="shouldCheckWhetherIssueShouldBeDeliveredToPlayer" classname="pro.jeti.athenapress.service.DeliveryServiceTest" time="0.01"/>
-  <testcase name="shouldFindRecipientsForPublishedIssue0002" classname="pro.jeti.athenapress.service.DeliveryServiceTest" time="0.007"/>
-  <testcase name="shouldDetectUnreadIssueForPlayer" classname="pro.jeti.athenapress.service.DeliveryServiceTest" time="0.004"/>
-  <testcase name="shouldCreateDeliveryPlanForPublishedIssue0002" classname="pro.jeti.athenapress.service.DeliveryServiceTest" time="0.006"/>
+  <testcase name="createTextPreviewHandlesMissingIssue" classname="pro.jeti.athenapress.service.PreviewServiceTest" time="0.001"/>
+  <testcase name="createTextPreviewContainsValidationErrors" classname="pro.jeti.athenapress.service.PreviewServiceTest" time="0.001"/>
+  <testcase name="createTextPreviewContainsHeaderIssueArticlesValidationAndDeliveryPlan" classname="pro.jeti.athenapress.service.PreviewServiceTest" time="0.0"/>
 </testsuite>
