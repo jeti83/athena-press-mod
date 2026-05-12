@@ -38,7 +38,7 @@ class PreviewServiceTest {
                 "server_news",
                 null,
                 "published",
-                null,
+                "Kurze Meldung vom Spawnplatz.",
                 "Heute wurde am Spawnplatz viel Konfetti getestet.",
                 null,
                 null,
@@ -75,6 +75,7 @@ class PreviewServiceTest {
         assertTrue(preview.contains("Status: published"));
         assertTrue(preview.contains("Validierung: OK"));
         assertTrue(preview.contains("- [server_news] Spawnplatz feierlich eingeweiht"));
+        assertTrue(preview.contains("  Kurze Meldung vom Spawnplatz."));
         assertTrue(preview.contains("- Jeti -> item_and_notification -> unread true"));
         assertTrue(preview.contains("Demo abgeschlossen."));
     }

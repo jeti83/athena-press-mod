@@ -84,6 +84,13 @@ public class PreviewService {
                     .append("] ")
                     .append(safeText(article.title()))
                     .append("\n");
+
+            String summary = emptyIfBlank(article.summary());
+            if (!summary.isBlank()) {
+                preview.append("  ")
+                        .append(summary)
+                        .append("\n");
+            }
         }
     }
 
