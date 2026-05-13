@@ -526,6 +526,7 @@ Pro Ausgabe werden angezeigt:
 - Cover-Hinweis
 - Untertitel, falls vorhanden
 
+
 Häufige Python-Übersichten:
 
 python press.py artikel liste
