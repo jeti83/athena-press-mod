@@ -95,6 +95,31 @@ public class ValidationService {
         this.athenaPressRoot = athenaPressRoot;
     }
 
+    public ValidationResult validate() {
+        List<String> errors = new ArrayList<>();
+
+        try {
+            for (Issue issue : issueRepository.findAll()) {
+                addErrors(errors, validateIssueRequiredFields(issue.id()));
+                addErrors(errors, validateIssueStatus(issue.id()));
+                addErrors(errors, validateIssueArticleReferences(issue.id()));
+                addErrors(errors, validateIssueCover(issue.id()));
+            }
+        } catch (Exception exception) {
+            errors.add("Could not validate issues: " + exception.getMessage());
+        }
+
+        addErrors(errors, validateArticleCategories());
+        addErrors(errors, validateArticleImages());
+        addErrors(errors, validateSubscriberDeliveryModes());
+
+        if (errors.isEmpty()) {
+            return ValidationResult.valid();
+        }
+
+        return ValidationResult.invalid(errors);
+    }
+
     public ValidationResult validateIssueForDelivery(String issueId) {
         List<String> errors = new ArrayList<>();
 

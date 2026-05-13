@@ -48,6 +48,19 @@ public final class AthenaPressDemo {
             return;
         }
 
+        if (command.type() == DemoCommandType.SHOW_STATUS) {
+            ValidationResult validationResult = core.getValidationService().validate();
+
+            System.out.print(demoCommandService.createStatusText(
+                    core.getArticleRepository().findAll(),
+                    core.getIssueRepository().findAll(),
+                    core.getSubscriberRepository().findAll(),
+                    core.getCategoryRepository().findAll(),
+                    validationResult
+            ));
+            return;
+        }
+
         String issueId = command.issueId();
 
         ValidationResult validationResult = core.getValidationService().validateIssueForDelivery(issueId);
