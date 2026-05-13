@@ -74,7 +74,7 @@ public class PreviewService {
     }
 
     private void appendValidationSection(StringBuilder preview, ValidationResult validationResult) {
-        preview.append("Pruefung\n");
+        preview.append("Prüfung\n");
         preview.append(SECTION_LINE).append("\n");
         preview.append(validationReportService.createInlineValidationText(validationResult));
         preview.append("\n");
