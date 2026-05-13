@@ -198,6 +198,16 @@ Beispiel:
   "lastDeliveredAt": "2026-05-10T14:56:00+02:00"
 }
 
+### Cover
+
+Eine Ausgabe kann optional ein Cover-Objekt enthalten.
+
+```json
+"cover": {
+  "mainArticleId": "article_0001",
+  "image": "placeholders/dating.png"
+}
+
 Eine Ausgabe enthält keine Artikel direkt, sondern verweist über Artikel-IDs auf Artikeldateien.
 
 Ausgabenstatus
