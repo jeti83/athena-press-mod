@@ -17,6 +17,8 @@ public class DemoCommandService {
     private static final List<String> VALIDATE_ARGUMENTS = List.of("--validate", "--pruefen");
     private static final List<String> STATUS_ARGUMENTS = List.of("--status", "--uebersicht");
 
+    private final ValidationReportService validationReportService = new ValidationReportService();
+
     public DemoCommand parse(String[] args) {
         if (args == null || args.length == 0) {
             return DemoCommand.previewIssue(DEFAULT_ISSUE_ID);
@@ -32,13 +34,13 @@ public class DemoCommandService {
             return DemoCommand.listPublishedIssues();
         }
 
-        if (matchesArgument(argument, STATUS_ARGUMENTS)) {
-            return DemoCommand.statusOverview();
-        }
-
         if (matchesArgument(argument, VALIDATE_ARGUMENTS)) {
             String issueId = args.length >= 2 ? args[1] : DEFAULT_ISSUE_ID;
             return DemoCommand.validateIssue(issueId);
+        }
+
+        if (matchesArgument(argument, STATUS_ARGUMENTS)) {
+            return DemoCommand.showStatus();
         }
 
         return DemoCommand.previewIssue(argument);
@@ -49,26 +51,40 @@ public class DemoCommandService {
 
         help.append("\n");
         help.append("AthenaPress Demo\n");
+        help.append("========================================\n");
         help.append("\n");
         help.append("Verwendung:\n");
-        help.append(" AthenaPressDemo                         Zeigt die Standardausgabe ")
+        help.append(" AthenaPressDemo\n");
+        help.append(" Zeigt die Standardausgabe ")
                 .append(DEFAULT_ISSUE_ID)
-                .append("\n");
-        help.append(" AthenaPressDemo <issueId>               Zeigt eine bestimmte Ausgabe\n");
-        help.append(" AthenaPressDemo --list | --liste        Listet veröffentlichte Ausgaben\n");
-        help.append(" AthenaPressDemo --validate | --pruefen <issueId> Prüft eine Ausgabe ohne Preview\n");
-        help.append(" AthenaPressDemo --status | --uebersicht Zeigt eine kompakte Statusübersicht\n");
-        help.append(" AthenaPressDemo --help | --hilfe | -h | /? Zeigt diese Hilfe\n");
+                .append(" als Preview.\n");
+        help.append("\n");
+        help.append(" AthenaPressDemo <issueId>\n");
+        help.append(" Zeigt eine bestimmte Ausgabe als Preview.\n");
+        help.append("\n");
+        help.append(" AthenaPressDemo --list | --liste\n");
+        help.append(" Listet alle veröffentlichten Ausgaben.\n");
+        help.append("\n");
+        help.append(" AthenaPressDemo --validate | --pruefen <issueId>\n");
+        help.append(" Prüft eine Ausgabe ohne Preview.\n");
+        help.append(" Ohne issueId wird ")
+                .append(DEFAULT_ISSUE_ID)
+                .append(" verwendet.\n");
+        help.append("\n");
+        help.append(" AthenaPressDemo --status | --uebersicht\n");
+        help.append(" Zeigt eine kompakte Übersicht über den Datenbestand.\n");
+        help.append("\n");
+        help.append(" AthenaPressDemo --help | --hilfe | -h | /?\n");
+        help.append(" Zeigt diese Hilfe.\n");
         help.append("\n");
         help.append("Beispiele:\n");
         help.append(" AthenaPressDemo issue_0002\n");
         help.append(" AthenaPressDemo --list\n");
+        help.append(" AthenaPressDemo --liste\n");
         help.append(" AthenaPressDemo --validate issue_0002\n");
+        help.append(" AthenaPressDemo --pruefen issue_0002\n");
         help.append(" AthenaPressDemo --status\n");
-        help.append("\n");
-        help.append("Ohne issueId wird ")
-                .append(DEFAULT_ISSUE_ID)
-                .append(" verwendet.\n");
+        help.append(" AthenaPressDemo --uebersicht\n");
         help.append("\n");
 
         return help.toString();
@@ -79,23 +95,35 @@ public class DemoCommandService {
 
         text.append("\n");
         text.append("Veröffentlichte Ausgaben:\n");
-        text.append("----------------------------------------\n");
+        text.append("\n");
 
-        List<Issue> safeIssues = safeIssueList(issues);
-
-        if (safeIssues.isEmpty()) {
+        if (issues == null || issues.isEmpty()) {
             text.append("- Keine veröffentlichten Ausgaben gefunden\n");
             text.append("\n");
             return text.toString();
         }
 
-        for (Issue issue : safeIssues) {
-            appendCompactIssueLine(text, issue);
+        for (Issue issue : sortIssues(issues)) {
+            String issueNumber = issue.issueNumber() == null ? "" : " #" + issue.issueNumber();
+
+            text.append("- ")
+                    .append(safeText(issue.id()))
+                    .append(issueNumber)
+                    .append(" | ")
+                    .append(safeText(issue.title()))
+                    .append("\n");
         }
 
         text.append("\n");
 
         return text.toString();
+    }
+
+    public String createValidationText(String issueId, ValidationResult validationResult) {
+        return validationReportService.createStandaloneValidationText(
+                "Validierung für " + safeText(issueId),
+                validationResult
+        );
     }
 
     public String createStatusText(
@@ -105,77 +133,29 @@ public class DemoCommandService {
             List<Category> categories,
             ValidationResult validationResult
     ) {
-        List<Article> safeArticles = articles == null ? List.of() : articles;
-        List<Issue> safeIssues = safeIssueList(issues);
-        List<Subscriber> safeSubscribers = subscribers == null ? List.of() : subscribers;
-        List<Category> safeCategories = categories == null ? List.of() : categories;
-
-        long activeSubscribers = safeSubscribers.stream()
-                .filter(Subscriber::subscribed)
-                .count();
-
-        long enabledCategories = safeCategories.stream()
-                .filter(Category::enabled)
-                .count();
-
         StringBuilder text = new StringBuilder();
 
         text.append("\n");
         text.append("AthenaPress Status\n");
         text.append("----------------------------------------\n");
-        text.append("Artikel: ")
-                .append(safeArticles.size())
-                .append("\n");
-        text.append("Ausgaben: ")
-                .append(safeIssues.size())
-                .append("\n");
+        text.append("Artikel: ").append(sizeOf(articles)).append("\n");
+        text.append("Ausgaben: ").append(sizeOf(issues)).append("\n");
         text.append("Abonnenten: ")
-                .append(safeSubscribers.size())
+                .append(sizeOf(subscribers))
                 .append(" (aktiv: ")
-                .append(activeSubscribers)
+                .append(countActiveSubscribers(subscribers))
                 .append(")\n");
         text.append("Kategorien: ")
-                .append(safeCategories.size())
+                .append(sizeOf(categories))
                 .append(" (aktiv: ")
-                .append(enabledCategories)
+                .append(countEnabledCategories(categories))
                 .append(")\n");
 
         text.append("\n");
-        appendIssueSummary(text, safeIssues);
+        appendIssueSummary(text, issues);
 
         text.append("\n");
-        appendValidationSummary(text, validationResult);
-        text.append("\n");
-
-        return text.toString();
-    }
-
-    public String createValidationText(String issueId, ValidationResult validationResult) {
-        StringBuilder text = new StringBuilder();
-
-        text.append("\n");
-        text.append("Validierung für ").append(safeText(issueId)).append("\n");
-        text.append("----------------------------------------\n");
-
-        if (validationResult == null || validationResult.isValid()) {
-            text.append("OK - Keine Fehler gefunden.\n");
-            text.append("\n");
-            return text.toString();
-        }
-
-        int errorCount = validationResult.errors().size();
-        String problemText = errorCount == 1 ? "Problem" : "Probleme";
-
-        text.append("FEHLER - ")
-                .append(errorCount)
-                .append(" ")
-                .append(problemText)
-                .append(" gefunden.\n");
-
-        for (String error : validationResult.errors()) {
-            text.append("- ").append(error).append("\n");
-        }
-
+        text.append(validationReportService.createInlineValidationText(validationResult));
         text.append("\n");
 
         return text.toString();
@@ -185,18 +165,20 @@ public class DemoCommandService {
         text.append("Ausgabenliste\n");
         text.append("----------------------------------------\n");
 
-        if (issues.isEmpty()) {
+        if (issues == null || issues.isEmpty()) {
             text.append("- Keine Ausgaben gefunden\n");
             return;
         }
 
-        appendIssuesByStatus(text, "Veröffentlichte Ausgaben", issues, "published");
-        appendIssuesByStatus(text, "Entwürfe", issues, "draft");
-        appendIssuesByStatus(text, "Archivierte Ausgaben", issues, "archived");
-        appendIssuesByStatus(text, "Ausgaben mit anderem Status", issues, null);
+        List<Issue> sortedIssues = sortIssues(issues);
+
+        appendIssueGroup(text, "Veröffentlichte Ausgaben", sortedIssues, "published");
+        appendIssueGroup(text, "Entwürfe", sortedIssues, "draft");
+        appendIssueGroup(text, "Archivierte Ausgaben", sortedIssues, "archived");
+        appendIssueGroup(text, "Ausgaben mit anderem Status", sortedIssues, null);
     }
 
-    private void appendIssuesByStatus(
+    private void appendIssueGroup(
             StringBuilder text,
             String title,
             List<Issue> issues,
@@ -204,7 +186,6 @@ public class DemoCommandService {
     ) {
         List<Issue> matchingIssues = issues.stream()
                 .filter(issue -> matchesStatus(issue, status))
-                .sorted(issueComparator())
                 .toList();
 
         if (matchingIssues.isEmpty()) {
@@ -214,46 +195,15 @@ public class DemoCommandService {
         text.append(title).append(":\n");
 
         for (Issue issue : matchingIssues) {
-            appendDetailedIssueLine(text, issue);
+            appendIssueDetails(text, issue);
         }
 
         text.append("\n");
     }
 
-    private boolean matchesStatus(Issue issue, String status) {
-        String issueStatus = issue == null ? null : issue.status();
-
-        if (status == null) {
-            return !equalsStatus(issueStatus, "published")
-                    && !equalsStatus(issueStatus, "draft")
-                    && !equalsStatus(issueStatus, "archived");
-        }
-
-        return equalsStatus(issueStatus, status);
-    }
-
-    private boolean equalsStatus(String value, String expected) {
-        if (value == null || expected == null) {
-            return false;
-        }
-
-        return value.equalsIgnoreCase(expected);
-    }
-
-    private void appendCompactIssueLine(StringBuilder text, Issue issue) {
-        String issueNumber = issue.issueNumber() == null ? "" : " #" + issue.issueNumber();
-
-        text.append("- ")
-                .append(safeText(issue.id()))
-                .append(issueNumber)
-                .append(" | ")
-                .append(safeText(issue.title()))
-                .append("\n");
-    }
-
-    private void appendDetailedIssueLine(StringBuilder text, Issue issue) {
-        int articleCount = issue.articles() == null ? 0 : issue.articles().size();
+    private void appendIssueDetails(StringBuilder text, Issue issue) {
         String issueNumber = issue.issueNumber() == null ? "-" : "#" + issue.issueNumber();
+        int articleCount = issue.articles() == null ? 0 : issue.articles().size();
         String coverText = issue.cover() == null ? "nein" : "ja";
 
         text.append("- ")
@@ -277,31 +227,7 @@ public class DemoCommandService {
         }
     }
 
-    private void appendValidationSummary(StringBuilder text, ValidationResult validationResult) {
-        if (validationResult == null || validationResult.isValid()) {
-            text.append("Validierung: OK - Keine Fehler gefunden.\n");
-            return;
-        }
-
-        int errorCount = validationResult.errors().size();
-        String problemText = errorCount == 1 ? "Problem" : "Probleme";
-
-        text.append("Validierung: FEHLER - ")
-                .append(errorCount)
-                .append(" ")
-                .append(problemText)
-                .append(" gefunden.\n");
-
-        for (String error : validationResult.errors()) {
-            text.append("- ").append(error).append("\n");
-        }
-    }
-
-    private List<Issue> safeIssueList(List<Issue> issues) {
-        if (issues == null) {
-            return List.of();
-        }
-
+    private List<Issue> sortIssues(List<Issue> issues) {
         return issues.stream()
                 .filter(issue -> issue != null)
                 .sorted(issueComparator())
@@ -311,6 +237,7 @@ public class DemoCommandService {
     private Comparator<Issue> issueComparator() {
         return Comparator
                 .comparingInt(this::statusRank)
+                .thenComparing(issue -> issue.issueNumber() == null ? Integer.MAX_VALUE : issue.issueNumber())
                 .thenComparing(issue -> safeText(issue.id()));
     }
 
@@ -325,6 +252,54 @@ public class DemoCommandService {
             case "archived" -> 3;
             default -> 90;
         };
+    }
+
+    private boolean matchesStatus(Issue issue, String status) {
+        String issueStatus = issue == null ? null : issue.status();
+
+        if (status == null) {
+            return !equalsStatus(issueStatus, "published")
+                    && !equalsStatus(issueStatus, "draft")
+                    && !equalsStatus(issueStatus, "archived");
+        }
+
+        return equalsStatus(issueStatus, status);
+    }
+
+    private boolean equalsStatus(String value, String expected) {
+        if (value == null || expected == null) {
+            return false;
+        }
+
+        return value.equalsIgnoreCase(expected);
+    }
+
+    private int sizeOf(List<?> values) {
+        if (values == null) {
+            return 0;
+        }
+
+        return values.size();
+    }
+
+    private long countActiveSubscribers(List<Subscriber> subscribers) {
+        if (subscribers == null) {
+            return 0;
+        }
+
+        return subscribers.stream()
+                .filter(Subscriber::subscribed)
+                .count();
+    }
+
+    private long countEnabledCategories(List<Category> categories) {
+        if (categories == null) {
+            return 0;
+        }
+
+        return categories.stream()
+                .filter(Category::enabled)
+                .count();
     }
 
     private boolean matchesArgument(String argument, List<String> aliases) {
@@ -342,9 +317,9 @@ public class DemoCommandService {
     public enum DemoCommandType {
         SHOW_HELP,
         LIST_PUBLISHED_ISSUES,
-        SHOW_STATUS,
         PREVIEW_ISSUE,
-        VALIDATE_ISSUE
+        VALIDATE_ISSUE,
+        SHOW_STATUS
     }
 
     public record DemoCommand(
@@ -360,16 +335,16 @@ public class DemoCommandService {
             return new DemoCommand(DemoCommandType.LIST_PUBLISHED_ISSUES, null);
         }
 
-        public static DemoCommand statusOverview() {
-            return new DemoCommand(DemoCommandType.SHOW_STATUS, null);
-        }
-
         public static DemoCommand previewIssue(String issueId) {
             return new DemoCommand(DemoCommandType.PREVIEW_ISSUE, issueId);
         }
 
         public static DemoCommand validateIssue(String issueId) {
             return new DemoCommand(DemoCommandType.VALIDATE_ISSUE, issueId);
+        }
+
+        public static DemoCommand showStatus() {
+            return new DemoCommand(DemoCommandType.SHOW_STATUS, null);
         }
     }
 }
