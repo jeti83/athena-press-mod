@@ -41,13 +41,17 @@ public class DemoCommandService {
         help.append("  AthenaPressDemo                 Zeigt die Standardausgabe ")
                 .append(DEFAULT_ISSUE_ID)
                 .append("\n");
-        help.append("  AthenaPressDemo <issueId>       Zeigt eine bestimmte Ausgabe\n");
-        help.append("  AthenaPressDemo --list          Listet veröffentlichte Ausgaben\n");
-        help.append("  AthenaPressDemo --help          Zeigt diese Hilfe\n");
+        help.append("  AthenaPressDemo <issueId>            Zeigt eine bestimmte Ausgabe\n");
+        help.append("  AthenaPressDemo --list               Listet veröffentlichte Ausgaben\n");
+        help.append("  AthenaPressDemo --validate <issueId> Prüft eine Ausgabe ohne Preview\n");
+        help.append("  AthenaPressDemo --pruefen <issueId>  Deutscher Alias für --validate\n");
+        help.append("  AthenaPressDemo --help               Zeigt diese Hilfe\n");
         help.append("\n");
         help.append("Beispiele:\n");
         help.append("  AthenaPressDemo issue_0002\n");
         help.append("  AthenaPressDemo --list\n");
+        help.append("  AthenaPressDemo --validate issue_0002\n");
+        help.append("  AthenaPressDemo --pruefen issue_0002\n");
         help.append("\n");
 
         return help.toString();

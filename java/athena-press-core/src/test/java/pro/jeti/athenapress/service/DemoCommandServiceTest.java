@@ -65,6 +65,8 @@ class DemoCommandServiceTest {
         assertTrue(helpText.contains("Verwendung:"));
         assertTrue(helpText.contains("AthenaPressDemo <issueId>"));
         assertTrue(helpText.contains("AthenaPressDemo --list"));
+        assertTrue(helpText.contains("AthenaPressDemo --validate <issueId>"));
+        assertTrue(helpText.contains("AthenaPressDemo --pruefen <issueId>"));
         assertTrue(helpText.contains("AthenaPressDemo --help"));
     }
 
@@ -105,5 +107,51 @@ class DemoCommandServiceTest {
 
         assertTrue(text.contains("Veröffentlichte Ausgaben:"));
         assertTrue(text.contains("- Keine veröffentlichten Ausgaben gefunden"));
+    }
+
+    @Test
+    void parseValidateArgumentCreatesValidateCommand() {
+        DemoCommand command = demoCommandService.parse(new String[]{"--validate", "issue_0002"});
+
+        assertEquals(DemoCommandType.VALIDATE_ISSUE, command.type());
+        assertEquals("issue_0002", command.issueId());
+    }
+
+    @Test
+    void parseValidateArgumentWithoutIssueUsesDefaultIssue() {
+        DemoCommand command = demoCommandService.parse(new String[]{"--validate"});
+
+        assertEquals(DemoCommandType.VALIDATE_ISSUE, command.type());
+        assertEquals(DemoCommandService.DEFAULT_ISSUE_ID, command.issueId());
+    }
+
+    @Test
+    void parsePruefenArgumentCreatesValidateCommand() {
+        DemoCommand command = demoCommandService.parse(new String[]{"--pruefen", "issue_0002"});
+
+        assertEquals(DemoCommandType.VALIDATE_ISSUE, command.type());
+        assertEquals("issue_0002", command.issueId());
+    }
+
+    @Test
+    void createValidationTextShowsSuccessMessage() {
+        String text = demoCommandService.createValidationText(
+                "issue_0002",
+                ValidationResult.valid()
+        );
+
+        assertTrue(text.contains("Validierung für issue_0002"));
+        assertTrue(text.contains("OK - Keine Fehler gefunden."));
+    }
+
+    @Test
+    void createValidationTextShowsErrorCount() {
+        String text = demoCommandService.createValidationText(
+                "issue_0002",
+                ValidationResult.invalid(List.of("Testfehler"))
+        );
+
+        assertTrue(text.contains("FEHLER - 1 Problem gefunden."));
+        assertTrue(text.contains("- Testfehler"));
     }
 }
