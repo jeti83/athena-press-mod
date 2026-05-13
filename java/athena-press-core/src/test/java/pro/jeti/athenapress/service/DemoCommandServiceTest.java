@@ -41,7 +41,7 @@ class DemoCommandServiceTest {
 
     @Test
     void parseHelpArgumentsCreatesHelpCommand() {
-        for (String argument : List.of("--help", "-h", "/?")) {
+        for (String argument : List.of("--help", "--hilfe", "-h", "/?")) {
             DemoCommand command = demoCommandService.parse(new String[]{argument});
 
             assertEquals(DemoCommandType.SHOW_HELP, command.type());
@@ -159,5 +159,5 @@ class DemoCommandServiceTest {
 
         assertEquals(DemoCommandType.LIST_PUBLISHED_ISSUES, command.type());
         assertNull(command.issueId());
-    }
+    }   
 }

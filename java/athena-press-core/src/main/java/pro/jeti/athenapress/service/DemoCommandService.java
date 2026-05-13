@@ -120,8 +120,8 @@ public class DemoCommandService {
         return text.toString();
     }
 
-   private boolean matchesArgument(String argument, List<String> aliases) {
-    return aliases.stream().anyMatch(alias -> alias.equalsIgnoreCase(argument));
+    private boolean matchesArgument(String argument, List<String> aliases) {
+        return aliases.stream().anyMatch(alias -> alias.equalsIgnoreCase(argument));
     }
     
     private String safeText(String value) {
