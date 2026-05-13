@@ -50,20 +50,43 @@ public class DemoCommandService {
 
         help.append("\n");
         help.append("AthenaPress Demo\n");
+        help.append("========================================\n");
         help.append("\n");
+
         help.append("Verwendung:\n");
-        help.append("  AthenaPressDemo                         Zeigt die Standardausgabe ")
+        help.append("  AthenaPressDemo\n");
+        help.append("      Zeigt die Standardausgabe ")
                 .append(DEFAULT_ISSUE_ID)
-                .append("\n");
-        help.append("  AthenaPressDemo <issueId>               Zeigt eine bestimmte Ausgabe\n");
-        help.append("  AthenaPressDemo --list|--liste          Listet veröffentlichte Ausgaben\n");
-        help.append("  AthenaPressDemo --validate|--pruefen <issueId> Prüft eine Ausgabe ohne Preview\n");
-        help.append("  AthenaPressDemo --status|--uebersicht   Zeigt eine kompakte Datenübersicht\n");
-        help.append("  AthenaPressDemo --help|--hilfe          Zeigt diese Hilfe\n");
+                .append(" als Preview.\n");
         help.append("\n");
+
+        help.append("  AthenaPressDemo <issueId>\n");
+        help.append("      Zeigt eine bestimmte Ausgabe als Preview.\n");
+        help.append("\n");
+
+        help.append("  AthenaPressDemo --list | --liste\n");
+        help.append("      Listet alle veröffentlichten Ausgaben.\n");
+        help.append("\n");
+
+        help.append("  AthenaPressDemo --validate | --pruefen <issueId>\n");
+        help.append("      Prüft eine Ausgabe ohne Preview.\n");
+        help.append("      Ohne issueId wird ")
+                .append(DEFAULT_ISSUE_ID)
+                .append(" verwendet.\n");
+        help.append("\n");
+
+        help.append("  AthenaPressDemo --status | --uebersicht\n");
+        help.append("      Zeigt eine kompakte Übersicht über den Datenbestand.\n");
+        help.append("\n");
+
+        help.append("  AthenaPressDemo --help | --hilfe | -h | /?\n");
+        help.append("      Zeigt diese Hilfe.\n");
+        help.append("\n");
+
         help.append("Beispiele:\n");
         help.append("  AthenaPressDemo issue_0002\n");
         help.append("  AthenaPressDemo --list\n");
+        help.append("  AthenaPressDemo --liste\n");
         help.append("  AthenaPressDemo --validate issue_0002\n");
         help.append("  AthenaPressDemo --pruefen issue_0002\n");
         help.append("  AthenaPressDemo --status\n");

@@ -7,7 +7,10 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
+import pro.jeti.athenapress.model.Article;
+import pro.jeti.athenapress.model.Category;
 import pro.jeti.athenapress.model.Issue;
+import pro.jeti.athenapress.model.Subscriber;
 import pro.jeti.athenapress.service.DemoCommandService.DemoCommand;
 import pro.jeti.athenapress.service.DemoCommandService.DemoCommandType;
 
@@ -58,15 +61,65 @@ class DemoCommandServiceTest {
     }
 
     @Test
+    void parseGermanListArgumentCreatesListCommand() {
+        DemoCommand command = demoCommandService.parse(new String[]{"--liste"});
+
+        assertEquals(DemoCommandType.LIST_PUBLISHED_ISSUES, command.type());
+        assertNull(command.issueId());
+    }
+
+    @Test
+    void parseValidateArgumentCreatesValidateCommand() {
+        DemoCommand command = demoCommandService.parse(new String[]{"--validate", "issue_0002"});
+
+        assertEquals(DemoCommandType.VALIDATE_ISSUE, command.type());
+        assertEquals("issue_0002", command.issueId());
+    }
+
+    @Test
+    void parseValidateArgumentWithoutIssueUsesDefaultIssue() {
+        DemoCommand command = demoCommandService.parse(new String[]{"--validate"});
+
+        assertEquals(DemoCommandType.VALIDATE_ISSUE, command.type());
+        assertEquals(DemoCommandService.DEFAULT_ISSUE_ID, command.issueId());
+    }
+
+    @Test
+    void parsePruefenArgumentCreatesValidateCommand() {
+        DemoCommand command = demoCommandService.parse(new String[]{"--pruefen", "issue_0002"});
+
+        assertEquals(DemoCommandType.VALIDATE_ISSUE, command.type());
+        assertEquals("issue_0002", command.issueId());
+    }
+
+    @Test
+    void parseStatusArgumentCreatesStatusCommand() {
+        DemoCommand command = demoCommandService.parse(new String[]{"--status"});
+
+        assertEquals(DemoCommandType.SHOW_STATUS, command.type());
+        assertNull(command.issueId());
+    }
+
+    @Test
+    void parseUebersichtArgumentCreatesStatusCommand() {
+        DemoCommand command = demoCommandService.parse(new String[]{"--uebersicht"});
+
+        assertEquals(DemoCommandType.SHOW_STATUS, command.type());
+        assertNull(command.issueId());
+    }
+
+    @Test
     void createHelpTextContainsUsageExamples() {
         String helpText = demoCommandService.createHelpText();
 
         assertTrue(helpText.contains("AthenaPress Demo"));
         assertTrue(helpText.contains("Verwendung:"));
         assertTrue(helpText.contains("AthenaPressDemo <issueId>"));
-        assertTrue(helpText.contains("AthenaPressDemo --list|--liste"));
-        assertTrue(helpText.contains("AthenaPressDemo --validate|--pruefen <issueId>"));
-        assertTrue(helpText.contains("AthenaPressDemo --help|--hilfe"));
+        assertTrue(helpText.contains("AthenaPressDemo --list | --liste"));
+        assertTrue(helpText.contains("AthenaPressDemo --validate | --pruefen <issueId>"));
+        assertTrue(helpText.contains("AthenaPressDemo --status | --uebersicht"));
+        assertTrue(helpText.contains("AthenaPressDemo --help | --hilfe | -h | /?"));
+        assertTrue(helpText.contains("Ohne issueId wird " + DemoCommandService.DEFAULT_ISSUE_ID + " verwendet."));
     }
 
     @Test
@@ -109,30 +162,6 @@ class DemoCommandServiceTest {
     }
 
     @Test
-    void parseValidateArgumentCreatesValidateCommand() {
-        DemoCommand command = demoCommandService.parse(new String[]{"--validate", "issue_0002"});
-
-        assertEquals(DemoCommandType.VALIDATE_ISSUE, command.type());
-        assertEquals("issue_0002", command.issueId());
-    }
-
-    @Test
-    void parseValidateArgumentWithoutIssueUsesDefaultIssue() {
-        DemoCommand command = demoCommandService.parse(new String[]{"--validate"});
-
-        assertEquals(DemoCommandType.VALIDATE_ISSUE, command.type());
-        assertEquals(DemoCommandService.DEFAULT_ISSUE_ID, command.issueId());
-    }
-
-    @Test
-    void parsePruefenArgumentCreatesValidateCommand() {
-        DemoCommand command = demoCommandService.parse(new String[]{"--pruefen", "issue_0002"});
-
-        assertEquals(DemoCommandType.VALIDATE_ISSUE, command.type());
-        assertEquals("issue_0002", command.issueId());
-    }
-
-    @Test
     void createValidationTextShowsSuccessMessage() {
         String text = demoCommandService.createValidationText(
                 "issue_0002",
@@ -153,11 +182,124 @@ class DemoCommandServiceTest {
         assertTrue(text.contains("FEHLER - 1 Problem gefunden."));
         assertTrue(text.contains("- Testfehler"));
     }
-    @Test
-    void parseGermanListArgumentCreatesListCommand() {
-        DemoCommand command = demoCommandService.parse(new String[]{"--liste"});
 
-        assertEquals(DemoCommandType.LIST_PUBLISHED_ISSUES, command.type());
-        assertNull(command.issueId());
-    }   
+    @Test
+    void createStatusTextShowsCountsAndValidationResult() {
+        Article article = new Article(
+                "article_test",
+                "published",
+                "server_news",
+                "Testartikel",
+                null,
+                null,
+                null,
+                null,
+                "Testinhalt",
+                null,
+                null,
+                List.of(),
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        Issue issue = new Issue(
+                "issue_test",
+                "published",
+                7,
+                "Testausgabe",
+                "Untertitel",
+                List.of("article_test"),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        Subscriber activeSubscriber = new Subscriber(
+                "HF_jeti83",
+                null,
+                true,
+                "mailbox",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                List.of(),
+                null
+        );
+
+        Subscriber inactiveSubscriber = new Subscriber(
+                "TestUser",
+                null,
+                false,
+                "notification_only",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                List.of(),
+                null
+        );
+
+        Category enabledCategory = new Category(
+                "server_news",
+                "Server News",
+                "Neuigkeiten vom Server",
+                null,
+                true
+        );
+
+        Category disabledCategory = new Category(
+                "old_news",
+                "Alte News",
+                "Archivierte Kategorie",
+                null,
+                false
+        );
+
+        String text = demoCommandService.createStatusText(
+                List.of(article),
+                List.of(issue),
+                List.of(activeSubscriber, inactiveSubscriber),
+                List.of(enabledCategory, disabledCategory),
+                ValidationResult.valid()
+        );
+
+        assertTrue(text.contains("AthenaPress Status"));
+        assertTrue(text.contains("Artikel: 1"));
+        assertTrue(text.contains("Ausgaben: 1"));
+        assertTrue(text.contains("Abonnenten: 2 (aktiv: 1)"));
+        assertTrue(text.contains("Kategorien: 2 (aktiv: 1)"));
+        assertTrue(text.contains("Validierung: OK - Keine Fehler gefunden."));
+    }
+
+    @Test
+    void createStatusTextHandlesNullLists() {
+        String text = demoCommandService.createStatusText(
+                null,
+                null,
+                null,
+                null,
+                ValidationResult.valid()
+        );
+
+        assertTrue(text.contains("Artikel: 0"));
+        assertTrue(text.contains("Ausgaben: 0"));
+        assertTrue(text.contains("Abonnenten: 0 (aktiv: 0)"));
+        assertTrue(text.contains("Kategorien: 0 (aktiv: 0)"));
+        assertTrue(text.contains("Validierung: OK - Keine Fehler gefunden."));
+    }
 }
