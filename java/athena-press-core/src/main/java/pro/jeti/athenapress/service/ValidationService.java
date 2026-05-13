@@ -98,12 +98,13 @@ public class ValidationService {
     public ValidationResult validateIssueForDelivery(String issueId) {
         List<String> errors = new ArrayList<>();
 
-        addErrors(errors, validateIssueRequiredFields(issueId));
-        addErrors(errors, validateIssueStatus(issueId));
-        addErrors(errors, validateIssueArticleReferences(issueId));
-        addErrors(errors, validateArticleCategories());
-        addErrors(errors, validateArticleImages());
-        addErrors(errors, validateSubscriberDeliveryModes());
+            addErrors(errors, validateIssueRequiredFields(issueId));
+            addErrors(errors, validateIssueStatus(issueId));
+            addErrors(errors, validateIssueArticleReferences(issueId));
+            addErrors(errors, validateIssueCover(issueId));
+            addErrors(errors, validateArticleCategories());
+            addErrors(errors, validateArticleImages());
+            addErrors(errors, validateSubscriberDeliveryModes());
 
         if (errors.isEmpty()) {
             return ValidationResult.valid();
@@ -141,6 +142,52 @@ public class ValidationService {
 
             if (article == null) {
                 errors.add("Issue " + issueId + " references missing article: " + articleId);
+            }
+        }
+
+        if (errors.isEmpty()) {
+            return ValidationResult.valid();
+        }
+
+        return ValidationResult.invalid(errors);
+    }
+
+    public ValidationResult validateIssueCover(String issueId) {
+        List<String> errors = new ArrayList<>();
+
+        Issue issue;
+        try {
+            issue = issueRepository.findById(issueId);
+        } catch (Exception exception) {
+            errors.add("Could not read issue " + issueId + ": " + exception.getMessage());
+            return ValidationResult.invalid(errors);
+        }
+
+        if (issue == null) {
+            errors.add("Issue not found: " + issueId);
+            return ValidationResult.invalid(errors);
+        }
+
+        if (issue.cover() == null) {
+            return ValidationResult.valid();
+        }
+
+        String mainArticleId = issue.cover().mainArticleId();
+
+        if (!isBlank(mainArticleId) && !issue.articles().contains(mainArticleId)) {
+            errors.add("Issue " + issueId + " cover references article outside issue: " + mainArticleId);
+        }
+
+        String image = issue.cover().image();
+
+        if (!isBlank(image) && athenaPressRoot != null) {
+            Path imagePath = athenaPressRoot
+                    .resolve("images")
+                    .resolve(image)
+                    .normalize();
+
+            if (!Files.exists(imagePath)) {
+                errors.add("Issue " + issueId + " cover references missing image file: " + image);
             }
         }
 

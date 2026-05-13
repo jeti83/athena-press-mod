@@ -600,4 +600,157 @@ class ValidationServiceTest {
                 "Expected missing article error in overall validation, but got: " + result.errors()
         );
     }
+
+    @Test
+        void issueCoverWithArticleOutsideIssueShouldReturnValidationError(@TempDir Path tempDir) throws Exception {
+        Path athenaPressRoot = tempDir.resolve("AthenaPress");
+
+        Files.createDirectories(athenaPressRoot.resolve("articles/published"));
+        Files.createDirectories(athenaPressRoot.resolve("issues/published"));
+        Files.createDirectories(athenaPressRoot.resolve("subscriptions"));
+        Files.createDirectories(athenaPressRoot.resolve("images/placeholders"));
+
+        Files.writeString(
+                athenaPressRoot.resolve("articles/published/article_0001.json"),
+                """
+                {
+                "id": "article_0001",
+                "status": "published",
+                "categoryId": "server_news",
+                "title": "Testartikel"
+                }
+                """
+        );
+
+        Files.writeString(
+                athenaPressRoot.resolve("issues/published/issue_invalid_cover_article.json"),
+                """
+                {
+                "id": "issue_invalid_cover_article",
+                "status": "published",
+                "issueNumber": 1003,
+                "title": "Ausgabe mit falschem Cover-Artikel",
+                "subtitle": "Nur fuer den Validator-Test",
+                "articles": [
+                        "article_0001"
+                ],
+                "cover": {
+                        "mainArticleId": "article_9999",
+                        "image": "placeholders/no_image.png"
+                }
+                }
+                """
+        );
+
+        Files.writeString(
+                athenaPressRoot.resolve("images/placeholders/no_image.png"),
+                "fake image content"
+        );
+
+        Files.writeString(
+                athenaPressRoot.resolve("subscriptions/subscribers.json"),
+                """
+                {
+                "subscribers": []
+                }
+                """
+        );
+
+        ArticleRepository articleRepository = new ArticleRepository(athenaPressRoot);
+        IssueRepository issueRepository = new IssueRepository(athenaPressRoot);
+        SubscriberRepository subscriberRepository = new SubscriberRepository(athenaPressRoot);
+
+        ValidationService validationService = new ValidationService(
+                articleRepository,
+                issueRepository,
+                subscriberRepository,
+                null,
+                athenaPressRoot
+        );
+
+        var result = validationService.validateIssueCover("issue_invalid_cover_article");
+
+        assertTrue(
+                !result.isValid(),
+                "Issue cover with article outside issue should be invalid"
+        );
+        assertTrue(
+                result.errors().stream().anyMatch(error -> error.contains("article_9999")),
+                "Expected invalid cover article error, but got: " + result.errors()
+        );
+    }
+
+    @Test
+        void issueCoverWithMissingImageShouldReturnValidationError(@TempDir Path tempDir) throws Exception {
+        Path athenaPressRoot = tempDir.resolve("AthenaPress");
+
+        Files.createDirectories(athenaPressRoot.resolve("articles/published"));
+        Files.createDirectories(athenaPressRoot.resolve("issues/published"));
+        Files.createDirectories(athenaPressRoot.resolve("subscriptions"));
+        Files.createDirectories(athenaPressRoot.resolve("images/placeholders"));
+
+        Files.writeString(
+                athenaPressRoot.resolve("articles/published/article_0001.json"),
+                """
+                {
+                "id": "article_0001",
+                "status": "published",
+                "categoryId": "server_news",
+                "title": "Testartikel"
+                }
+                """
+        );
+
+        Files.writeString(
+                athenaPressRoot.resolve("issues/published/issue_invalid_cover_image.json"),
+                """
+                {
+                "id": "issue_invalid_cover_image",
+                "status": "published",
+                "issueNumber": 1004,
+                "title": "Ausgabe mit fehlendem Cover-Bild",
+                "subtitle": "Nur fuer den Validator-Test",
+                "articles": [
+                        "article_0001"
+                ],
+                "cover": {
+                        "mainArticleId": "article_0001",
+                        "image": "placeholders/does_not_exist.png"
+                }
+                }
+                """
+        );
+
+        Files.writeString(
+                athenaPressRoot.resolve("subscriptions/subscribers.json"),
+                """
+                {
+                "subscribers": []
+                }
+                """
+        );
+
+        ArticleRepository articleRepository = new ArticleRepository(athenaPressRoot);
+        IssueRepository issueRepository = new IssueRepository(athenaPressRoot);
+        SubscriberRepository subscriberRepository = new SubscriberRepository(athenaPressRoot);
+
+        ValidationService validationService = new ValidationService(
+                articleRepository,
+                issueRepository,
+                subscriberRepository,
+                null,
+                athenaPressRoot
+        );
+
+        var result = validationService.validateIssueCover("issue_invalid_cover_image");
+
+        assertTrue(
+                !result.isValid(),
+                "Issue cover with missing image should be invalid"
+        );
+        assertTrue(
+                result.errors().stream().anyMatch(error -> error.contains("does_not_exist.png")),
+                "Expected missing cover image error, but got: " + result.errors()
+        );
+    }
 }
