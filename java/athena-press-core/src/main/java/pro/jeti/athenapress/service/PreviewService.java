@@ -57,7 +57,17 @@ public class PreviewService {
         }
 
         preview.append("Status: ").append(safeText(issue.status())).append("\n");
-        preview.append("\n");
+
+        if (issue.cover() != null) {
+            preview.append("Cover-Hauptartikel: ")
+                    .append(safeText(issue.cover().mainArticleId()))
+                    .append("\n");
+            preview.append("Cover-Bild: ")
+                    .append(safeText(issue.cover().image()))
+                    .append("\n");
+        }
+
+preview.append("\n");
     }
 
     private void appendValidationSection(StringBuilder preview, ValidationResult validationResult) {
