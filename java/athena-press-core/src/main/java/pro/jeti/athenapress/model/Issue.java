@@ -16,7 +16,7 @@ public record Issue(
         String subtitle,
 
         List<String> articles,
-        ImageInfo coverImage,
+        CoverInfo cover,
 
         String createdAt,
         String updatedAt,

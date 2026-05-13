@@ -27,8 +27,13 @@ class IssueRepositoryTest {
         assertEquals("issue_0002", issue0002.id());
         assertEquals("published", issue0002.status());
         assertEquals(2, issue0002.issueNumber());
+
         assertNotNull(issue0002.articles(), "Expected issue_0002 to contain article references.");
         assertTrue(issue0002.articles().contains("article_0001"));
         assertTrue(issue0002.articles().contains("article_0002"));
+
+        assertNotNull(issue0002.cover(), "Expected issue_0002 to contain cover information.");
+        assertEquals("article_0001", issue0002.cover().mainArticleId());
+        assertEquals("placeholders/dating.png", issue0002.cover().image());
     }
 }
