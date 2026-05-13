@@ -510,7 +510,22 @@ mvn -B clean verify
 Java-Demo-Status anzeigen:
 
 mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--status"
- 
+
+Die Statusübersicht zeigt zusätzlich eine gruppierte Ausgabenliste mit:
+- Veröffentlichte Ausgaben
+- Entwürfe
+- Archivierte Ausgaben
+- Ausgaben mit anderem Status
+
+Pro Ausgabe werden angezeigt:
+- Ausgabe-ID
+- Ausgabennummer
+- Titel
+- Status
+- Artikelanzahl
+- Cover-Hinweis
+- Untertitel, falls vorhanden
+
 Häufige Python-Übersichten:
 
 python press.py artikel liste
