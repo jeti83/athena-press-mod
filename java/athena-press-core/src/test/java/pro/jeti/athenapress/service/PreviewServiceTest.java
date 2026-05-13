@@ -74,7 +74,7 @@ class PreviewServiceTest {
         assertTrue(preview.contains("Athena Botenblatt Testausgabe"));
         assertTrue(preview.contains("Die erste sichtbare Java-Core-Ausgabe"));
         assertTrue(preview.contains("Status: published"));
-        assertTrue(preview.contains("Validierung: OK"));
+        assertTrue(preview.contains("Validierung: OK - Keine Fehler gefunden."));
         assertTrue(preview.contains("- [server_news] Spawnplatz feierlich eingeweiht"));
         assertTrue(preview.contains("  Kurze Meldung vom Spawnplatz."));
         assertTrue(preview.contains("- Jeti -> item_and_notification -> unread true"));
@@ -114,7 +114,7 @@ class PreviewServiceTest {
         );
 
         assertTrue(preview.contains("Kaputte Testausgabe"));
-        assertTrue(preview.contains("Validierung: FEHLER"));
+        assertTrue(preview.contains("Validierung: FEHLER - 1 Problem gefunden."));
         assertTrue(preview.contains("- Issue issue_broken references missing article: missing_article"));
         assertTrue(preview.contains("- Keine Artikel eingetragen"));
         assertTrue(preview.contains("- Keine Empfänger"));

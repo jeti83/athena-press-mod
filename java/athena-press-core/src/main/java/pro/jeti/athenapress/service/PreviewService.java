@@ -79,11 +79,18 @@ preview.append("\n");
 
     private void appendValidation(StringBuilder preview, ValidationResult validationResult) {
         if (validationResult == null || validationResult.isValid()) {
-            preview.append("Validierung: OK\n");
+            preview.append("Validierung: OK - Keine Fehler gefunden.\n");
             return;
         }
 
-        preview.append("Validierung: FEHLER\n");
+        int errorCount = validationResult.errors().size();
+        String problemText = errorCount == 1 ? "Problem" : "Probleme";
+
+        preview.append("Validierung: FEHLER - ")
+                .append(errorCount)
+                .append(" ")
+                .append(problemText)
+                .append(" gefunden.\n");
 
         for (String error : validationResult.errors()) {
             preview.append("- ").append(error).append("\n");
