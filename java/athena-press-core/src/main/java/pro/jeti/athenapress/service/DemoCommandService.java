@@ -19,9 +19,14 @@ public class DemoCommandService {
             return DemoCommand.showHelp();
         }
 
-        if ("--list".equalsIgnoreCase(argument)) {
+       if ("--list".equalsIgnoreCase(argument)) {
             return DemoCommand.listPublishedIssues();
-        }
+       }
+
+       if ("--validate".equalsIgnoreCase(argument) || "--pruefen".equalsIgnoreCase(argument)) {
+            String issueId = args.length >= 2 ? args[1] : DEFAULT_ISSUE_ID;
+            return DemoCommand.validateIssue(issueId);
+       }
 
         return DemoCommand.previewIssue(argument);
     }
@@ -79,6 +84,36 @@ public class DemoCommandService {
         return text.toString();
     }
 
+    public String createValidationText(String issueId, ValidationResult validationResult) {
+        StringBuilder text = new StringBuilder();
+
+        text.append("\n");
+        text.append("Validierung für ").append(safeText(issueId)).append("\n");
+        text.append("----------------------------------------\n");
+
+        if (validationResult == null || validationResult.isValid()) {
+            text.append("OK - Keine Fehler gefunden.\n");
+            text.append("\n");
+            return text.toString();
+        }
+
+        int errorCount = validationResult.errors().size();
+        String problemText = errorCount == 1 ? "Problem" : "Probleme";
+
+        text.append("FEHLER - ")
+                .append(errorCount)
+                .append(" ")
+                .append(problemText)
+                .append(" gefunden.\n");
+
+        for (String error : validationResult.errors()) {
+            text.append("- ").append(error).append("\n");
+        }
+
+        text.append("\n");
+        return text.toString();
+    }
+
     private boolean isHelpArgument(String argument) {
         return "--help".equalsIgnoreCase(argument)
                 || "-h".equalsIgnoreCase(argument)
@@ -96,7 +131,8 @@ public class DemoCommandService {
     public enum DemoCommandType {
         SHOW_HELP,
         LIST_PUBLISHED_ISSUES,
-        PREVIEW_ISSUE
+        PREVIEW_ISSUE,
+        VALIDATE_ISSUE
     }
 
     public record DemoCommand(
@@ -113,6 +149,10 @@ public class DemoCommandService {
 
         public static DemoCommand previewIssue(String issueId) {
             return new DemoCommand(DemoCommandType.PREVIEW_ISSUE, issueId);
+        }
+
+        public static DemoCommand validateIssue(String issueId) {
+            return new DemoCommand(DemoCommandType.VALIDATE_ISSUE, issueId);
         }
     }
 }
