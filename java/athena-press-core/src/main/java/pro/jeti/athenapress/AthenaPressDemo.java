@@ -5,8 +5,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+import pro.jeti.athenapress.model.Article;
+import pro.jeti.athenapress.model.Category;
 import pro.jeti.athenapress.model.DeliveryTarget;
+import pro.jeti.athenapress.model.Issue;
 import pro.jeti.athenapress.model.ResolvedIssue;
+import pro.jeti.athenapress.model.Subscriber;
 import pro.jeti.athenapress.service.DemoCommandService;
 import pro.jeti.athenapress.service.DemoCommandService.DemoCommand;
 import pro.jeti.athenapress.service.DemoCommandService.DemoCommandType;
@@ -22,7 +26,6 @@ public final class AthenaPressDemo {
 
         AthenaPressCore core = new AthenaPressCore(dataRoot);
         DemoCommandService demoCommandService = new DemoCommandService();
-
         DemoCommand command = demoCommandService.parse(args);
 
         if (command.type() == DemoCommandType.SHOW_HELP) {
@@ -33,6 +36,23 @@ public final class AthenaPressDemo {
         if (command.type() == DemoCommandType.LIST_PUBLISHED_ISSUES) {
             System.out.print(demoCommandService.createPublishedIssuesText(
                     core.getPressService().findPublishedIssues()
+            ));
+            return;
+        }
+
+        if (command.type() == DemoCommandType.SHOW_STATUS) {
+            List<Article> articles = core.getArticleRepository().findAll();
+            List<Issue> issues = core.getIssueRepository().findAll();
+            List<Subscriber> subscribers = core.getSubscriberRepository().findAll();
+            List<Category> categories = core.getCategoryRepository().findAll();
+            ValidationResult validationResult = core.getValidationService().validate();
+
+            System.out.print(demoCommandService.createStatusText(
+                    articles,
+                    issues,
+                    subscribers,
+                    categories,
+                    validationResult
             ));
             return;
         }
@@ -48,21 +68,7 @@ public final class AthenaPressDemo {
             return;
         }
 
-        if (command.type() == DemoCommandType.SHOW_STATUS) {
-            ValidationResult validationResult = core.getValidationService().validate();
-
-            System.out.print(demoCommandService.createStatusText(
-                    core.getArticleRepository().findAll(),
-                    core.getIssueRepository().findAll(),
-                    core.getSubscriberRepository().findAll(),
-                    core.getCategoryRepository().findAll(),
-                    validationResult
-            ));
-            return;
-        }
-
         String issueId = command.issueId();
-
         ValidationResult validationResult = core.getValidationService().validateIssueForDelivery(issueId);
         ResolvedIssue resolvedIssue = core.getPressService().resolveIssue(issueId);
         List<DeliveryTarget> deliveryTargets = core.getDeliveryService().createDeliveryPlan(issueId);
