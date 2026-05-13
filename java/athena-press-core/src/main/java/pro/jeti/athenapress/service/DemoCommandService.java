@@ -220,7 +220,6 @@ public class DemoCommandService {
             appendDetailedIssueLine(text, issue);
         }
 
-        text.append("\n");
     }
 
     private void appendArticleSummary(StringBuilder text, List<Article> articles) {
