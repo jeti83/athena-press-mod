@@ -40,6 +40,13 @@ public final class AthenaPressDemo {
             return;
         }
 
+        if (command.type() == DemoCommandType.LIST_ARTICLES) {
+            System.out.print(demoCommandService.createArticleListText(
+                    core.getArticleRepository().findAll()
+            ));
+            return;
+        }
+
         if (command.type() == DemoCommandType.SHOW_STATUS) {
             List<Article> articles = core.getArticleRepository().findAll();
             List<Issue> issues = core.getIssueRepository().findAll();

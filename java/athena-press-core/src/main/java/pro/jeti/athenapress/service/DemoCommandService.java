@@ -16,6 +16,8 @@ public class DemoCommandService {
     private static final List<String> LIST_ARGUMENTS = List.of("--list", "--liste");
     private static final List<String> VALIDATE_ARGUMENTS = List.of("--validate", "--pruefen");
     private static final List<String> STATUS_ARGUMENTS = List.of("--status", "--uebersicht");
+    private static final List<String> ARTICLE_ARGUMENTS = List.of("--articles", "--artikel");
+
 
     public DemoCommand parse(String[] args) {
         if (args == null || args.length == 0) {
@@ -30,6 +32,10 @@ public class DemoCommandService {
 
         if (matchesArgument(argument, LIST_ARGUMENTS)) {
             return DemoCommand.listPublishedIssues();
+        }
+
+        if (matchesArgument(argument, ARTICLE_ARGUMENTS)) {
+            return DemoCommand.listArticles();
         }
 
         if (matchesArgument(argument, STATUS_ARGUMENTS)) {
@@ -57,6 +63,7 @@ public class DemoCommandService {
         help.append(" AthenaPressDemo <issueId>               Zeigt eine bestimmte Ausgabe\n");
         help.append(" AthenaPressDemo --list | --liste        Listet veröffentlichte Ausgaben\n");
         help.append(" AthenaPressDemo --validate | --pruefen <issueId> Prüft eine Ausgabe ohne Preview\n");
+        help.append(" AthenaPressDemo --articles | --artikel Zeigt eine Artikelliste\n");
         help.append(" AthenaPressDemo --status | --uebersicht Zeigt eine kompakte Statusübersicht\n");
         help.append(" AthenaPressDemo --help | --hilfe | -h | /? Zeigt diese Hilfe\n");
         help.append("\n");
@@ -64,6 +71,7 @@ public class DemoCommandService {
         help.append(" AthenaPressDemo issue_0002\n");
         help.append(" AthenaPressDemo --list\n");
         help.append(" AthenaPressDemo --validate issue_0002\n");
+        help.append(" AthenaPressDemo --articles\n");
         help.append(" AthenaPressDemo --status\n");
         help.append("\n");
         help.append("Ohne issueId wird ")
@@ -93,6 +101,16 @@ public class DemoCommandService {
             appendCompactIssueLine(text, issue);
         }
 
+        text.append("\n");
+
+        return text.toString();
+    }
+
+    public String createArticleListText(List<Article> articles) {
+        StringBuilder text = new StringBuilder();
+
+        text.append("\n");
+        appendArticleSummary(text, safeArticleList(articles));
         text.append("\n");
 
         return text.toString();
@@ -473,6 +491,7 @@ public class DemoCommandService {
     public enum DemoCommandType {
         SHOW_HELP,
         LIST_PUBLISHED_ISSUES,
+        LIST_ARTICLES,
         SHOW_STATUS,
         PREVIEW_ISSUE,
         VALIDATE_ISSUE
@@ -489,6 +508,10 @@ public class DemoCommandService {
 
         public static DemoCommand listPublishedIssues() {
             return new DemoCommand(DemoCommandType.LIST_PUBLISHED_ISSUES, null);
+        }
+
+        public static DemoCommand listArticles() {
+            return new DemoCommand(DemoCommandType.LIST_ARTICLES, null);
         }
 
         public static DemoCommand statusOverview() {
