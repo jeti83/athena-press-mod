@@ -158,3 +158,148 @@ publish_issue.py	/press publish <issue>
 mark_issue_read.py	automatisch nach Lesen
 create_article.py	Redaktions-UI
 edit_article.py	Redaktions-UI
+
+## Java-Core-Demo und Prüfworkflow
+
+Der Java-Core unter `java/athena-press-core` dient aktuell als Admin-, Debug- und Preview-Werkzeug für echte AthenaPress-Daten.
+
+Er ist noch keine direkte Hytale-API-Anbindung.
+
+Ziel des Java-Cores ist derzeit:
+
+- echte JSON-Daten aus dem AthenaPress-Projekt zu lesen
+- Artikel, Ausgaben, Kategorien und Abonnenten fachlich aufzulösen
+- Ausgaben konsolenbasiert vorzuschauen
+- Datenprobleme früh sichtbar zu machen
+- eine spätere Mod-/Server-Anbindung stabil vorzubereiten
+
+---
+
+### Standardprüfung nach Änderungen
+
+Nach Änderungen am Java-Core oder an relevanten AthenaPress-Daten sollte im Maven-Modul geprüft werden:
+
+`mvn -B clean verify`
+
+Der bekannte stabile Stand liegt aktuell bei:
+
+- `70 runs`
+- `Failures: 0`
+- `Errors: 0`
+
+Wenn dieser Testlauf fehlschlägt, sollte vor weiteren Änderungen zuerst die Ursache geklärt werden.
+
+---
+
+### Manuelle Java-Demo-Prüfung
+
+Nach einem erfolgreichen Maven-Test kann zusätzlich die Java-Demo manuell geprüft werden.
+
+Preview einer konkreten Ausgabe:
+
+`mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=issue_0002"`
+
+Statusübersicht:
+
+`mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--status"`
+
+Deutschsprachige Statusübersicht:
+
+`mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--uebersicht"`
+
+Validierung einer Ausgabe:
+
+`mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--validate issue_0002"`
+
+Deutschsprachige Validierung:
+
+`mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--pruefen issue_0002"`
+
+Hilfeseite:
+
+`mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--hilfe"`
+
+---
+
+### Erwartete Java-Demo-Funktionen
+
+Die Java-Demo kann aktuell:
+
+- eine Ausgabe per ID anzeigen
+- alle bekannten Ausgaben auflisten
+- eine Ausgabe validieren
+- eine kompakte Statusübersicht anzeigen
+- eine Hilfeseite ausgeben
+- deutsche und englische Befehlsaliase verstehen
+
+Unterstützte Argumente:
+
+- `--help`
+- `--hilfe`
+- `-h`
+- `/?`
+- `--list`
+- `--liste`
+- `--validate`
+- `--pruefen`
+- `--status`
+- `--uebersicht`
+- `<issueId>`
+
+---
+
+### Validierungsziel
+
+Die Validierung soll verhindern, dass fehlerhafte oder unvollständige Zeitungsdaten später unbemerkt in eine Ausgabe oder Serverintegration gelangen.
+
+Sie prüft aktuell unter anderem:
+
+- ob Ausgaben existieren
+- ob Ausgaben Artikel enthalten
+- ob referenzierte Artikel existieren
+- ob Kategorien gültig sind
+- ob Bild-Metadaten plausibel sind
+- ob lokale Bilddateien vorhanden sind
+- ob ein Cover-Hauptartikel Teil der Ausgabe ist
+- ob ein Cover-Bild existiert
+
+Die Validierung ist bewusst strenger als die aktuelle Demo technisch unbedingt bräuchte.
+
+Grund: Fehler sollen früh auffallen, bevor später echte Serverlogik, Ingame-Anzeige oder Zustellung darauf aufbauen.
+
+---
+
+### Empfohlener Ablauf vor einem Commit
+
+1. Änderungen speichern.
+2. Status prüfen:
+
+`git status`
+
+3. Maven-Test ausführen:
+
+`mvn -B clean verify`
+
+4. Bei Bedarf Demo prüfen:
+
+`mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--status"`
+
+5. Änderungen committen:
+
+`g_sacp "Update AthenaPress workflow documentation"`
+
+---
+
+### Aktuelle Grenze
+
+Der Java-Core bleibt vorerst ein lokales Werkzeug.
+
+Noch nicht Teil dieses Workflows:
+
+- echte Hytale-API
+- echte Ingame-Items
+- echte Zustellung auf dem Server
+- Live-Kommunikation mit einem Hytale-Server
+- automatische Veröffentlichung im Spiel
+
+Diese Schritte kommen erst später, wenn Datenmodell, Validierung, Preview und Dokumentation zuverlässig stehen.
