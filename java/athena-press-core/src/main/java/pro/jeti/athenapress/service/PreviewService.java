@@ -12,6 +12,8 @@ public class PreviewService {
     private static final String LINE = "========================================";
     private static final String SECTION_LINE = "----------------------------------------";
 
+    private final ValidationReportService validationReportService = new ValidationReportService();
+
     public String createTextPreview(
             ResolvedIssue resolvedIssue,
             ValidationResult validationResult,
@@ -52,6 +54,7 @@ public class PreviewService {
         preview.append("Titel: ").append(safeText(issue.title())).append("\n");
 
         String subtitle = emptyIfBlank(issue.subtitle());
+
         if (!subtitle.isBlank()) {
             preview.append("Untertitel: ").append(subtitle).append("\n");
         }
@@ -67,34 +70,14 @@ public class PreviewService {
                     .append("\n");
         }
 
-preview.append("\n");
+        preview.append("\n");
     }
 
     private void appendValidationSection(StringBuilder preview, ValidationResult validationResult) {
         preview.append("Pruefung\n");
         preview.append(SECTION_LINE).append("\n");
-        appendValidation(preview, validationResult);
+        preview.append(validationReportService.createInlineValidationText(validationResult));
         preview.append("\n");
-    }
-
-    private void appendValidation(StringBuilder preview, ValidationResult validationResult) {
-        if (validationResult == null || validationResult.isValid()) {
-            preview.append("Validierung: OK - Keine Fehler gefunden.\n");
-            return;
-        }
-
-        int errorCount = validationResult.errors().size();
-        String problemText = errorCount == 1 ? "Problem" : "Probleme";
-
-        preview.append("Validierung: FEHLER - ")
-                .append(errorCount)
-                .append(" ")
-                .append(problemText)
-                .append(" gefunden.\n");
-
-        for (String error : validationResult.errors()) {
-            preview.append("- ").append(error).append("\n");
-        }
     }
 
     private void appendArticleSection(StringBuilder preview, List<Article> articles) {
@@ -118,6 +101,7 @@ preview.append("\n");
                     .append("\n");
 
             String summary = emptyIfBlank(article.summary());
+
             if (!summary.isBlank()) {
                 preview.append("  ")
                         .append(summary)

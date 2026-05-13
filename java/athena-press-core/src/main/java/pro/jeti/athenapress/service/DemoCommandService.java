@@ -12,6 +12,8 @@ public class DemoCommandService {
     private static final List<String> LIST_ARGUMENTS = List.of("--list", "--liste");
     private static final List<String> VALIDATE_ARGUMENTS = List.of("--validate", "--pruefen");
 
+    private final ValidationReportService validationReportService = new ValidationReportService();
+
     public DemoCommand parse(String[] args) {
         if (args == null || args.length == 0) {
             return DemoCommand.previewIssue(DEFAULT_ISSUE_ID);
@@ -54,6 +56,7 @@ public class DemoCommandService {
         help.append("  AthenaPressDemo issue_0002\n");
         help.append("  AthenaPressDemo --list\n");
         help.append("  AthenaPressDemo --validate issue_0002\n");
+        help.append("  AthenaPressDemo --pruefen issue_0002\n");
         help.append("\n");
 
         return help.toString();
@@ -91,39 +94,16 @@ public class DemoCommandService {
     }
 
     public String createValidationText(String issueId, ValidationResult validationResult) {
-        StringBuilder text = new StringBuilder();
-
-        text.append("\n");
-        text.append("Validierung für ").append(safeText(issueId)).append("\n");
-        text.append("----------------------------------------\n");
-
-        if (validationResult == null || validationResult.isValid()) {
-            text.append("OK - Keine Fehler gefunden.\n");
-            text.append("\n");
-            return text.toString();
-        }
-
-        int errorCount = validationResult.errors().size();
-        String problemText = errorCount == 1 ? "Problem" : "Probleme";
-
-        text.append("FEHLER - ")
-                .append(errorCount)
-                .append(" ")
-                .append(problemText)
-                .append(" gefunden.\n");
-
-        for (String error : validationResult.errors()) {
-            text.append("- ").append(error).append("\n");
-        }
-
-        text.append("\n");
-        return text.toString();
+        return validationReportService.createStandaloneValidationText(
+                "Validierung für " + safeText(issueId),
+                validationResult
+        );
     }
 
     private boolean matchesArgument(String argument, List<String> aliases) {
         return aliases.stream().anyMatch(alias -> alias.equalsIgnoreCase(argument));
     }
-    
+
     private String safeText(String value) {
         if (value == null || value.isBlank()) {
             return "(leer)";
