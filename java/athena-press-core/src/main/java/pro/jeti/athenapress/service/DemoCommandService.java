@@ -8,6 +8,10 @@ public class DemoCommandService {
 
     public static final String DEFAULT_ISSUE_ID = "issue_0002";
 
+    private static final List<String> HELP_ARGUMENTS = List.of("--help", "--hilfe", "-h", "/?");
+    private static final List<String> LIST_ARGUMENTS = List.of("--list", "--liste");
+    private static final List<String> VALIDATE_ARGUMENTS = List.of("--validate", "--pruefen");
+
     public DemoCommand parse(String[] args) {
         if (args == null || args.length == 0) {
             return DemoCommand.previewIssue(DEFAULT_ISSUE_ID);
@@ -15,18 +19,18 @@ public class DemoCommandService {
 
         String argument = args[0];
 
-        if (isHelpArgument(argument)) {
+        if (matchesArgument(argument, HELP_ARGUMENTS)) {
             return DemoCommand.showHelp();
         }
 
-       if ("--list".equalsIgnoreCase(argument)) {
+        if (matchesArgument(argument, LIST_ARGUMENTS)) {
             return DemoCommand.listPublishedIssues();
-       }
+        }
 
-       if ("--validate".equalsIgnoreCase(argument) || "--pruefen".equalsIgnoreCase(argument)) {
+        if (matchesArgument(argument, VALIDATE_ARGUMENTS)) {
             String issueId = args.length >= 2 ? args[1] : DEFAULT_ISSUE_ID;
             return DemoCommand.validateIssue(issueId);
-       }
+        }
 
         return DemoCommand.previewIssue(argument);
     }
@@ -41,17 +45,15 @@ public class DemoCommandService {
         help.append("  AthenaPressDemo                 Zeigt die Standardausgabe ")
                 .append(DEFAULT_ISSUE_ID)
                 .append("\n");
-        help.append("  AthenaPressDemo <issueId>            Zeigt eine bestimmte Ausgabe\n");
-        help.append("  AthenaPressDemo --list               Listet veröffentlichte Ausgaben\n");
-        help.append("  AthenaPressDemo --validate <issueId> Prüft eine Ausgabe ohne Preview\n");
-        help.append("  AthenaPressDemo --pruefen <issueId>  Deutscher Alias für --validate\n");
-        help.append("  AthenaPressDemo --help               Zeigt diese Hilfe\n");
+        help.append("  AthenaPressDemo <issueId>                        Zeigt eine bestimmte Ausgabe\n");
+        help.append("  AthenaPressDemo --list|--liste                   Listet veröffentlichte Ausgaben\n");
+        help.append("  AthenaPressDemo --validate|--pruefen <issueId>   Prüft eine Ausgabe ohne Preview\n");
+        help.append("  AthenaPressDemo --help|--hilfe                   Zeigt diese Hilfe\n");
         help.append("\n");
         help.append("Beispiele:\n");
         help.append("  AthenaPressDemo issue_0002\n");
         help.append("  AthenaPressDemo --list\n");
         help.append("  AthenaPressDemo --validate issue_0002\n");
-        help.append("  AthenaPressDemo --pruefen issue_0002\n");
         help.append("\n");
 
         return help.toString();
@@ -118,12 +120,10 @@ public class DemoCommandService {
         return text.toString();
     }
 
-    private boolean isHelpArgument(String argument) {
-        return "--help".equalsIgnoreCase(argument)
-                || "-h".equalsIgnoreCase(argument)
-                || "/?".equalsIgnoreCase(argument);
+   private boolean matchesArgument(String argument, List<String> aliases) {
+    return aliases.stream().anyMatch(alias -> alias.equalsIgnoreCase(argument));
     }
-
+    
     private String safeText(String value) {
         if (value == null || value.isBlank()) {
             return "(leer)";

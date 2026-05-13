@@ -64,10 +64,9 @@ class DemoCommandServiceTest {
         assertTrue(helpText.contains("AthenaPress Demo"));
         assertTrue(helpText.contains("Verwendung:"));
         assertTrue(helpText.contains("AthenaPressDemo <issueId>"));
-        assertTrue(helpText.contains("AthenaPressDemo --list"));
-        assertTrue(helpText.contains("AthenaPressDemo --validate <issueId>"));
-        assertTrue(helpText.contains("AthenaPressDemo --pruefen <issueId>"));
-        assertTrue(helpText.contains("AthenaPressDemo --help"));
+        assertTrue(helpText.contains("AthenaPressDemo --list|--liste"));
+        assertTrue(helpText.contains("AthenaPressDemo --validate|--pruefen <issueId>"));
+        assertTrue(helpText.contains("AthenaPressDemo --help|--hilfe"));
     }
 
     @Test
@@ -153,5 +152,12 @@ class DemoCommandServiceTest {
 
         assertTrue(text.contains("FEHLER - 1 Problem gefunden."));
         assertTrue(text.contains("- Testfehler"));
+    }
+    @Test
+    void parseGermanListArgumentCreatesListCommand() {
+        DemoCommand command = demoCommandService.parse(new String[]{"--liste"});
+
+        assertEquals(DemoCommandType.LIST_PUBLISHED_ISSUES, command.type());
+        assertNull(command.issueId());
     }
 }
