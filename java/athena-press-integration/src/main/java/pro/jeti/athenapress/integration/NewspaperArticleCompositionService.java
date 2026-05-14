@@ -67,17 +67,53 @@ public class NewspaperArticleCompositionService {
         if (hasText(issueView.coverImage())) {
             blocks.add(NewspaperVisualBlock.image(
                     issueView.coverImage(),
-                    coverCaption(issueView)
+                    coverCaption(issueView),
+                    defaultTemplate.columnsPerPage()
             ));
         }
 
         blocks.add(NewspaperVisualBlock.divider());
 
+        GameArticleView mainArticle = issueView.findArticleById(issueView.coverMainArticleId());
+        if (mainArticle != null) {
+            addMainArticleBlocks(blocks, mainArticle);
+        }
+
         for (GameArticleView article : issueView.articles()) {
+            if (mainArticle != null && mainArticle.id().equals(article.id())) {
+                continue;
+            }
+
             addArticleBlocks(blocks, article);
         }
 
         return blocks;
+    }
+
+    private void addMainArticleBlocks(
+            List<NewspaperVisualBlock> blocks,
+            GameArticleView article
+    ) {
+        if (article == null) {
+            return;
+        }
+
+        blocks.add(NewspaperVisualBlock.subheadline(articleTitle(article)));
+
+        if (hasText(article.summary())) {
+            blocks.add(NewspaperVisualBlock.quote(article.summary()));
+        } else if (hasText(article.teaser())) {
+            blocks.add(NewspaperVisualBlock.quote(article.teaser()));
+        }
+
+        if (hasText(article.body())) {
+            blocks.add(NewspaperVisualBlock.bodyText(
+                    article.body(),
+                    defaultTemplate.columnsPerPage()
+            ));
+        }
+
+        blocks.add(NewspaperVisualBlock.divider());
     }
 
     private void addArticleBlocks(

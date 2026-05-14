@@ -26,6 +26,8 @@ class NewspaperArticleCompositionServiceTest {
                 .anyMatch(block -> block.type() == NewspaperVisualBlockType.HEADLINE));
         assertTrue(visualIssue.pages().getFirst().blocks().stream()
                 .anyMatch(block -> "placeholders/front.png".equals(block.assetPath())));
+        assertTrue(visualIssue.pages().getFirst().blocks().stream()
+                .anyMatch(block -> block.type() == NewspaperVisualBlockType.QUOTE));
     }
 
     @Test
@@ -55,6 +57,7 @@ class NewspaperArticleCompositionServiceTest {
         assertEquals(NewspaperVisualBlockType.HEADLINE, firstLayout.placements().getFirst().blockType());
         assertEquals(2, firstLayout.placements().getFirst().columnSpan());
         assertEquals("placeholders/front.png", firstLayout.imagePlacements().getFirst().assetPath());
+        assertEquals(2, firstLayout.imagePlacements().getFirst().columnSpan());
     }
 
     private GameIssueView issueViewWithArticles(int articleCount) {

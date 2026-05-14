@@ -251,6 +251,42 @@ NewspaperVisualRenderer
 
 Erzeugt aus visuellen Seiten adapter-neutrale Layoutplatzierungen.
 
+NewspaperPageRole
+
+Beschreibt die Rolle einer Seite innerhalb einer Ausgabe.
+
+Aktuelle Rollen:
+
+FRONT_COVER
+LEFT_INNER
+RIGHT_INNER
+BACK_COVER
+SINGLE_PAGE
+
+NewspaperDoublePageLayout
+
+Beschreibt eine konkrete Doppelseite.
+
+Enthält:
+
+linke Seite
+rechte Seite
+Seitenrollen
+Spread-Index
+Navigationsbuttons
+
+NewspaperDoublePageCompositionService
+
+Erzeugt aus visuellen Seiten bewusste Doppelseiten.
+
+Verantwortlich für:
+
+Cover-Erkennung
+Innenseiten-Paare
+Rückseitenrolle
+einzelne letzte Seite
+Blätter-Navigation
+
 Wichtig:
 Diese Schicht ist keine Browser-, HTML- oder WebView-Lösung.
 Sie bereitet nur Daten für ein späteres natives Hytale-Overlay vor.
@@ -459,6 +495,9 @@ Bild-Platzierungen
 Artikel-Komposition
 Pagination
 adapter-neutrales Rendering
+Doppelseiten-Komposition
+Seitenrollen
+Spread-Navigation
 
 13. Nächster realistischer Großschritt
 
