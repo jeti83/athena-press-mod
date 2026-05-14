@@ -12,13 +12,15 @@ public class NewspaperArticleCompositionService {
     private final NewspaperLayoutTemplate defaultTemplate;
     private final NewspaperVisualDesignProfile designProfile;
     private final NewspaperPageSectionPolicy sectionPolicy;
+    private final NewspaperArticleClassifier articleClassifier;
 
     public NewspaperArticleCompositionService() {
         this(
                 new NewspaperVisualPaginationService(),
                 NewspaperLayoutTemplate.classicDoublePage(),
                 NewspaperVisualDesignProfile.athenaReadableNewspaper(),
-                NewspaperPageSectionPolicy.defaultPolicy()
+                NewspaperPageSectionPolicy.defaultPolicy(),
+                new NewspaperArticleClassifier()
         );
     }
 
@@ -30,7 +32,8 @@ public class NewspaperArticleCompositionService {
                 paginationService,
                 defaultTemplate,
                 NewspaperVisualDesignProfile.athenaReadableNewspaper(),
-                NewspaperPageSectionPolicy.defaultPolicy()
+                NewspaperPageSectionPolicy.defaultPolicy(),
+                new NewspaperArticleClassifier()
         );
     }
 
@@ -43,7 +46,8 @@ public class NewspaperArticleCompositionService {
                 paginationService,
                 defaultTemplate,
                 designProfile,
-                NewspaperPageSectionPolicy.defaultPolicy()
+                NewspaperPageSectionPolicy.defaultPolicy(),
+                new NewspaperArticleClassifier()
         );
     }
 
@@ -52,6 +56,22 @@ public class NewspaperArticleCompositionService {
             NewspaperLayoutTemplate defaultTemplate,
             NewspaperVisualDesignProfile designProfile,
             NewspaperPageSectionPolicy sectionPolicy
+    ) {
+        this(
+                paginationService,
+                defaultTemplate,
+                designProfile,
+                sectionPolicy,
+                new NewspaperArticleClassifier()
+        );
+    }
+
+    public NewspaperArticleCompositionService(
+            NewspaperVisualPaginationService paginationService,
+            NewspaperLayoutTemplate defaultTemplate,
+            NewspaperVisualDesignProfile designProfile,
+            NewspaperPageSectionPolicy sectionPolicy,
+            NewspaperArticleClassifier articleClassifier
     ) {
         this.paginationService = paginationService == null
                 ? new NewspaperVisualPaginationService()
@@ -65,6 +85,9 @@ public class NewspaperArticleCompositionService {
         this.sectionPolicy = sectionPolicy == null
                 ? NewspaperPageSectionPolicy.defaultPolicy()
                 : sectionPolicy;
+        this.articleClassifier = articleClassifier == null
+                ? new NewspaperArticleClassifier()
+                : articleClassifier;
     }
 
     public NewspaperVisualIssue compose(GameIssueView issueView) {
@@ -147,7 +170,25 @@ public class NewspaperArticleCompositionService {
         sections.add(NewspaperPageSection.of(
                 NewspaperPageSectionType.MIXED_ARTICLES,
                 issueTitle(issueView),
-                mixedArticleBlocksFor(issueView)
+                articleBlocksForSection(issueView, NewspaperPageSectionType.MIXED_ARTICLES)
+        ));
+
+        sections.add(NewspaperPageSection.of(
+                NewspaperPageSectionType.SHORT_NOTICES,
+                "Kurzmeldungen",
+                articleBlocksForSection(issueView, NewspaperPageSectionType.SHORT_NOTICES)
+        ));
+
+        sections.add(NewspaperPageSection.of(
+                NewspaperPageSectionType.MEMORIAL,
+                "Verschollen und unvergessen",
+                articleBlocksForSection(issueView, NewspaperPageSectionType.MEMORIAL)
+        ));
+
+        sections.add(NewspaperPageSection.of(
+                NewspaperPageSectionType.ADVERTISEMENTS,
+                "Anzeigen",
+                articleBlocksForSection(issueView, NewspaperPageSectionType.ADVERTISEMENTS)
         ));
 
         return sectionPolicy.filter(sections);
@@ -194,7 +235,10 @@ public class NewspaperArticleCompositionService {
         return blocks;
     }
 
-    private List<NewspaperVisualBlock> mixedArticleBlocksFor(GameIssueView issueView) {
+    private List<NewspaperVisualBlock> articleBlocksForSection(
+            GameIssueView issueView,
+            NewspaperPageSectionType sectionType
+    ) {
         List<NewspaperVisualBlock> blocks = new ArrayList<>();
 
         GameArticleView mainArticle = issueView.findArticleById(issueView.coverMainArticleId());
@@ -203,10 +247,108 @@ public class NewspaperArticleCompositionService {
                 continue;
             }
 
-            addArticleBlocks(blocks, article);
+            NewspaperArticleClassification classification = articleClassifier.classify(
+                    article,
+                    false
+            );
+            if (classification.sectionType() != sectionType) {
+                continue;
+            }
+
+            addClassifiedArticleBlocks(blocks, article, classification);
         }
 
         return blocks;
+    }
+
+    private void addClassifiedArticleBlocks(
+            List<NewspaperVisualBlock> blocks,
+            GameArticleView article,
+            NewspaperArticleClassification classification
+    ) {
+        if (classification == null) {
+            addArticleBlocks(blocks, article);
+            return;
+        }
+
+        if (classification.sectionType() == NewspaperPageSectionType.ADVERTISEMENTS) {
+            addAdvertisementBlocks(blocks, article);
+            return;
+        }
+
+        if (classification.sectionType() == NewspaperPageSectionType.SHORT_NOTICES) {
+            addShortNoticeBlocks(blocks, article);
+            return;
+        }
+
+        if (classification.sectionType() == NewspaperPageSectionType.MEMORIAL) {
+            addMemorialBlocks(blocks, article);
+            return;
+        }
+
+        addArticleBlocks(blocks, article);
+    }
+
+    private void addAdvertisementBlocks(
+            List<NewspaperVisualBlock> blocks,
+            GameArticleView article
+    ) {
+        if (article == null) {
+            return;
+        }
+
+        blocks.add(NewspaperVisualBlock.advertisement(
+                articleTitle(article),
+                null
+        ));
+
+        if (hasText(article.summary())) {
+            blocks.add(NewspaperVisualBlock.notice(article.summary()));
+        }
+
+        blocks.add(NewspaperVisualBlock.divider());
+    }
+
+    private void addShortNoticeBlocks(
+            List<NewspaperVisualBlock> blocks,
+            GameArticleView article
+    ) {
+        if (article == null) {
+            return;
+        }
+
+        blocks.add(NewspaperVisualBlock.notice(articleTitle(article)));
+
+        if (hasText(article.summary())) {
+            blocks.add(NewspaperVisualBlock.bodyText(article.summary()));
+        } else if (hasText(article.teaser())) {
+            blocks.add(NewspaperVisualBlock.bodyText(article.teaser()));
+        }
+
+        blocks.add(NewspaperVisualBlock.divider());
+    }
+
+    private void addMemorialBlocks(
+            List<NewspaperVisualBlock> blocks,
+            GameArticleView article
+    ) {
+        if (article == null) {
+            return;
+        }
+
+        blocks.add(NewspaperVisualBlock.subheadline(articleTitle(article)));
+
+        if (hasText(article.summary())) {
+            blocks.add(NewspaperVisualBlock.quote(article.summary()));
+        } else if (hasText(article.teaser())) {
+            blocks.add(NewspaperVisualBlock.quote(article.teaser()));
+        }
+
+        if (hasText(article.body())) {
+            blocks.add(NewspaperVisualBlock.bodyText(article.body()));
+        }
+
+        blocks.add(NewspaperVisualBlock.divider());
     }
 
     private void addMainArticleBlocks(

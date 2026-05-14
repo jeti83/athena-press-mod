@@ -356,6 +356,33 @@ Alle weiteren Bereiche entstehen nur, wenn sie Inhalt haben.
 
 Dadurch können Anzeigen-, Kurzmeldungs-, Beileids- oder Rückseitenbereiche komplett wegfallen, wenn die Ausgabe sie nicht braucht.
 
+Hinweis zur Benennung:
+Im Java-Code wird der englische Begriff `Section` verwendet, weil die technische API bereits englisch benannt ist.
+In der Produkt- und Redaktionssprache entspricht das einem Bereich oder einer Rubrik.
+
+NewspaperArticleClassifier
+
+Ordnet Artikel in passende Bereiche ein.
+
+Aktuelle Regeln:
+
+Cover-Artikel wird Hauptartikel
+Anzeigen-Kategorien werden Anzeigenbereich
+kurze Inhalte oder Kurzmeldungs-Kategorien werden Kurzmeldungen
+Texte mit Verschollen-/Beileids-/Nachruf-Signalen werden Memorial-Bereich
+alle übrigen Artikel werden Mischartikel
+
+NewspaperArticleClassification
+
+Beschreibt das Klassifizierungsergebnis.
+
+Enthält:
+
+Zielbereich
+Hauptartikel-Markierung
+Kurzmeldungs-Markierung
+Sonderton-Markierung
+
 NewspaperArticleCompositionService
 
 Erzeugt aus einer spielnahen Ausgabe eine visuelle Zeitung.
@@ -623,6 +650,7 @@ Artikel-Fluss-Policy
 Navigationsstil
 optionale Sections
 Section-Erzeugungsregeln
+Artikel-Klassifizierung
 Spaltenmodell
 Content-Platzierungen
 Bild-Platzierungen
