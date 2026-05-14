@@ -22,6 +22,15 @@ public class NewspaperVisualPaginationService {
             List<NewspaperVisualBlock> blocks,
             NewspaperLayoutTemplate template
     ) {
+        return paginate(baseTitle, blocks, template, 1);
+    }
+
+    public List<NewspaperVisualPage> paginate(
+            String baseTitle,
+            List<NewspaperVisualBlock> blocks,
+            NewspaperLayoutTemplate template,
+            int firstPageNumber
+    ) {
         if (blocks == null || blocks.isEmpty()) {
             return List.of();
         }
@@ -37,7 +46,12 @@ public class NewspaperVisualPaginationService {
         for (NewspaperVisualBlock block : blocks) {
             int blockWeight = layoutRules.weightFor(block, safeTemplate);
             if (!currentBlocks.isEmpty() && currentWeight + blockWeight > pageCapacity) {
-                pages.add(pageFor(baseTitle, pages.size() + 1, currentBlocks));
+                pages.add(pageFor(
+                        baseTitle,
+                        firstPageNumber + pages.size(),
+                        firstPageNumber,
+                        currentBlocks
+                ));
                 currentBlocks = new ArrayList<>();
                 currentWeight = 0;
             }
@@ -47,7 +61,12 @@ public class NewspaperVisualPaginationService {
         }
 
         if (!currentBlocks.isEmpty()) {
-            pages.add(pageFor(baseTitle, pages.size() + 1, currentBlocks));
+            pages.add(pageFor(
+                    baseTitle,
+                    firstPageNumber + pages.size(),
+                    firstPageNumber,
+                    currentBlocks
+            ));
         }
 
         return pages;
@@ -56,13 +75,14 @@ public class NewspaperVisualPaginationService {
     private NewspaperVisualPage pageFor(
             String baseTitle,
             int pageNumber,
+            int firstPageNumber,
             List<NewspaperVisualBlock> blocks
     ) {
         String title = baseTitle == null || baseTitle.isBlank()
                 ? "AthenaPress"
                 : baseTitle;
 
-        if (pageNumber > 1) {
+        if (pageNumber > firstPageNumber) {
             title = title + " - Seite " + pageNumber;
         }
 

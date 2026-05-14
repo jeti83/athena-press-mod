@@ -7,6 +7,9 @@ public record NewspaperVisualDesignProfile(
         int preferredColumns,
         int maximumColumns,
         int asymmetryPercent,
+        NewspaperCoverPolicy coverPolicy,
+        NewspaperArticleFlowPolicy articleFlowPolicy,
+        NewspaperNavigationStyle navigationStyle,
         boolean allowAdvertisementBlocks,
         boolean allowDocumentStyleBlocks,
         boolean keepReadablePageBody
@@ -25,6 +28,15 @@ public record NewspaperVisualDesignProfile(
         preferredColumns = preferredColumns <= 0 ? 3 : preferredColumns;
         maximumColumns = Math.max(preferredColumns, maximumColumns);
         asymmetryPercent = Math.clamp(asymmetryPercent, 0, 100);
+        coverPolicy = coverPolicy == null
+                ? NewspaperCoverPolicy.STANDALONE_TITLE_PAGE
+                : coverPolicy;
+        articleFlowPolicy = articleFlowPolicy == null
+                ? NewspaperArticleFlowPolicy.KEEP_ARTICLES_TOGETHER_WHEN_READABLE
+                : articleFlowPolicy;
+        navigationStyle = navigationStyle == null
+                ? NewspaperNavigationStyle.PAGE_TURNING_WITH_SUBTLE_MENU
+                : navigationStyle;
     }
 
     public static NewspaperVisualDesignProfile athenaReadableNewspaper() {
@@ -35,6 +47,9 @@ public record NewspaperVisualDesignProfile(
                 3,
                 4,
                 25,
+                NewspaperCoverPolicy.STANDALONE_TITLE_PAGE,
+                NewspaperArticleFlowPolicy.KEEP_ARTICLES_TOGETHER_WHEN_READABLE,
+                NewspaperNavigationStyle.PAGE_TURNING_WITH_SUBTLE_MENU,
                 true,
                 true,
                 true

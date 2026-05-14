@@ -26,20 +26,39 @@ class NewspaperArticleCompositionServiceTest {
                 .anyMatch(block -> block.type() == NewspaperVisualBlockType.HEADLINE));
         assertTrue(visualIssue.pages().getFirst().blocks().stream()
                 .anyMatch(block -> "placeholders/front.png".equals(block.assetPath())));
+        assertTrue(visualIssue.pages().getFirst().blocks().stream()
+                .noneMatch(block -> block.type() == NewspaperVisualBlockType.QUOTE));
         assertTrue(visualIssue.pages().stream()
                 .flatMap(page -> page.blocks().stream())
                 .anyMatch(block -> block.type() == NewspaperVisualBlockType.QUOTE));
     }
 
     @Test
+    void keepsStandaloneTitlePageBeforeArticlePages() {
+        GameIssueView issueView = issueViewWithArticles(3);
+
+        NewspaperVisualIssue visualIssue = new NewspaperArticleCompositionService()
+                .compose(issueView);
+
+        assertEquals(1, visualIssue.pages().getFirst().pageNumber());
+        assertTrue(visualIssue.pages().getFirst().blocks().stream()
+                .noneMatch(block -> block.type() == NewspaperVisualBlockType.QUOTE));
+        assertTrue(visualIssue.pages().get(1).pageNumber() >= 2);
+        assertTrue(visualIssue.pages().get(1).blocks().stream()
+                .anyMatch(block -> "Zusammenfassung 1".equals(block.content())));
+    }
+
+    @Test
     void paginatesLongIssueAcrossMultiplePages() {
-        GameIssueView issueView = issueViewWithArticles(12);
+        GameIssueView issueView = issueViewWithArticles(20);
 
         NewspaperVisualIssue visualIssue = new NewspaperArticleCompositionService()
                 .compose(issueView);
 
         assertTrue(visualIssue.pages().size() > 1);
-        assertTrue(visualIssue.pages().get(1).title().contains("Seite 2"));
+        assertTrue(visualIssue.pages().getFirst().title().equals("Athena Morgenblatt"));
+        assertTrue(visualIssue.pages().get(1).pageNumber() == 2);
+        assertTrue(visualIssue.pages().get(2).title().contains("Seite 3"));
     }
 
     @Test

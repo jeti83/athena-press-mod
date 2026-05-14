@@ -288,6 +288,39 @@ dezente obere Seitenecken
 Anzeigen- und Dokumentblöcke als Stilmittel
 maximal lesbarer Seitenkörper
 keine starre Pflicht zu vier Spalten
+einzelne Titelseite vor den Artikeln
+Artikel möglichst geschlossen lesbar
+Umbruch auf Folgeseiten, wenn Lesbarkeit es erfordert
+haptisch wirkendes Blättern
+dezentes Seitenmenü nur als Zusatznavigation
+
+NewspaperCoverPolicy
+
+Beschreibt, wie Ausgaben beginnen.
+
+Aktuell bevorzugt:
+
+STANDALONE_TITLE_PAGE
+
+NewspaperArticleFlowPolicy
+
+Beschreibt den Umgang mit Artikelfluss.
+
+Aktuell bevorzugt:
+
+KEEP_ARTICLES_TOGETHER_WHEN_READABLE
+
+NewspaperNavigationStyle
+
+Beschreibt die spätere Navigation.
+
+Aktuell bevorzugt:
+
+PAGE_TURNING_WITH_SUBTLE_MENU
+
+Redaktioneller Ton:
+AthenaPress soll wie ein Spaßblatt mit seriösem Auftreten wirken.
+Reißerische und lustige Anekdoten sind der Normalfall, ernste Meldungen wie Informationen oder Beileidsartikel bleiben aber möglich.
 
 NewspaperArticleCompositionService
 
@@ -551,6 +584,9 @@ Layout-Regeln
 Designprofile
 Layoutstimmungen
 Seitenecken-Optionen
+Titelseiten-Policy
+Artikel-Fluss-Policy
+Navigationsstil
 Spaltenmodell
 Content-Platzierungen
 Bild-Platzierungen

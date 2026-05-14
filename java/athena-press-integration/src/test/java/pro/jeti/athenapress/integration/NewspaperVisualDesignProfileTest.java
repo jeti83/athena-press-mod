@@ -13,6 +13,15 @@ class NewspaperVisualDesignProfileTest {
 
         assertEquals(NewspaperLayoutMood.LOOSE_COMMUNITY_SHEET, profile.layoutMood());
         assertEquals(NewspaperPageCornerStyle.SUBTLE_TOP_FOLDS, profile.cornerStyle());
+        assertEquals(NewspaperCoverPolicy.STANDALONE_TITLE_PAGE, profile.coverPolicy());
+        assertEquals(
+                NewspaperArticleFlowPolicy.KEEP_ARTICLES_TOGETHER_WHEN_READABLE,
+                profile.articleFlowPolicy()
+        );
+        assertEquals(
+                NewspaperNavigationStyle.PAGE_TURNING_WITH_SUBTLE_MENU,
+                profile.navigationStyle()
+        );
         assertEquals(3, profile.preferredColumns());
         assertEquals(4, profile.maximumColumns());
         assertTrue(profile.allowAdvertisementBlocks());
@@ -41,6 +50,9 @@ class NewspaperVisualDesignProfileTest {
                 4,
                 3,
                 250,
+                NewspaperCoverPolicy.STANDALONE_TITLE_PAGE,
+                NewspaperArticleFlowPolicy.KEEP_ARTICLES_TOGETHER_WHEN_READABLE,
+                NewspaperNavigationStyle.PAGE_TURNING_WITH_SUBTLE_MENU,
                 true,
                 true,
                 true
