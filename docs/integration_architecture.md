@@ -383,6 +383,67 @@ Hauptartikel-Markierung
 Kurzmeldungs-Markierung
 Sonderton-Markierung
 
+NewspaperPreviewIssue
+
+Adapter-neutrale Vorschau einer visuellen Ausgabe.
+
+Enthält:
+
+Ausgaben-ID
+Titel
+Theme
+Designprofil
+Doppelseiten-Preview
+
+NewspaperPreviewSpread
+
+Vorschau einer Doppelseite.
+
+Enthält:
+
+Spread-Index
+linke Seite
+rechte Seite
+Navigationsbuttons
+
+NewspaperPreviewPage
+
+Vorschau einer einzelnen Zeitungsseite.
+
+Enthält:
+
+Seitennummer
+Titel
+Seitenrolle
+Designprofil
+Blockvorschau
+
+NewspaperPreviewBlock
+
+Vorschau eines platzierten Blocks.
+
+Enthält:
+
+Blocktyp
+Text
+Asset-Pfad
+Spaltenposition
+Zeilenposition
+Spaltenbreite
+Zeilenhöhe
+
+NewspaperPreviewService
+
+Erzeugt aus einer visuellen Ausgabe eine strukturierte Vorschau.
+
+NewspaperPreviewTextRenderer
+
+Erzeugt eine lesbare Textvorschau für Debugging, Admin-Werkzeuge oder Tests.
+
+Wichtig:
+Die Preview-Schicht ist keine Browser-, HTML- oder finale Hytale-UI.
+Sie dient nur dazu, das visuelle Zeitungsmodell vor einer echten UI-Anbindung prüfen zu können.
+
 NewspaperArticleCompositionService
 
 Erzeugt aus einer spielnahen Ausgabe eine visuelle Zeitung.
@@ -651,6 +712,8 @@ Navigationsstil
 optionale Sections
 Section-Erzeugungsregeln
 Artikel-Klassifizierung
+Preview-Struktur
+Text-Preview
 Spaltenmodell
 Content-Platzierungen
 Bild-Platzierungen
