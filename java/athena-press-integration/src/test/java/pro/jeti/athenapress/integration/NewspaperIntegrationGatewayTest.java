@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -19,6 +20,11 @@ class NewspaperIntegrationGatewayTest {
     Path tempDir;
 
     @Test
+    void rejectsMissingCore() {
+        assertThrows(IllegalArgumentException.class, () -> new NewspaperIntegrationGateway(null));
+    }
+
+    @Test
     void opensIssueForPlayerAndShowsArticle() throws IOException {
         createMinimalDataSet();
 
@@ -29,6 +35,7 @@ class NewspaperIntegrationGatewayTest {
 
         assertTrue(gateway.hasOpenIssueForPlayer("player-1"));
         assertEquals("issue_test", gateway.getOpenIssueIdForPlayer("player-1"));
+        assertEquals(1, gateway.getOpenSessionCount());
         assertTrue(overview.contains("Athena Testausgabe"));
         assertTrue(overview.contains("[1] Erster Spielartikel"));
         assertTrue(article.contains("Dies ist der lesbare Artikeltext."));
@@ -45,6 +52,7 @@ class NewspaperIntegrationGatewayTest {
         assertTrue(gateway.hasOpenIssueForPlayer("player-1"));
         assertFalse(gateway.hasOpenIssueForPlayer("player-2"));
         assertNull(gateway.getOpenIssueIdForPlayer("player-2"));
+        assertEquals(1, gateway.getOpenSessionCount());
     }
 
     @Test
@@ -58,6 +66,7 @@ class NewspaperIntegrationGatewayTest {
 
         assertFalse(gateway.hasOpenIssueForPlayer("player-1"));
         assertNull(gateway.getOpenIssueIdForPlayer("player-1"));
+        assertEquals(0, gateway.getOpenSessionCount());
     }
 
     @Test
@@ -69,6 +78,60 @@ class NewspaperIntegrationGatewayTest {
 
         assertTrue(overview.contains("Diese Ausgabe ist nicht verfügbar."));
         assertTrue(article.contains("Diese Ausgabe ist nicht verfügbar."));
+    }
+
+    @Test
+    void rejectsBlankPlayerIdWithoutCreatingSession() throws IOException {
+        createMinimalDataSet();
+
+        NewspaperIntegrationGateway gateway = createGateway();
+
+        String overview = gateway.openIssueForPlayer(" ", "issue_test");
+        String article = gateway.showArticleForPlayer("", 1);
+
+        assertTrue(overview.contains("Diese Ausgabe ist nicht verfügbar."));
+        assertTrue(article.contains("Diese Ausgabe ist nicht verfügbar."));
+        assertEquals(0, gateway.getOpenSessionCount());
+    }
+
+    @Test
+    void rejectsBlankIssueIdAndClosesExistingSession() throws IOException {
+        createMinimalDataSet();
+
+        NewspaperIntegrationGateway gateway = createGateway();
+
+        gateway.openIssueForPlayer("player-1", "issue_test");
+        String overview = gateway.openIssueForPlayer("player-1", " ");
+
+        assertTrue(overview.contains("Diese Ausgabe ist nicht verfügbar."));
+        assertFalse(gateway.hasOpenIssueForPlayer("player-1"));
+        assertEquals(0, gateway.getOpenSessionCount());
+    }
+
+    @Test
+    void rejectsInvalidArticleNumber() throws IOException {
+        createMinimalDataSet();
+
+        NewspaperIntegrationGateway gateway = createGateway();
+
+        gateway.openIssueForPlayer("player-1", "issue_test");
+
+        String article = gateway.showArticleForPlayer("player-1", 0);
+
+        assertTrue(article.contains("Dieser Artikel ist in der Ausgabe nicht vorhanden."));
+    }
+
+    @Test
+    void rejectsBlankArticleId() throws IOException {
+        createMinimalDataSet();
+
+        NewspaperIntegrationGateway gateway = createGateway();
+
+        gateway.openIssueForPlayer("player-1", "issue_test");
+
+        String article = gateway.showArticleForPlayer("player-1", " ");
+
+        assertTrue(article.contains("Dieser Artikel ist in der Ausgabe nicht vorhanden."));
     }
 
     private NewspaperIntegrationGateway createGateway() {

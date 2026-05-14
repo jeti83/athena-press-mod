@@ -1,1 +1,3 @@
+pro\jeti\athenapress\integration\IntegrationPluginMetadataTest.class
 pro\jeti\athenapress\integration\NewspaperIntegrationGatewayTest.class
+pro\jeti\athenapress\integration\AthenaPressIntegrationPluginTest.class

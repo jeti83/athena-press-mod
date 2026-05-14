@@ -8,33 +8,79 @@ import pro.jeti.athenapress.AthenaPressCore;
 import pro.jeti.athenapress.service.GameNewspaperSessionService;
 
 public class NewspaperIntegrationGateway {
+    private static final String MISSING_ISSUE_TEXT = "Diese Ausgabe ist nicht verfügbar.\n";
+    private static final String MISSING_ARTICLE_TEXT = "Dieser Artikel ist in der Ausgabe nicht vorhanden.\n";
+
     private final AthenaPressCore core;
     private final Map<String, GameNewspaperSessionService> sessionsByPlayerId = new HashMap<>();
 
     public NewspaperIntegrationGateway(AthenaPressCore core) {
+        if (core == null) {
+            throw new IllegalArgumentException("core must not be null");
+        }
+
         this.core = core;
     }
 
     public String openIssueForPlayer(String playerId, String issueId) throws IOException {
-        GameNewspaperSessionService session = createSession();
-        sessionsByPlayerId.put(playerId, session);
+        if (!hasText(playerId)) {
+            return MISSING_ISSUE_TEXT;
+        }
 
-        return session.openIssue(issueId);
+        if (!hasText(issueId)) {
+            closeIssueForPlayer(playerId);
+            return MISSING_ISSUE_TEXT;
+        }
+
+        GameNewspaperSessionService session = createSession();
+        String overview = session.openIssue(issueId);
+
+        if (session.hasOpenIssue()) {
+            sessionsByPlayerId.put(playerId, session);
+        } else {
+            sessionsByPlayerId.remove(playerId);
+        }
+
+        return overview;
     }
 
     public String showOverviewForPlayer(String playerId) {
+        if (!hasText(playerId)) {
+            return MISSING_ISSUE_TEXT;
+        }
+
         return getOrCreateSession(playerId).showOverview();
     }
 
     public String showArticleForPlayer(String playerId, int articleNumber) {
+        if (!hasText(playerId)) {
+            return MISSING_ISSUE_TEXT;
+        }
+
+        if (articleNumber < 1) {
+            return MISSING_ARTICLE_TEXT;
+        }
+
         return getOrCreateSession(playerId).showArticleByNumber(articleNumber);
     }
 
     public String showArticleForPlayer(String playerId, String articleId) {
+        if (!hasText(playerId)) {
+            return MISSING_ISSUE_TEXT;
+        }
+
+        if (!hasText(articleId)) {
+            return MISSING_ARTICLE_TEXT;
+        }
+
         return getOrCreateSession(playerId).showArticleById(articleId);
     }
 
     public void closeIssueForPlayer(String playerId) {
+        if (!hasText(playerId)) {
+            return;
+        }
+
         GameNewspaperSessionService session = sessionsByPlayerId.remove(playerId);
 
         if (session != null) {
@@ -43,11 +89,19 @@ public class NewspaperIntegrationGateway {
     }
 
     public boolean hasOpenIssueForPlayer(String playerId) {
+        if (!hasText(playerId)) {
+            return false;
+        }
+
         GameNewspaperSessionService session = sessionsByPlayerId.get(playerId);
         return session != null && session.hasOpenIssue();
     }
 
     public String getOpenIssueIdForPlayer(String playerId) {
+        if (!hasText(playerId)) {
+            return null;
+        }
+
         GameNewspaperSessionService session = sessionsByPlayerId.get(playerId);
 
         if (session == null) {
@@ -55,6 +109,10 @@ public class NewspaperIntegrationGateway {
         }
 
         return session.getOpenIssueId();
+    }
+
+    public int getOpenSessionCount() {
+        return sessionsByPlayerId.size();
     }
 
     private GameNewspaperSessionService getOrCreateSession(String playerId) {
@@ -66,5 +124,9 @@ public class NewspaperIntegrationGateway {
                 core.getGameViewService(),
                 core.getGameTextRendererService()
         );
+    }
+
+    private boolean hasText(String value) {
+        return value != null && !value.isBlank();
     }
 }
