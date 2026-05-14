@@ -444,6 +444,21 @@ Wichtig:
 Die Preview-Schicht ist keine Browser-, HTML- oder finale Hytale-UI.
 Sie dient nur dazu, das visuelle Zeitungsmodell vor einer echten UI-Anbindung prüfen zu können.
 
+NewspaperPreviewPipelineService
+
+Verbindet echte veröffentlichte Ausgaben mit der Preview-Schicht.
+
+Fluss:
+
+GameViewService
+→ NewspaperArticleCompositionService
+→ NewspaperPreviewService
+→ NewspaperPreviewTextRenderer
+
+Damit kann eine reale Ausgabe bereits als adapter-neutrale Doppelseiten-Vorschau geprüft werden, ohne dass eine native Hytale-UI fertig sein muss.
+
+NewspaperIntegrationGateway und AthenaPressIntegrationPlugin stellen dafür schlanke Preview-Methoden bereit.
+
 NewspaperArticleCompositionService
 
 Erzeugt aus einer spielnahen Ausgabe eine visuelle Zeitung.

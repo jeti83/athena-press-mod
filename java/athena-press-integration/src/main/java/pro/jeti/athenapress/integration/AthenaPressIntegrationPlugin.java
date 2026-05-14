@@ -63,4 +63,12 @@ public class AthenaPressIntegrationPlugin {
     public String getOpenIssueId(String playerId) {
         return gateway.getOpenIssueIdForPlayer(playerId);
     }
+
+    public NewspaperPreviewIssue createPreview(String issueId) throws IOException {
+        return gateway.createPreviewForIssue(issueId);
+    }
+
+    public String renderPreview(String issueId) throws IOException {
+        return gateway.renderPreviewForIssue(issueId);
+    }
 }

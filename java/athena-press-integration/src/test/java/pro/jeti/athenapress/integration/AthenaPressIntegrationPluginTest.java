@@ -74,6 +74,20 @@ class AthenaPressIntegrationPluginTest {
         assertTrue(article.contains("Dies ist der lesbare Artikeltext."));
     }
 
+    @Test
+    void exposesPreviewPipelineForPublishedIssue() throws IOException {
+        createMinimalDataSet();
+
+        AthenaPressIntegrationPlugin plugin = new AthenaPressIntegrationPlugin(tempDir);
+
+        NewspaperPreviewIssue previewIssue = plugin.createPreview("issue_test");
+        String text = plugin.renderPreview("issue_test");
+
+        assertTrue(previewIssue.hasSpreads());
+        assertTrue(text.contains("Athena Testausgabe Preview"));
+        assertTrue(text.contains("FRONT_COVER"));
+    }
+
     private void createMinimalDataSet() throws IOException {
         createFolders();
 

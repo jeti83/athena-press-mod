@@ -134,6 +134,21 @@ class NewspaperIntegrationGatewayTest {
         assertTrue(article.contains("Dieser Artikel ist in der Ausgabe nicht vorhanden."));
     }
 
+    @Test
+    void rendersVisualPreviewForIssue() throws IOException {
+        createMinimalDataSet();
+
+        NewspaperIntegrationGateway gateway = createGateway();
+
+        NewspaperPreviewIssue previewIssue = gateway.createPreviewForIssue("issue_test");
+        String text = gateway.renderPreviewForIssue("issue_test");
+
+        assertTrue(previewIssue.hasSpreads());
+        assertTrue(text.contains("Athena Testausgabe Preview"));
+        assertTrue(text.contains("FRONT_COVER"));
+        assertTrue(text.contains("Erster Spielartikel"));
+    }
+
     private NewspaperIntegrationGateway createGateway() {
         AthenaPressCore core = new AthenaPressCore(tempDir);
         return new NewspaperIntegrationGateway(core);

@@ -12,6 +12,7 @@ public class NewspaperIntegrationGateway {
     private static final String MISSING_ARTICLE_TEXT = "Dieser Artikel ist in der Ausgabe nicht vorhanden.\n";
 
     private final AthenaPressCore core;
+    private final NewspaperPreviewPipelineService previewPipelineService;
     private final Map<String, GameNewspaperSessionService> sessionsByPlayerId = new HashMap<>();
 
     public NewspaperIntegrationGateway(AthenaPressCore core) {
@@ -20,6 +21,7 @@ public class NewspaperIntegrationGateway {
         }
 
         this.core = core;
+        this.previewPipelineService = new NewspaperPreviewPipelineService(core.getGameViewService());
     }
 
     public String openIssueForPlayer(String playerId, String issueId) throws IOException {
@@ -113,6 +115,14 @@ public class NewspaperIntegrationGateway {
 
     public int getOpenSessionCount() {
         return sessionsByPlayerId.size();
+    }
+
+    public NewspaperPreviewIssue createPreviewForIssue(String issueId) throws IOException {
+        return previewPipelineService.createPreview(issueId);
+    }
+
+    public String renderPreviewForIssue(String issueId) throws IOException {
+        return previewPipelineService.renderPreviewText(issueId);
     }
 
     private GameNewspaperSessionService getOrCreateSession(String playerId) {
