@@ -69,6 +69,22 @@ class DemoCommandServiceTest {
     }
 
     @Test
+    void parseArticlesArgumentCreatesArticlesCommand() {
+        DemoCommand command = demoCommandService.parse(new String[]{"--articles"});
+
+        assertEquals(DemoCommandType.LIST_ARTICLES, command.type());
+        assertNull(command.issueId());
+    }
+
+    @Test
+    void parseGermanArticlesArgumentCreatesArticlesCommand() {
+        DemoCommand command = demoCommandService.parse(new String[]{"--artikel"});
+
+        assertEquals(DemoCommandType.LIST_ARTICLES, command.type());
+        assertNull(command.issueId());
+    }
+
+    @Test
     void parseValidateArgumentCreatesValidateCommand() {
         DemoCommand command = demoCommandService.parse(new String[]{"--validate", "issue_0002"});
 
@@ -116,6 +132,7 @@ class DemoCommandServiceTest {
         assertTrue(helpText.contains("Verwendung:"));
         assertTrue(helpText.contains("AthenaPressDemo <issueId>"));
         assertTrue(helpText.contains("AthenaPressDemo --list | --liste"));
+        assertTrue(helpText.contains("AthenaPressDemo --articles | --artikel"));
         assertTrue(helpText.contains("AthenaPressDemo --validate | --pruefen <issueId>"));
         assertTrue(helpText.contains("AthenaPressDemo --status | --uebersicht"));
         assertTrue(helpText.contains("AthenaPressDemo --help | --hilfe | -h | /?"));
