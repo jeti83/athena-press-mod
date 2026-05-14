@@ -24,6 +24,8 @@ Der derzeitige Fokus liegt auf:
 
 ---
 
+
+
 ## Projektstatus
 
 Aktueller Stand:
@@ -300,7 +302,6 @@ Aktuell bekannte Zustellmodi:
 
 Wichtige Dokumente:
 
-text
 docs/commands.md
 docs/workflow.md
 docs/data_model.md
@@ -310,6 +311,16 @@ docs/data_model.md
 `docs/workflow.md` beschreibt den empfohlenen Arbeitsablauf.
 
 `docs/data_model.md` beschreibt die Datenstrukturen.
+
+---
+
+## Architektur-Dokumentation
+
+Weitere technische Details:
+
+- docs/backend_status.md
+- docs/mod_mvp.md
+- docs/integration_architecture.md
 
 ---
 
@@ -351,3 +362,4 @@ Die eigentliche Hytale-Integration kommt später.
 Bis dahin gilt:
 
 Erst Datenmodell, Validierung, Preview und Dokumentation stabilisieren. Dann Konfetti. Dann Brandschutz. Dann vielleicht noch mehr Konfetti.
+
