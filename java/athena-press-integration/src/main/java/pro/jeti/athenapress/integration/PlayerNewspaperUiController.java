@@ -23,6 +23,26 @@ public class PlayerNewspaperUiController {
         this.uiPort = uiPort;
     }
 
+    public void openIssue(String playerId, String issueId) {
+        handleCommand(playerId, PlayerNewspaperUiCommand.openIssue(issueId));
+    }
+
+    public void showOverview(String playerId) {
+        handleCommand(playerId, PlayerNewspaperUiCommand.showOverview());
+    }
+
+    public void selectArticle(String playerId, int articleNumber) {
+        handleCommand(playerId, PlayerNewspaperUiCommand.selectArticle(articleNumber));
+    }
+
+    public void selectArticle(String playerId, String articleId) {
+        handleCommand(playerId, PlayerNewspaperUiCommand.selectArticle(articleId));
+    }
+
+    public void closeIssue(String playerId) {
+        handleCommand(playerId, PlayerNewspaperUiCommand.closeIssue());
+    }
+
     public void handleCommand(
             String playerId,
             PlayerNewspaperUiCommand command
