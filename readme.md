@@ -20,7 +20,8 @@ Der derzeitige Fokus liegt auf:
 - stabiler Validierung
 - CLI-Werkzeugen
 - Java-Core als Vorschau-, Admin- und Debug-Werkzeug
-- späterer Vorbereitung einer echten Mod-/Serverintegration
+- Java-Integration als adapter-neutrale Mod-/Visual-Schicht
+- Vorbereitung einer nativen Hytale-UI-Anbindung ohne erfundene Hytale-API-Imports
 
 ---
 
@@ -45,6 +46,11 @@ Aktueller Stand:
 - Java-Core validiert Daten
 - Java-Core zeigt Statusübersicht
 - Java-Core unterstützt deutsche und englische Demo-Befehle
+- Java-Integration erzeugt spielnahe Textansichten
+- Java-Integration erzeugt Visual-Doppelseitenstrukturen
+- Visual-Preview-Pipeline und Runtime-Cache sind vorbereitet
+- Visual-Input, Visual-Lifecycle und Hytale-Adapter-Schicht sind vorbereitet
+- HytaleNewspaperVisualRuntime bündelt den nativen Visual-Pfad
 
 Noch nicht enthalten:
 
@@ -85,7 +91,8 @@ athena-press-mod/
 ├─ tools/
 ├─ press.py
 └─ java/
-   └─ athena-press-core/
+   ├─ athena-press-core/
+   └─ athena-press-integration/
 
 ---
 
@@ -124,12 +131,12 @@ docs/commands.md
 
 ---
 
-## Java-Core
+## Java-Core und Integration
 
-Das Java-Modul liegt unter:
+Die Java-Module liegen unter:
 
 text
-java/athena-press-core
+java/
 
 Der Java-Core ist aktuell ein lokales Werkzeug für:
 
@@ -140,6 +147,17 @@ Der Java-Core ist aktuell ein lokales Werkzeug für:
 - spätere Vorbereitung einer Mod-Anbindung
 
 Er liest echte AthenaPress-JSON-Daten aus dem Projekt.
+
+Das Integration-Modul ergänzt:
+
+- spielnahe Zeitungssessions
+- UI-nahe View-Modelle
+- Visual-Doppelseiten und Layoutblöcke
+- Visual-Preview-Pipeline
+- native Hytale-Adapter-Vorbereitung
+- Visual-Runtime-Fassade für spätere Hytale-Hooks
+
+Die Integration bleibt bewusst API-neutral und importiert keine erfundenen Hytale-Klassen.
 ---
 
 ## Java-/Maven-Umgebung
@@ -160,7 +178,8 @@ mvn -B clean verify
 Letzter bekannter stabiler Teststand:
 
 text
-70 runs
+Core: 91 Tests
+Integration: 120 Tests
 Failures: 0
 Errors: 0
 
@@ -231,6 +250,25 @@ powershell
 mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.integration.AthenaPressVisualPreviewDemo" "-Dexec.args=--vorschau issue_0002"
 
 Diese Ausgabe ist nur ein Debug-/Admin-Einstieg für die native Visual-Struktur, keine HTML- oder Browserlösung.
+
+---
+
+## Native Hytale-Visual-Runtime
+
+Der aktuelle Integrationsstand enthält eine Runtime-Fassade:
+
+text
+HytaleNewspaperVisualRuntime<TPlayer>
+
+Sie bündelt:
+
+- HytaleNewspaperVisualUiPort
+- PlayerNewspaperVisualUiController
+- HytaleNewspaperVisualInputAdapter
+- HytaleNewspaperLifecycleAdapter
+- PlayerNewspaperLifecycleHandler
+
+Spätere echte Hytale-Hooks können dadurch gezielt an Adapter-Methoden angebunden werden, ohne die AthenaPress-Kernlogik umzubauen.
 
 ---
 
@@ -324,6 +362,9 @@ Wichtige Dokumente:
 docs/commands.md
 docs/workflow.md
 docs/data_model.md
+docs/integration_architecture.md
+docs/mod_mvp.md
+docs/backend_status.md
 
 `docs/commands.md` enthält die Befehlsübersicht.
 
@@ -351,10 +392,15 @@ powershell
 git status
 git pull
 
-Nach Java-Core- oder Datenmodelländerungen:
+Nach Java- oder Datenmodelländerungen:
 
 powershell
 mvn -B clean verify
+
+Vor größeren PRs zusätzlich:
+
+powershell
+mvn -B clean install
 
 Optionaler Demo-Check:
 
@@ -374,11 +420,11 @@ g_sacp "Update AthenaPress README"
 
 ## Aktuelle Grenze
 
-AthenaPress ist aktuell ein lokales Backend-/Core-Konzept.
+AthenaPress ist aktuell ein lokales Backend-/Core-/Integrationskonzept.
 
 Die eigentliche Hytale-Integration kommt später.
 
 Bis dahin gilt:
 
-Erst Datenmodell, Validierung, Preview und Dokumentation stabilisieren. Dann Konfetti. Dann Brandschutz. Dann vielleicht noch mehr Konfetti.
+Erst Datenmodell, Validierung, Visual-Preview und adapter-neutrale Integration stabilisieren. Danach echte Hytale-Hooks.
 
