@@ -6,10 +6,19 @@ public class PlayerNewspaperUiController {
 
     private final PlayerNewspaperInteractionService interactionService;
     private final PlayerNewspaperUiPort uiPort;
+    private final NewspaperUiViewFactory viewFactory;
 
     public PlayerNewspaperUiController(
             PlayerNewspaperInteractionService interactionService,
             PlayerNewspaperUiPort uiPort
+    ) {
+        this(interactionService, uiPort, new NewspaperUiViewFactory());
+    }
+
+    public PlayerNewspaperUiController(
+            PlayerNewspaperInteractionService interactionService,
+            PlayerNewspaperUiPort uiPort,
+            NewspaperUiViewFactory viewFactory
     ) {
         if (interactionService == null) {
             throw new IllegalArgumentException("interactionService must not be null");
@@ -19,8 +28,13 @@ public class PlayerNewspaperUiController {
             throw new IllegalArgumentException("uiPort must not be null");
         }
 
+        if (viewFactory == null) {
+            throw new IllegalArgumentException("viewFactory must not be null");
+        }
+
         this.interactionService = interactionService;
         this.uiPort = uiPort;
+        this.viewFactory = viewFactory;
     }
 
     public void openIssue(String playerId, String issueId) {
@@ -51,19 +65,14 @@ public class PlayerNewspaperUiController {
             PlayerNewspaperResponse response =
                     interactionService.handleUiCommand(playerId, command);
 
-            uiPort.show(response);
+            uiPort.show(viewFactory.fromResponse(response));
 
         } catch (IOException exception) {
 
-            uiPort.show(
-                    PlayerNewspaperResponse.of(
-                            playerId,
-                            null,
-                            "Zeitung konnte nicht geladen werden.\n",
-                            false,
-                            null
-                    )
-            );
+            uiPort.show(NewspaperUiView.error(
+                    playerId,
+                    "Zeitung konnte nicht geladen werden.\n"
+            ));
         }
     }
 }
