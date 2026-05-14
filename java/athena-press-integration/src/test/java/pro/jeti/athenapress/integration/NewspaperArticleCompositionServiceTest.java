@@ -26,7 +26,8 @@ class NewspaperArticleCompositionServiceTest {
                 .anyMatch(block -> block.type() == NewspaperVisualBlockType.HEADLINE));
         assertTrue(visualIssue.pages().getFirst().blocks().stream()
                 .anyMatch(block -> "placeholders/front.png".equals(block.assetPath())));
-        assertTrue(visualIssue.pages().getFirst().blocks().stream()
+        assertTrue(visualIssue.pages().stream()
+                .flatMap(page -> page.blocks().stream())
                 .anyMatch(block -> block.type() == NewspaperVisualBlockType.QUOTE));
     }
 

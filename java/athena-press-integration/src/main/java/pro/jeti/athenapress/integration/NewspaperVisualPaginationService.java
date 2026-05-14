@@ -5,6 +5,18 @@ import java.util.List;
 
 public class NewspaperVisualPaginationService {
 
+    private final NewspaperBlockLayoutRuleSet layoutRules;
+
+    public NewspaperVisualPaginationService() {
+        this(NewspaperBlockLayoutRuleSet.defaultRules());
+    }
+
+    public NewspaperVisualPaginationService(NewspaperBlockLayoutRuleSet layoutRules) {
+        this.layoutRules = layoutRules == null
+                ? NewspaperBlockLayoutRuleSet.defaultRules()
+                : layoutRules;
+    }
+
     public List<NewspaperVisualPage> paginate(
             String baseTitle,
             List<NewspaperVisualBlock> blocks,
@@ -23,7 +35,7 @@ public class NewspaperVisualPaginationService {
         int currentWeight = 0;
 
         for (NewspaperVisualBlock block : blocks) {
-            int blockWeight = blockWeight(block, safeTemplate);
+            int blockWeight = layoutRules.weightFor(block, safeTemplate);
             if (!currentBlocks.isEmpty() && currentWeight + blockWeight > pageCapacity) {
                 pages.add(pageFor(baseTitle, pages.size() + 1, currentBlocks));
                 currentBlocks = new ArrayList<>();
@@ -55,29 +67,5 @@ public class NewspaperVisualPaginationService {
         }
 
         return NewspaperVisualPage.of(pageNumber, title, blocks);
-    }
-
-    private int blockWeight(
-            NewspaperVisualBlock block,
-            NewspaperLayoutTemplate template
-    ) {
-        if (block == null || block.type() == null) {
-            return 1;
-        }
-
-        int rowWeight = switch (block.type()) {
-            case HEADLINE -> 4;
-            case SUBHEADLINE -> 2;
-            case BODY_TEXT -> 5;
-            case IMAGE -> 8;
-            case CAPTION -> 1;
-            case QUOTE -> 4;
-            case NOTICE -> 3;
-            case ADVERTISEMENT -> 6;
-            case DIVIDER -> 1;
-        };
-
-        int columnSpan = Math.min(block.columnSpan(), template.columnsPerPage());
-        return rowWeight * columnSpan;
     }
 }

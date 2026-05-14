@@ -231,6 +231,30 @@ Spalten
 Content-Platzierungen
 Bild-Platzierungen
 
+NewspaperBlockLayoutRule
+
+Beschreibt Layoutregeln für einen Visual-Blocktyp.
+
+Enthält:
+
+Standardhöhe
+Featured-Höhe
+Mindestspaltenbreite
+Full-Width-Präferenz
+
+NewspaperBlockLayoutRuleSet
+
+Zentrale Regelquelle für Pagination und Rendering.
+
+Verantwortlich für:
+
+Zeilenhöhe pro Blocktyp
+Spaltenbreite pro Blocktyp
+Gewichtung für Seitenumbrüche
+Featured-Bilder
+Hauptartikel-Blöcke
+volle Breite für Headlines und Divider
+
 NewspaperArticleCompositionService
 
 Erzeugt aus einer spielnahen Ausgabe eine visuelle Zeitung.
@@ -489,6 +513,7 @@ Visual-Blöcke
 Visual-Seiten
 Doppelseiten
 Layout-Templates
+Layout-Regeln
 Spaltenmodell
 Content-Platzierungen
 Bild-Platzierungen

@@ -6,6 +6,18 @@ import java.util.List;
 
 public class NewspaperVisualRenderer {
 
+    private final NewspaperBlockLayoutRuleSet layoutRules;
+
+    public NewspaperVisualRenderer() {
+        this(NewspaperBlockLayoutRuleSet.defaultRules());
+    }
+
+    public NewspaperVisualRenderer(NewspaperBlockLayoutRuleSet layoutRules) {
+        this.layoutRules = layoutRules == null
+                ? NewspaperBlockLayoutRuleSet.defaultRules()
+                : layoutRules;
+    }
+
     public List<NewspaperPageLayout> render(
             NewspaperVisualIssue issue,
             NewspaperLayoutTemplate template
@@ -33,8 +45,8 @@ public class NewspaperVisualRenderer {
         int[] rowCursors = new int[template.columnsPerPage()];
 
         for (NewspaperVisualBlock block : page.blocks()) {
-            int rowSpan = rowSpanFor(block);
-            int columnSpan = Math.min(block.columnSpan(), template.columnsPerPage());
+            int rowSpan = layoutRules.rowSpanFor(block, template);
+            int columnSpan = layoutRules.columnSpanFor(block, template);
             int columnIndex = columnIndexFor(rowCursors, columnSpan);
             int rowStart = maxCursor(rowCursors, columnIndex, columnSpan);
 
@@ -120,21 +132,4 @@ public class NewspaperVisualRenderer {
         return cursor;
     }
 
-    private int rowSpanFor(NewspaperVisualBlock block) {
-        if (block == null || block.type() == null) {
-            return 1;
-        }
-
-        return switch (block.type()) {
-            case HEADLINE -> 4;
-            case SUBHEADLINE -> 2;
-            case BODY_TEXT -> 5;
-            case IMAGE -> 8;
-            case CAPTION -> 1;
-            case QUOTE -> 4;
-            case NOTICE -> 3;
-            case ADVERTISEMENT -> 6;
-            case DIVIDER -> 1;
-        };
-    }
 }
