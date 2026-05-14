@@ -168,6 +168,26 @@ PlayerNewspaperVisualViewFactory
 Erzeugt aus einer PlayerNewspaperVisualResponse eine UI-nahe Visual-View.
 
 Der spätere Hytale-Adapter muss dadurch nicht direkt Session-Responses interpretieren, sondern bekommt bereits eine klare Ansicht mit Seiten und Buttons.
+
+PlayerNewspaperVisualUiController
+
+Steuert den visuellen UI-Fluss.
+
+Verantwortlich für:
+
+visuelle Ausgabe öffnen
+aktuelle Doppelseite anzeigen
+Weiter-/Zurückblättern aus UI-Commands verarbeiten
+visuelle Ausgabe schließen
+Fehler in Message-Views übersetzen
+
+PlayerNewspaperVisualUiPort
+
+Port für spätere native Visual-UI-Ausgabe.
+
+ConsoleNewspaperVisualUiPort
+
+Einfache Debug-Ausgabe für Visual-Views ohne Browser, HTML oder WebView.
 4. UI-State-/View-Modell
 NewspaperUiView
 
