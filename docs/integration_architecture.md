@@ -816,6 +816,9 @@ Spätere Hytale-Hooks müssen dadurch nicht jeden Baustein einzeln
 zusammensetzen, sondern können die Runtime erzeugen und direkt ihre
 Convenience-Methoden verwenden.
 
+Für echte Hytale-Playerobjekte bietet die Runtime `onPlayer...`-Methoden,
+die TPlayer über den HytalePlayerContextResolver auflösen.
+
 10. Architekturfluss
 Zeitung öffnen
 Hytale Event

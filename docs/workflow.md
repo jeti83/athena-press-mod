@@ -229,9 +229,9 @@ Spätere Hytale-Hooks sollen ungefähr so angebunden werden:
 | Player Leave | runtime.onPlayerDisconnected(player) |
 | Session Timeout | runtime.onSessionTimeout(player) |
 | Server Shutdown | runtime.onServerShutdown() |
-| UI Button | runtime.onUiButton(context, command, value) |
-| Keybind | runtime.onKeyBind(context, command, value) |
-| /ap | runtime.onChatCommand(context, "/ap", issueId) |
+| UI Button | runtime.onPlayerUiButton(player, command, value) |
+| Keybind | runtime.onPlayerKeyBind(player, command, value) |
+| /ap | runtime.onPlayerChatCommand(player, "/ap", issueId) |
 
 Wichtig:
 Der Visual-Pfad bleibt getrennt vom Text-/Debug-Pfad.

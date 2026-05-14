@@ -9,6 +9,7 @@ public class HytaleNewspaperVisualRuntime<TPlayer> {
     private final HytaleNewspaperVisualInputAdapter visualInputAdapter;
     private final PlayerNewspaperLifecycleHandler lifecycleHandler;
     private final HytaleNewspaperLifecycleAdapter<TPlayer> lifecycleAdapter;
+    private final HytalePlayerContextResolver<TPlayer> playerContextResolver;
 
     public HytaleNewspaperVisualRuntime(
             AthenaPressIntegrationPlugin plugin,
@@ -42,6 +43,7 @@ public class HytaleNewspaperVisualRuntime<TPlayer> {
                 new HytaleNewspaperVisualInputAdapter(visualInputDispatcher);
         this.lifecycleHandler =
                 new PlayerNewspaperLifecycleHandler(plugin, textUiPort, visualUiPort);
+        this.playerContextResolver = playerContextResolver;
         this.lifecycleAdapter =
                 new HytaleNewspaperLifecycleAdapter<>(
                         lifecycleHandler,
@@ -116,5 +118,37 @@ public class HytaleNewspaperVisualRuntime<TPlayer> {
 
     public void onServerTrigger(HytalePlayerContext player, String command, String value) {
         visualInputAdapter.onServerTrigger(player, command, value);
+    }
+
+    public void onPlayerNpcInteraction(TPlayer player, String issueId) {
+        visualInputAdapter.onNpcInteraction(resolve(player), issueId);
+    }
+
+    public void onPlayerItemUse(TPlayer player, String issueId) {
+        visualInputAdapter.onItemUse(resolve(player), issueId);
+    }
+
+    public void onPlayerUiButton(TPlayer player, String command, String value) {
+        visualInputAdapter.onUiButton(resolve(player), command, value);
+    }
+
+    public void onPlayerChatCommand(TPlayer player, String command, String value) {
+        visualInputAdapter.onChatCommand(resolve(player), command, value);
+    }
+
+    public void onPlayerKeyBind(TPlayer player, String command, String value) {
+        visualInputAdapter.onKeyBind(resolve(player), command, value);
+    }
+
+    public void onPlayerServerTrigger(TPlayer player, String command, String value) {
+        visualInputAdapter.onServerTrigger(resolve(player), command, value);
+    }
+
+    private HytalePlayerContext resolve(TPlayer player) {
+        if (player == null) {
+            return null;
+        }
+
+        return playerContextResolver.resolve(player);
     }
 }

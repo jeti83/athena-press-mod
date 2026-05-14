@@ -4,6 +4,7 @@ import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
@@ -132,6 +133,39 @@ class HytaleNewspaperVisualRuntimeTest {
         runtime.onUiButton(player, NewspaperVisualUiCommands.NEXT_SPREAD, null);
 
         assertEquals(1, bridge.lastView.spreadIndex());
+    }
+
+    @Test
+    void runtimeResolvesPlayerForUiButtonConvenienceMethod() {
+        CapturingVisualBridge bridge = new CapturingVisualBridge();
+        HytaleNewspaperVisualRuntime<String> runtime =
+                new HytaleNewspaperVisualRuntime<>(
+                        new StubPlugin(),
+                        new NoopTextUiPort(),
+                        bridge,
+                        new StubResolver()
+                );
+
+        runtime.onPlayerConnected("player-1");
+        runtime.onPlayerUiButton("player-1", NewspaperVisualUiCommands.NEXT_SPREAD, null);
+
+        assertEquals(1, bridge.lastView.spreadIndex());
+    }
+
+    @Test
+    void runtimeIgnoresMissingPlayerForInputConvenienceMethod() {
+        CapturingVisualBridge bridge = new CapturingVisualBridge();
+        HytaleNewspaperVisualRuntime<String> runtime =
+                new HytaleNewspaperVisualRuntime<>(
+                        new StubPlugin(),
+                        new NoopTextUiPort(),
+                        bridge,
+                        new StubResolver()
+                );
+
+        runtime.onPlayerUiButton(null, NewspaperVisualUiCommands.NEXT_SPREAD, null);
+
+        assertNull(bridge.lastView);
     }
 
     private static class StubResolver implements HytalePlayerContextResolver<String> {
