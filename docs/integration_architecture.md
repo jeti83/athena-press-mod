@@ -684,6 +684,23 @@ Verantwortlich für:
 Sessioncleanup
 Zeitung schließen
 Timeoutverarbeitung
+Visual-Overlay-Cleanup
+
+Aktuelle Cleanup-Regel:
+
+disconnect
+→ Text-Zeitung schließen
+→ Visual-Zeitung schließen
+→ registrierten Visual-Spielerkontext freigeben
+
+timeout
+→ Text-Zeitung schließen
+→ Visual-Zeitung schließen
+→ Spieler-Kontext behalten
+
+Server-Shutdown bleibt bewusst placeholder-only, solange kein globales
+closeAllNewspapers() im Plugin existiert.
+
 9. Hytale-API-Adapter
 
 Das ist die wichtigste neue Ebene.

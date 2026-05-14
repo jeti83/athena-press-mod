@@ -4,10 +4,19 @@ public class PlayerNewspaperLifecycleHandler {
 
     private final AthenaPressIntegrationPlugin plugin;
     private final PlayerNewspaperUiPort uiPort;
+    private final PlayerNewspaperVisualUiPort visualUiPort;
 
     public PlayerNewspaperLifecycleHandler(
             AthenaPressIntegrationPlugin plugin,
             PlayerNewspaperUiPort uiPort
+    ) {
+        this(plugin, uiPort, null);
+    }
+
+    public PlayerNewspaperLifecycleHandler(
+            AthenaPressIntegrationPlugin plugin,
+            PlayerNewspaperUiPort uiPort,
+            PlayerNewspaperVisualUiPort visualUiPort
     ) {
         if (plugin == null) {
             throw new IllegalArgumentException("plugin must not be null");
@@ -19,6 +28,7 @@ public class PlayerNewspaperLifecycleHandler {
 
         this.plugin = plugin;
         this.uiPort = uiPort;
+        this.visualUiPort = visualUiPort;
     }
 
     public void handle(PlayerNewspaperLifecycleEvent event) {
@@ -48,6 +58,8 @@ public class PlayerNewspaperLifecycleHandler {
             plugin.onPlayerCloseNewspaper(playerId);
             uiPort.close(playerId);
         }
+
+        closeVisualNewspaperForDisconnectedPlayer(playerId);
     }
 
     private void handleSessionTimeout(String playerId) {
@@ -62,10 +74,33 @@ public class PlayerNewspaperLifecycleHandler {
                     "Zeitungssitzung wegen Inaktivität geschlossen.\n"
             ));
         }
+
+        closeVisualNewspaperForTimeout(playerId);
     }
 
     private void handleServerShutdown() {
         // Noch kein globales Session-Cleanup im Plugin verfügbar.
         // Später: alle offenen Spieler-Sessions schließen.
+    }
+
+    private void closeVisualNewspaperForDisconnectedPlayer(String playerId) {
+        if (visualUiPort == null) {
+            return;
+        }
+
+        if (plugin.hasOpenVisualNewspaper(playerId)) {
+            plugin.onPlayerCloseVisualNewspaper(playerId);
+        }
+
+        visualUiPort.releasePlayer(playerId);
+    }
+
+    private void closeVisualNewspaperForTimeout(String playerId) {
+        if (visualUiPort == null || !plugin.hasOpenVisualNewspaper(playerId)) {
+            return;
+        }
+
+        plugin.onPlayerCloseVisualNewspaper(playerId);
+        visualUiPort.close(playerId);
     }
 }

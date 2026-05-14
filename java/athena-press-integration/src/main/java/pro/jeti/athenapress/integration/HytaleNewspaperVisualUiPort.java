@@ -66,6 +66,16 @@ public class HytaleNewspaperVisualUiPort implements PlayerNewspaperVisualUiPort 
         }
     }
 
+    @Override
+    public void releasePlayer(String playerId) {
+        if (!hasText(playerId)) {
+            return;
+        }
+
+        close(playerId);
+        unregisterPlayer(playerId);
+    }
+
     private boolean hasText(String value) {
         return value != null && !value.isBlank();
     }
