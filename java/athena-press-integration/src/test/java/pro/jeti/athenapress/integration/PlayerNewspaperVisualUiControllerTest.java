@@ -62,7 +62,7 @@ class PlayerNewspaperVisualUiControllerTest {
         controller.openIssue("player-1", "issue_visual");
         controller.handleCommand(
                 "player-1",
-                PlayerNewspaperUiCommand.custom("visual_next_spread", null)
+                NewspaperVisualUiCommands.nextSpread()
         );
 
         assertNotNull(uiPort.lastView);

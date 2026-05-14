@@ -91,14 +91,14 @@ public class NewspaperDoublePageCompositionService {
         if (spreadIndex > 0) {
             buttons.add(NewspaperUiButton.secondary(
                     "Zurückblättern",
-                    PlayerNewspaperUiCommand.custom("visual_previous_spread", null)
+                    NewspaperVisualUiCommands.previousSpread()
             ));
         }
 
         if ((spreadIndex + 1) * 2 < pageCount) {
             buttons.add(NewspaperUiButton.primary(
                     "Weiterblättern",
-                    PlayerNewspaperUiCommand.custom("visual_next_spread", null)
+                    NewspaperVisualUiCommands.nextSpread()
             ));
         }
 

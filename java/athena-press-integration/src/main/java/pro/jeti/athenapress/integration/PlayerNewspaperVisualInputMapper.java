@@ -16,14 +16,14 @@ public class PlayerNewspaperVisualInputMapper {
 
             case "visual_current_spread", "current_spread", "current",
                     "refresh", "aktualisieren" ->
-                    PlayerNewspaperUiCommand.custom("visual_current_spread", event.value());
+                    NewspaperVisualUiCommands.currentSpread(event.value());
 
             case "visual_next_spread", "next_spread", "next", "weiter", "vor" ->
-                    PlayerNewspaperUiCommand.custom("visual_next_spread", event.value());
+                    NewspaperVisualUiCommands.nextSpread(event.value());
 
             case "visual_previous_spread", "previous_spread", "previous",
                     "prev", "back", "zurueck", "zurück" ->
-                    PlayerNewspaperUiCommand.custom("visual_previous_spread", event.value());
+                    NewspaperVisualUiCommands.previousSpread(event.value());
 
             case "close", "close_issue", "close_visual_issue",
                     "schliessen", "schließen" ->

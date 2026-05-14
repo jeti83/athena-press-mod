@@ -35,7 +35,7 @@ class PlayerNewspaperVisualInputMapperTest {
                 PlayerNewspaperInputEvent.uiButton("player-1", "weiter", null)
         );
 
-        assertEquals("visual_next_spread", command.uiCommand());
+        assertEquals(NewspaperVisualUiCommands.NEXT_SPREAD, command.uiCommand());
     }
 
     @Test
@@ -44,7 +44,7 @@ class PlayerNewspaperVisualInputMapperTest {
                 PlayerNewspaperInputEvent.keyBind("player-1", "zurück", null)
         );
 
-        assertEquals("visual_previous_spread", command.uiCommand());
+        assertEquals(NewspaperVisualUiCommands.PREVIOUS_SPREAD, command.uiCommand());
     }
 
     @Test

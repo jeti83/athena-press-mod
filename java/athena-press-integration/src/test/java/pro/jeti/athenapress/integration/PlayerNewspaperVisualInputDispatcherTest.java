@@ -43,7 +43,11 @@ class PlayerNewspaperVisualInputDispatcherTest {
         PlayerNewspaperVisualInputDispatcher dispatcher = createDispatcher(uiPort);
 
         dispatcher.dispatch(
-                PlayerNewspaperInputEvent.uiButton("player-1", "visual_next_spread", null)
+                PlayerNewspaperInputEvent.uiButton(
+                        "player-1",
+                        NewspaperVisualUiCommands.NEXT_SPREAD,
+                        null
+                )
         );
 
         assertNotNull(uiPort.lastView);

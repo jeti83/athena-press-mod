@@ -61,9 +61,11 @@ class PlayerNewspaperVisualViewFactoryTest {
         assertTrue(view.hasPreviousSpread());
         assertTrue(view.hasNextSpread());
         assertTrue(view.buttons().stream()
-                .anyMatch(button -> "visual_previous_spread".equals(button.command().uiCommand())));
+                .anyMatch(button -> NewspaperVisualUiCommands.PREVIOUS_SPREAD
+                        .equals(button.command().uiCommand())));
         assertTrue(view.buttons().stream()
-                .anyMatch(button -> "visual_next_spread".equals(button.command().uiCommand())));
+                .anyMatch(button -> NewspaperVisualUiCommands.NEXT_SPREAD
+                        .equals(button.command().uiCommand())));
         assertEquals(4, view.buttons().size());
     }
 

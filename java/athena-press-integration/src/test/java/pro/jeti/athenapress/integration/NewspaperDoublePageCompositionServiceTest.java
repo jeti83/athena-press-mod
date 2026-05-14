@@ -35,9 +35,11 @@ class NewspaperDoublePageCompositionServiceTest {
         assertEquals(3, spreads.size());
         assertFalse(middleSpread.navigationButtons().isEmpty());
         assertTrue(middleSpread.navigationButtons().stream()
-                .anyMatch(button -> button.command().uiCommand().equals("visual_previous_spread")));
+                .anyMatch(button -> button.command().uiCommand()
+                        .equals(NewspaperVisualUiCommands.PREVIOUS_SPREAD)));
         assertTrue(middleSpread.navigationButtons().stream()
-                .anyMatch(button -> button.command().uiCommand().equals("visual_next_spread")));
+                .anyMatch(button -> button.command().uiCommand()
+                        .equals(NewspaperVisualUiCommands.NEXT_SPREAD)));
     }
 
     @Test

@@ -64,14 +64,14 @@ public class PlayerNewspaperVisualViewFactory {
         if (response.hasPreviousSpread()) {
             buttons.add(NewspaperUiButton.secondary(
                     "Zurückblättern",
-                    PlayerNewspaperUiCommand.custom("visual_previous_spread", null)
+                    NewspaperVisualUiCommands.previousSpread()
             ));
         }
 
         if (response.hasNextSpread()) {
             buttons.add(NewspaperUiButton.primary(
                     "Weiterblättern",
-                    PlayerNewspaperUiCommand.custom("visual_next_spread", null)
+                    NewspaperVisualUiCommands.nextSpread()
             ));
         }
 

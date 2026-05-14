@@ -4,10 +4,6 @@ import java.io.IOException;
 
 public class PlayerNewspaperVisualUiController {
 
-    private static final String PREVIOUS_SPREAD_COMMAND = "visual_previous_spread";
-    private static final String NEXT_SPREAD_COMMAND = "visual_next_spread";
-    private static final String CURRENT_SPREAD_COMMAND = "visual_current_spread";
-
     private final AthenaPressIntegrationPlugin plugin;
     private final PlayerNewspaperVisualUiPort uiPort;
     private final PlayerNewspaperVisualViewFactory viewFactory;
@@ -97,17 +93,17 @@ public class PlayerNewspaperVisualUiController {
     private void handleVisualCommand(String playerId, String uiCommand) {
         String normalizedCommand = normalize(uiCommand);
 
-        if (PREVIOUS_SPREAD_COMMAND.equals(normalizedCommand)) {
+        if (NewspaperVisualUiCommands.PREVIOUS_SPREAD.equals(normalizedCommand)) {
             showPreviousSpread(playerId);
             return;
         }
 
-        if (NEXT_SPREAD_COMMAND.equals(normalizedCommand)) {
+        if (NewspaperVisualUiCommands.NEXT_SPREAD.equals(normalizedCommand)) {
             showNextSpread(playerId);
             return;
         }
 
-        if (CURRENT_SPREAD_COMMAND.equals(normalizedCommand)) {
+        if (NewspaperVisualUiCommands.CURRENT_SPREAD.equals(normalizedCommand)) {
             showCurrentSpread(playerId);
             return;
         }
