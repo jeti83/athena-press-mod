@@ -7,6 +7,7 @@ import pro.jeti.athenapress.repository.CategoryRepository;
 import pro.jeti.athenapress.repository.IssueRepository;
 import pro.jeti.athenapress.repository.SubscriberRepository;
 import pro.jeti.athenapress.service.DeliveryService;
+import pro.jeti.athenapress.service.GameNewspaperSessionService;
 import pro.jeti.athenapress.service.GameTextRendererService;
 import pro.jeti.athenapress.service.GameViewService;
 import pro.jeti.athenapress.service.PressService;
@@ -30,6 +31,7 @@ public class AthenaPressCore {
     private final PreviewService previewService;
     private final GameViewService gameViewService;
     private final GameTextRendererService gameTextRendererService;
+    private final GameNewspaperSessionService gameNewspaperSessionService;
 
     public AthenaPressCore(Path athenaPressRoot) {
         this.athenaPressRoot = athenaPressRoot;
@@ -51,6 +53,10 @@ public class AthenaPressCore {
         this.previewService = new PreviewService();
         this.gameViewService = new GameViewService(pressService);
         this.gameTextRendererService = new GameTextRendererService();
+        this.gameNewspaperSessionService = new GameNewspaperSessionService(
+                gameViewService,
+                gameTextRendererService
+        );
     }
 
     public String getName() {
@@ -103,5 +109,9 @@ public class AthenaPressCore {
 
     public GameTextRendererService getGameTextRendererService() {
         return gameTextRendererService;
+    }
+
+    public GameNewspaperSessionService getGameNewspaperSessionService() {
+        return gameNewspaperSessionService;
     }
 }
