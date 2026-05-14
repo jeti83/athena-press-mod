@@ -125,6 +125,18 @@ public class NewspaperIntegrationGateway {
         return previewPipelineService.renderPreviewText(issueId);
     }
 
+    public void invalidatePreviewForIssue(String issueId) {
+        previewPipelineService.invalidatePreview(issueId);
+    }
+
+    public void clearPreviewCache() {
+        previewPipelineService.clearPreviewCache();
+    }
+
+    public int getCachedPreviewCount() {
+        return previewPipelineService.cachedPreviewCount();
+    }
+
     private GameNewspaperSessionService getOrCreateSession(String playerId) {
         return sessionsByPlayerId.computeIfAbsent(playerId, ignored -> createSession());
     }

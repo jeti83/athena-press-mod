@@ -13,13 +13,15 @@ public class NewspaperPreviewPipelineService {
     private final NewspaperArticleCompositionService articleCompositionService;
     private final NewspaperPreviewService previewService;
     private final NewspaperPreviewTextRenderer previewTextRenderer;
+    private final NewspaperVisualRuntimeCache runtimeCache;
 
     public NewspaperPreviewPipelineService(GameViewService gameViewService) {
         this(
                 gameViewService,
                 new NewspaperArticleCompositionService(),
                 new NewspaperPreviewService(),
-                new NewspaperPreviewTextRenderer()
+                new NewspaperPreviewTextRenderer(),
+                new NewspaperVisualRuntimeCache()
         );
     }
 
@@ -28,6 +30,22 @@ public class NewspaperPreviewPipelineService {
             NewspaperArticleCompositionService articleCompositionService,
             NewspaperPreviewService previewService,
             NewspaperPreviewTextRenderer previewTextRenderer
+    ) {
+        this(
+                gameViewService,
+                articleCompositionService,
+                previewService,
+                previewTextRenderer,
+                new NewspaperVisualRuntimeCache()
+        );
+    }
+
+    public NewspaperPreviewPipelineService(
+            GameViewService gameViewService,
+            NewspaperArticleCompositionService articleCompositionService,
+            NewspaperPreviewService previewService,
+            NewspaperPreviewTextRenderer previewTextRenderer,
+            NewspaperVisualRuntimeCache runtimeCache
     ) {
         if (gameViewService == null) {
             throw new IllegalArgumentException("gameViewService must not be null");
@@ -43,6 +61,9 @@ public class NewspaperPreviewPipelineService {
         this.previewTextRenderer = previewTextRenderer == null
                 ? new NewspaperPreviewTextRenderer()
                 : previewTextRenderer;
+        this.runtimeCache = runtimeCache == null
+                ? new NewspaperVisualRuntimeCache()
+                : runtimeCache;
     }
 
     public NewspaperPreviewIssue createPreview(String issueId) throws IOException {
@@ -50,13 +71,11 @@ public class NewspaperPreviewPipelineService {
             return emptyPreview();
         }
 
-        GameIssueView issueView = gameViewService.createPublishedIssueView(issueId);
-        if (issueView == null) {
-            return emptyPreview();
-        }
-
-        NewspaperVisualIssue visualIssue = articleCompositionService.compose(issueView);
-        return previewService.createPreview(visualIssue);
+        NewspaperPreviewIssue previewIssue = runtimeCache.getOrCreatePreview(
+                issueId,
+                this::loadPreview
+        );
+        return previewIssue == null ? emptyPreview() : previewIssue;
     }
 
     public String renderPreviewText(String issueId) throws IOException {
@@ -66,6 +85,32 @@ public class NewspaperPreviewPipelineService {
         }
 
         return previewTextRenderer.render(previewIssue);
+    }
+
+    public void invalidatePreview(String issueId) {
+        runtimeCache.invalidateIssue(issueId);
+    }
+
+    public void clearPreviewCache() {
+        runtimeCache.clear();
+    }
+
+    public int cachedPreviewCount() {
+        return runtimeCache.cachedPreviewCount();
+    }
+
+    public boolean hasCachedPreview(String issueId) {
+        return runtimeCache.hasCachedPreview(issueId);
+    }
+
+    private NewspaperPreviewIssue loadPreview(String issueId) throws IOException {
+        GameIssueView issueView = gameViewService.createPublishedIssueView(issueId);
+        if (issueView == null) {
+            return emptyPreview();
+        }
+
+        NewspaperVisualIssue visualIssue = articleCompositionService.compose(issueView);
+        return previewService.createPreview(visualIssue);
     }
 
     private NewspaperPreviewIssue emptyPreview() {

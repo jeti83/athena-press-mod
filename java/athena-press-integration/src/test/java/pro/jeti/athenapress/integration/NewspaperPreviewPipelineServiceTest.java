@@ -3,14 +3,21 @@ package pro.jeti.athenapress.integration;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import pro.jeti.athenapress.AthenaPressCore;
+import pro.jeti.athenapress.model.GameArticleView;
+import pro.jeti.athenapress.model.GameIssueView;
+import pro.jeti.athenapress.service.GameViewService;
+import pro.jeti.athenapress.service.PressService;
 
 class NewspaperPreviewPipelineServiceTest {
 
@@ -69,6 +76,35 @@ class NewspaperPreviewPipelineServiceTest {
         assertTrue(text.contains("Diese Ausgabe ist nicht verfügbar."));
     }
 
+    @Test
+    void cachesPublishedIssuePreviewAcrossCalls() throws IOException {
+        CountingGameViewService gameViewService = new CountingGameViewService(tempDir);
+        NewspaperPreviewPipelineService service =
+                new NewspaperPreviewPipelineService(gameViewService);
+
+        service.createPreview("issue_cached");
+        service.renderPreviewText("issue_cached");
+        service.createPreview("issue_cached");
+
+        assertEquals(1, gameViewService.loadCount());
+        assertEquals(1, service.cachedPreviewCount());
+        assertTrue(service.hasCachedPreview("issue_cached"));
+    }
+
+    @Test
+    void reloadsPreviewAfterInvalidation() throws IOException {
+        CountingGameViewService gameViewService = new CountingGameViewService(tempDir);
+        NewspaperPreviewPipelineService service =
+                new NewspaperPreviewPipelineService(gameViewService);
+
+        service.createPreview("issue_cached");
+        service.invalidatePreview("issue_cached");
+        service.createPreview("issue_cached");
+
+        assertEquals(2, gameViewService.loadCount());
+        assertEquals(1, service.cachedPreviewCount());
+    }
+
     private void createPreviewDataSet() throws IOException {
         createFolders();
 
@@ -117,5 +153,39 @@ class NewspaperPreviewPipelineServiceTest {
         Files.createDirectories(tempDir.resolve("issues").resolve("draft"));
         Files.createDirectories(tempDir.resolve("issues").resolve("published"));
         Files.createDirectories(tempDir.resolve("issues").resolve("archived"));
+    }
+
+    private static class CountingGameViewService extends GameViewService {
+        private final AtomicInteger loadCount = new AtomicInteger();
+
+        CountingGameViewService(Path dataRoot) {
+            super(new PressService(dataRoot));
+        }
+
+        @Override
+        public GameIssueView createPublishedIssueView(String issueId) {
+            loadCount.incrementAndGet();
+            return new GameIssueView(
+                    issueId,
+                    27,
+                    "Athena Cacheblatt",
+                    "Einmal gesetzt, oft geblättert",
+                    "article_cached",
+                    "placeholders/cache.png",
+                    List.of(new GameArticleView(
+                            "article_cached",
+                            "stadtklatsch",
+                            "Der Cache wird nicht muede",
+                            null,
+                            "Kurz und schnell.",
+                            "Einmal komponiert reicht fuer viele Leser.",
+                            "Der Cache haelt die vorbereitete Visual-Preview bereit."
+                    ))
+            );
+        }
+
+        int loadCount() {
+            return loadCount.get();
+        }
     }
 }

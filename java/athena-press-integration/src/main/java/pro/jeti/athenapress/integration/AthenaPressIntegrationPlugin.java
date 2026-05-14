@@ -71,4 +71,16 @@ public class AthenaPressIntegrationPlugin {
     public String renderPreview(String issueId) throws IOException {
         return gateway.renderPreviewForIssue(issueId);
     }
+
+    public void invalidatePreview(String issueId) {
+        gateway.invalidatePreviewForIssue(issueId);
+    }
+
+    public void clearPreviewCache() {
+        gateway.clearPreviewCache();
+    }
+
+    public int getCachedPreviewCount() {
+        return gateway.getCachedPreviewCount();
+    }
 }

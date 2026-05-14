@@ -452,12 +452,27 @@ Fluss:
 
 GameViewService
 → NewspaperArticleCompositionService
+→ NewspaperVisualRuntimeCache
 → NewspaperPreviewService
 → NewspaperPreviewTextRenderer
 
 Damit kann eine reale Ausgabe bereits als adapter-neutrale Doppelseiten-Vorschau geprüft werden, ohne dass eine native Hytale-UI fertig sein muss.
 
 NewspaperIntegrationGateway und AthenaPressIntegrationPlugin stellen dafür schlanke Preview-Methoden bereit.
+
+NewspaperVisualRuntimeCache
+
+Hält vorbereitete Visual-Previews für veröffentlichte Ausgaben im Speicher.
+
+Ziel:
+
+Ausgaben werden nicht pro Spieler oder pro Klick neu komponiert.
+Der spätere Livepfad soll nur leichte Spieler-Sessions und Navigation halten.
+Die teurere Komposition von Artikeln, Blöcken, Seiten und Doppelseiten kann wiederverwendet werden.
+
+Fehlende oder leere Ausgaben werden nicht gecacht, damit spätere Veröffentlichungen nicht durch einen alten Fehlzustand blockiert werden.
+
+Der Cache kann pro Ausgabe invalidiert oder vollständig geleert werden, zum Beispiel nach Veröffentlichung, Archivierung oder Server-Reload.
 
 NewspaperArticleCompositionService
 
