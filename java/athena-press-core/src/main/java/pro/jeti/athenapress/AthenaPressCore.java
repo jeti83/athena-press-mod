@@ -7,12 +7,13 @@ import pro.jeti.athenapress.repository.CategoryRepository;
 import pro.jeti.athenapress.repository.IssueRepository;
 import pro.jeti.athenapress.repository.SubscriberRepository;
 import pro.jeti.athenapress.service.DeliveryService;
+import pro.jeti.athenapress.service.GameTextRendererService;
+import pro.jeti.athenapress.service.GameViewService;
 import pro.jeti.athenapress.service.PressService;
 import pro.jeti.athenapress.service.PreviewService;
 import pro.jeti.athenapress.service.ValidationService;
 
 public class AthenaPressCore {
-
     private static final String NAME = "AthenaPress Core";
     private static final String VERSION = "0.1.0-SNAPSHOT";
 
@@ -27,6 +28,8 @@ public class AthenaPressCore {
     private final DeliveryService deliveryService;
     private final ValidationService validationService;
     private final PreviewService previewService;
+    private final GameViewService gameViewService;
+    private final GameTextRendererService gameTextRendererService;
 
     public AthenaPressCore(Path athenaPressRoot) {
         this.athenaPressRoot = athenaPressRoot;
@@ -46,6 +49,8 @@ public class AthenaPressCore {
                 athenaPressRoot
         );
         this.previewService = new PreviewService();
+        this.gameViewService = new GameViewService(pressService);
+        this.gameTextRendererService = new GameTextRendererService();
     }
 
     public String getName() {
@@ -90,5 +95,13 @@ public class AthenaPressCore {
 
     public PreviewService getPreviewService() {
         return previewService;
+    }
+
+    public GameViewService getGameViewService() {
+        return gameViewService;
+    }
+
+    public GameTextRendererService getGameTextRendererService() {
+        return gameTextRendererService;
     }
 }
