@@ -798,6 +798,24 @@ Bei Disconnect wird nur ein Lifecycle-Event ausgelöst; das eigentliche
 Schließen und Freigeben des Visual-Kontexts übernimmt der
 PlayerNewspaperLifecycleHandler.
 
+HytaleNewspaperVisualRuntime<TPlayer>
+
+Composition-Root für den nativen Visual-Pfad.
+
+Sie bündelt:
+
+AthenaPressIntegrationPlugin
+HytaleNewspaperVisualUiPort
+PlayerNewspaperVisualUiController
+PlayerNewspaperVisualInputDispatcher
+HytaleNewspaperVisualInputAdapter
+PlayerNewspaperLifecycleHandler
+HytaleNewspaperLifecycleAdapter<TPlayer>
+
+Spätere Hytale-Hooks müssen dadurch nicht jeden Baustein einzeln
+zusammensetzen, sondern können die Runtime erzeugen und ihre Adapter
+verwenden.
+
 10. Architekturfluss
 Zeitung öffnen
 Hytale Event

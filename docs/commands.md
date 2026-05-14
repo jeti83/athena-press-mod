@@ -358,6 +358,36 @@ Die Ausgabe zeigt Doppelseiten, Seitenrollen, platzierte Blöcke, Spalten-/Zeile
 
 Wichtig:
 Das ist keine HTML- oder Browser-Preview, sondern eine Textdarstellung der nativen Visual-Struktur.
+
+### Native Visual-Runtime vorbereiten
+
+Für spätere echte Hytale-Hooks gibt es im Integration-Modul:
+
+HytaleNewspaperVisualRuntime<TPlayer>
+
+Sie bündelt den nativen Visual-Pfad:
+
+HytaleNewspaperVisualUiPort
+PlayerNewspaperVisualUiController
+HytaleNewspaperVisualInputAdapter
+HytaleNewspaperLifecycleAdapter
+
+Geplante spätere Zuordnung:
+
+/ap
+→ visualInputAdapter().onChatCommand(...)
+
+Overlay-Button "Weiter"
+→ visualInputAdapter().onUiButton(..., "visual_next_spread", ...)
+
+Overlay-Button "Zurück"
+→ visualInputAdapter().onUiButton(..., "visual_previous_spread", ...)
+
+Spieler verlässt den Server
+→ lifecycleAdapter().onPlayerDisconnected(...)
+
+Das ist weiterhin keine HTML-, Browser- oder WebView-Lösung.
+
 ---
 ## 6. Git-Komfortbefehl
 Wenn die-Funktion `g_sacp` geladen ist, kann ein Änderungspaket so gespeichert werden:
