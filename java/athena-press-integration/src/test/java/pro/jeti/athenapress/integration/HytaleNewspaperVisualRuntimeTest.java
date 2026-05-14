@@ -101,6 +101,39 @@ class HytaleNewspaperVisualRuntimeTest {
         assertTrue(runtime.visualUiPort().hasRegisteredPlayer("player-1"));
     }
 
+    @Test
+    void runtimeConnectsPlayerThroughConvenienceMethod() {
+        HytaleNewspaperVisualRuntime<String> runtime =
+                new HytaleNewspaperVisualRuntime<>(
+                        new AthenaPressIntegrationPlugin(tempDir),
+                        new NoopTextUiPort(),
+                        new CapturingVisualBridge(),
+                        new StubResolver()
+                );
+
+        runtime.onPlayerConnected("player-1");
+
+        assertTrue(runtime.visualUiPort().hasRegisteredPlayer("player-1"));
+    }
+
+    @Test
+    void runtimeForwardsUiButtonThroughConvenienceMethod() {
+        CapturingVisualBridge bridge = new CapturingVisualBridge();
+        HytaleNewspaperVisualRuntime<String> runtime =
+                new HytaleNewspaperVisualRuntime<>(
+                        new StubPlugin(),
+                        new NoopTextUiPort(),
+                        bridge,
+                        new StubResolver()
+                );
+        HytalePlayerContext player = new HytalePlayerContext("player-1", "Jeti");
+
+        runtime.visualUiPort().registerPlayer(player);
+        runtime.onUiButton(player, NewspaperVisualUiCommands.NEXT_SPREAD, null);
+
+        assertEquals(1, bridge.lastView.spreadIndex());
+    }
+
     private static class StubResolver implements HytalePlayerContextResolver<String> {
         @Override
         public HytalePlayerContext resolve(String player) {
@@ -123,15 +156,60 @@ class HytaleNewspaperVisualRuntimeTest {
     }
 
     private static class CapturingVisualBridge implements HytaleNewspaperVisualUiBridge {
+        private PlayerNewspaperVisualView lastView;
+
         @Override
         public void openOrUpdate(
                 HytalePlayerContext player,
                 PlayerNewspaperVisualView view
         ) {
+            this.lastView = view;
         }
 
         @Override
         public void close(HytalePlayerContext player) {
+        }
+    }
+
+    private class StubPlugin extends AthenaPressIntegrationPlugin {
+
+        StubPlugin() {
+            super(tempDir);
+        }
+
+        @Override
+        public PlayerNewspaperVisualResponse onPlayerRequestNextVisualSpread(
+                String playerId
+        ) {
+            return new PlayerNewspaperVisualResponse(
+                    playerId,
+                    "issue_visual",
+                    "Athena Sichtblatt",
+                    1,
+                    2,
+                    new NewspaperPreviewSpread(
+                            1,
+                            new NewspaperPreviewPage(
+                                    2,
+                                    "Seite 2",
+                                    NewspaperPageRole.RIGHT_INNER,
+                                    NewspaperVisualDesignProfile.athenaReadableNewspaper(),
+                                    java.util.List.of(new NewspaperPreviewBlock(
+                                            NewspaperVisualBlockType.HEADLINE,
+                                            "Weiter",
+                                            null,
+                                            0,
+                                            0,
+                                            2,
+                                            2
+                                    ))
+                            ),
+                            null,
+                            java.util.List.of()
+                    ),
+                    true,
+                    ""
+            );
         }
     }
 }

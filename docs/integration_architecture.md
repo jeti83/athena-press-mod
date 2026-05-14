@@ -813,8 +813,8 @@ PlayerNewspaperLifecycleHandler
 HytaleNewspaperLifecycleAdapter<TPlayer>
 
 Spätere Hytale-Hooks müssen dadurch nicht jeden Baustein einzeln
-zusammensetzen, sondern können die Runtime erzeugen und ihre Adapter
-verwenden.
+zusammensetzen, sondern können die Runtime erzeugen und direkt ihre
+Convenience-Methoden verwenden.
 
 10. Architekturfluss
 Zeitung öffnen

@@ -375,16 +375,16 @@ HytaleNewspaperLifecycleAdapter
 Geplante spätere Zuordnung:
 
 /ap
-→ visualInputAdapter().onChatCommand(...)
+→ runtime.onChatCommand(...)
 
 Overlay-Button "Weiter"
-→ visualInputAdapter().onUiButton(..., "visual_next_spread", ...)
+→ runtime.onUiButton(..., "visual_next_spread", ...)
 
 Overlay-Button "Zurück"
-→ visualInputAdapter().onUiButton(..., "visual_previous_spread", ...)
+→ runtime.onUiButton(..., "visual_previous_spread", ...)
 
 Spieler verlässt den Server
-→ lifecycleAdapter().onPlayerDisconnected(...)
+→ runtime.onPlayerDisconnected(...)
 
 Das ist weiterhin keine HTML-, Browser- oder WebView-Lösung.
 

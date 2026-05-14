@@ -77,4 +77,44 @@ public class HytaleNewspaperVisualRuntime<TPlayer> {
     public HytaleNewspaperLifecycleAdapter<TPlayer> lifecycleAdapter() {
         return lifecycleAdapter;
     }
+
+    public void onPlayerConnected(TPlayer player) {
+        lifecycleAdapter.onPlayerConnected(player);
+    }
+
+    public void onPlayerDisconnected(TPlayer player) {
+        lifecycleAdapter.onPlayerDisconnected(player);
+    }
+
+    public void onSessionTimeout(TPlayer player) {
+        lifecycleAdapter.onSessionTimeout(player);
+    }
+
+    public void onServerShutdown() {
+        lifecycleAdapter.onServerShutdown();
+    }
+
+    public void onNpcInteraction(HytalePlayerContext player, String issueId) {
+        visualInputAdapter.onNpcInteraction(player, issueId);
+    }
+
+    public void onItemUse(HytalePlayerContext player, String issueId) {
+        visualInputAdapter.onItemUse(player, issueId);
+    }
+
+    public void onUiButton(HytalePlayerContext player, String command, String value) {
+        visualInputAdapter.onUiButton(player, command, value);
+    }
+
+    public void onChatCommand(HytalePlayerContext player, String command, String value) {
+        visualInputAdapter.onChatCommand(player, command, value);
+    }
+
+    public void onKeyBind(HytalePlayerContext player, String command, String value) {
+        visualInputAdapter.onKeyBind(player, command, value);
+    }
+
+    public void onServerTrigger(HytalePlayerContext player, String command, String value) {
+        visualInputAdapter.onServerTrigger(player, command, value);
+    }
 }

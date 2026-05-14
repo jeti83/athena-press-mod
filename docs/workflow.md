@@ -225,13 +225,13 @@ Spätere Hytale-Hooks sollen ungefähr so angebunden werden:
 
 | Hytale-Hook | AthenaPress-Ziel |
 |---|---|
-| Player Join | lifecycleAdapter().onPlayerConnected(player) |
-| Player Leave | lifecycleAdapter().onPlayerDisconnected(player) |
-| Session Timeout | lifecycleAdapter().onSessionTimeout(player) |
-| Server Shutdown | lifecycleAdapter().onServerShutdown() |
-| UI Button | visualInputAdapter().onUiButton(context, command, value) |
-| Keybind | visualInputAdapter().onKeyBind(context, command, value) |
-| /ap | visualInputAdapter().onChatCommand(context, "/ap", issueId) |
+| Player Join | runtime.onPlayerConnected(player) |
+| Player Leave | runtime.onPlayerDisconnected(player) |
+| Session Timeout | runtime.onSessionTimeout(player) |
+| Server Shutdown | runtime.onServerShutdown() |
+| UI Button | runtime.onUiButton(context, command, value) |
+| Keybind | runtime.onKeyBind(context, command, value) |
+| /ap | runtime.onChatCommand(context, "/ap", issueId) |
 
 Wichtig:
 Der Visual-Pfad bleibt getrennt vom Text-/Debug-Pfad.
