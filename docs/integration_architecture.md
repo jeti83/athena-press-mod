@@ -698,6 +698,25 @@ Adapter:
 AthenaPress-UI
 → Hytale-UI
 
+HytaleNewspaperVisualUiBridge
+
+Abstrakte native Visual-UI-Brücke.
+
+Später zuständig für:
+
+Doppelseiten-Overlay öffnen
+Doppelseiten-Overlay aktualisieren
+Visual-UI schließen
+
+HytaleNewspaperVisualUiPort
+
+Adapter:
+
+AthenaPress Visual-View
+→ native Hytale-Zeitungs-UI
+
+Er hält nur registrierte Spieler-Kontexte und reicht fertige PlayerNewspaperVisualViews an die Bridge weiter.
+
 HytaleNewspaperInputAdapter
 
 Übersetzt echte Hytale-Ereignisse:
