@@ -179,6 +179,52 @@ class DemoCommandServiceTest {
     }
 
     @Test
+    void createArticleListTextListsArticles() {
+        Article article = new Article(
+                "article_test",
+                "published",
+                "server_news",
+                "Testartikel",
+                null,
+                null,
+                "Kurze Testzusammenfassung",
+                null,
+                "Testinhalt",
+                null,
+                null,
+                List.of(),
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        String text = demoCommandService.createArticleListText(List.of(article));
+
+        assertTrue(text.contains("Artikelliste"));
+        assertTrue(text.contains("Veröffentlichte Artikel:"));
+        assertTrue(text.contains("- article_test | server_news | Testartikel | published | Bild: nein"));
+        assertTrue(text.contains("Kurze Testzusammenfassung"));
+    }
+
+    @Test
+    void createArticleListTextHandlesEmptyList() {
+        String text = demoCommandService.createArticleListText(List.of());
+
+        assertTrue(text.contains("Artikelliste"));
+        assertTrue(text.contains("- Keine Artikel gefunden"));
+    }
+
+    @Test
+    void createArticleListTextHandlesNullList() {
+        String text = demoCommandService.createArticleListText(null);
+
+        assertTrue(text.contains("Artikelliste"));
+        assertTrue(text.contains("- Keine Artikel gefunden"));
+    }
+
+    @Test
     void createValidationTextShowsSuccessMessage() {
         String text = demoCommandService.createValidationText(
                 "issue_0002",
