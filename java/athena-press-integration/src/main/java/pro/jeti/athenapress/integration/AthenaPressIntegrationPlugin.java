@@ -64,6 +64,43 @@ public class AthenaPressIntegrationPlugin {
         return gateway.getOpenIssueIdForPlayer(playerId);
     }
 
+    public PlayerNewspaperVisualResponse onPlayerOpenVisualNewspaper(
+            String playerId,
+            String issueId
+    ) throws IOException {
+        return gateway.openVisualIssueForPlayer(playerId, issueId);
+    }
+
+    public PlayerNewspaperVisualResponse onPlayerRequestCurrentVisualSpread(
+            String playerId
+    ) throws IOException {
+        return gateway.showCurrentVisualSpreadForPlayer(playerId);
+    }
+
+    public PlayerNewspaperVisualResponse onPlayerRequestNextVisualSpread(
+            String playerId
+    ) throws IOException {
+        return gateway.showNextVisualSpreadForPlayer(playerId);
+    }
+
+    public PlayerNewspaperVisualResponse onPlayerRequestPreviousVisualSpread(
+            String playerId
+    ) throws IOException {
+        return gateway.showPreviousVisualSpreadForPlayer(playerId);
+    }
+
+    public void onPlayerCloseVisualNewspaper(String playerId) {
+        gateway.closeVisualIssueForPlayer(playerId);
+    }
+
+    public boolean hasOpenVisualNewspaper(String playerId) {
+        return gateway.hasOpenVisualIssueForPlayer(playerId);
+    }
+
+    public int getOpenVisualSessionCount() {
+        return gateway.getOpenVisualSessionCount();
+    }
+
     public NewspaperPreviewIssue createPreview(String issueId) throws IOException {
         return gateway.createPreviewForIssue(issueId);
     }

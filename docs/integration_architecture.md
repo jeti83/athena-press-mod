@@ -126,6 +126,27 @@ SHOW_OVERVIEW
 SELECT_ARTICLE_BY_NUMBER
 SELECT_ARTICLE_BY_ID
 CLOSE_ISSUE
+
+PlayerNewspaperVisualNavigationService
+
+Verwaltet die spätere visuelle Zeitungsnavigation pro Spieler.
+
+Pro Spieler wird nur gehalten:
+
+offene Ausgaben-ID
+aktueller Doppelseiten-Index
+
+Die vorbereiteten Doppelseiten selbst kommen aus der Preview-Pipeline und dem Visual-Runtime-Cache.
+
+Dadurch muss der spätere Livepfad nicht pro Klick und pro Spieler neu komponieren, sondern nur den aktuellen Spread auswählen.
+
+Unterstützt:
+
+visuelle Ausgabe öffnen
+aktuelle Doppelseite anzeigen
+weiterblättern
+zurückblättern
+visuelle Session schließen
 4. UI-State-/View-Modell
 NewspaperUiView
 

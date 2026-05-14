@@ -88,6 +88,25 @@ class AthenaPressIntegrationPluginTest {
         assertTrue(text.contains("FRONT_COVER"));
     }
 
+    @Test
+    void exposesVisualNewspaperNavigation() throws IOException {
+        createMinimalDataSet();
+
+        AthenaPressIntegrationPlugin plugin = new AthenaPressIntegrationPlugin(tempDir);
+
+        PlayerNewspaperVisualResponse response =
+                plugin.onPlayerOpenVisualNewspaper("player-1", "issue_test");
+
+        assertTrue(response.newspaperOpen());
+        assertTrue(response.hasSpread());
+        assertTrue(plugin.hasOpenVisualNewspaper("player-1"));
+        assertEquals(1, plugin.getOpenVisualSessionCount());
+
+        plugin.onPlayerCloseVisualNewspaper("player-1");
+
+        assertFalse(plugin.hasOpenVisualNewspaper("player-1"));
+    }
+
     private void createMinimalDataSet() throws IOException {
         createFolders();
 

@@ -149,6 +149,21 @@ class NewspaperIntegrationGatewayTest {
         assertTrue(text.contains("Erster Spielartikel"));
     }
 
+    @Test
+    void opensVisualIssueForPlayer() throws IOException {
+        createMinimalDataSet();
+
+        NewspaperIntegrationGateway gateway = createGateway();
+
+        PlayerNewspaperVisualResponse response =
+                gateway.openVisualIssueForPlayer("player-1", "issue_test");
+
+        assertTrue(response.newspaperOpen());
+        assertTrue(response.hasSpread());
+        assertTrue(gateway.hasOpenVisualIssueForPlayer("player-1"));
+        assertEquals(1, gateway.getOpenVisualSessionCount());
+    }
+
     private NewspaperIntegrationGateway createGateway() {
         AthenaPressCore core = new AthenaPressCore(tempDir);
         return new NewspaperIntegrationGateway(core);

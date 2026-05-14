@@ -13,6 +13,7 @@ public class NewspaperIntegrationGateway {
 
     private final AthenaPressCore core;
     private final NewspaperPreviewPipelineService previewPipelineService;
+    private final PlayerNewspaperVisualNavigationService visualNavigationService;
     private final Map<String, GameNewspaperSessionService> sessionsByPlayerId = new HashMap<>();
 
     public NewspaperIntegrationGateway(AthenaPressCore core) {
@@ -22,6 +23,8 @@ public class NewspaperIntegrationGateway {
 
         this.core = core;
         this.previewPipelineService = new NewspaperPreviewPipelineService(core.getGameViewService());
+        this.visualNavigationService =
+                new PlayerNewspaperVisualNavigationService(previewPipelineService);
     }
 
     public String openIssueForPlayer(String playerId, String issueId) throws IOException {
@@ -115,6 +118,43 @@ public class NewspaperIntegrationGateway {
 
     public int getOpenSessionCount() {
         return sessionsByPlayerId.size();
+    }
+
+    public PlayerNewspaperVisualResponse openVisualIssueForPlayer(
+            String playerId,
+            String issueId
+    ) throws IOException {
+        return visualNavigationService.openIssue(playerId, issueId);
+    }
+
+    public PlayerNewspaperVisualResponse showCurrentVisualSpreadForPlayer(
+            String playerId
+    ) throws IOException {
+        return visualNavigationService.showCurrentSpread(playerId);
+    }
+
+    public PlayerNewspaperVisualResponse showNextVisualSpreadForPlayer(
+            String playerId
+    ) throws IOException {
+        return visualNavigationService.showNextSpread(playerId);
+    }
+
+    public PlayerNewspaperVisualResponse showPreviousVisualSpreadForPlayer(
+            String playerId
+    ) throws IOException {
+        return visualNavigationService.showPreviousSpread(playerId);
+    }
+
+    public void closeVisualIssueForPlayer(String playerId) {
+        visualNavigationService.closeIssue(playerId);
+    }
+
+    public boolean hasOpenVisualIssueForPlayer(String playerId) {
+        return visualNavigationService.hasOpenIssue(playerId);
+    }
+
+    public int getOpenVisualSessionCount() {
+        return visualNavigationService.getOpenSessionCount();
     }
 
     public NewspaperPreviewIssue createPreviewForIssue(String issueId) throws IOException {
