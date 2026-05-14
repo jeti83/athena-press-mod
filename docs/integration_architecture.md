@@ -322,6 +322,40 @@ Redaktioneller Ton:
 AthenaPress soll wie ein Spaßblatt mit seriösem Auftreten wirken.
 Reißerische und lustige Anekdoten sind der Normalfall, ernste Meldungen wie Informationen oder Beileidsartikel bleiben aber möglich.
 
+NewspaperPageSectionType
+
+Beschreibt optionale Kompositionsbereiche einer Ausgabe.
+
+Aktuelle Typen:
+
+TITLE_PAGE
+MAIN_ARTICLE
+MIXED_ARTICLES
+ADVERTISEMENTS
+SHORT_NOTICES
+MEMORIAL
+BACK_PAGE
+
+NewspaperSectionRequirement
+
+Beschreibt, ob eine Section erzeugt wird.
+
+Varianten:
+
+REQUIRED
+WHEN_CONTENT_EXISTS
+DISABLED
+
+NewspaperPageSectionPolicy
+
+Verhindert leere Pflichtseiten.
+
+Grundregel:
+Nur die Titelseite ist standardmäßig verpflichtend.
+Alle weiteren Bereiche entstehen nur, wenn sie Inhalt haben.
+
+Dadurch können Anzeigen-, Kurzmeldungs-, Beileids- oder Rückseitenbereiche komplett wegfallen, wenn die Ausgabe sie nicht braucht.
+
 NewspaperArticleCompositionService
 
 Erzeugt aus einer spielnahen Ausgabe eine visuelle Zeitung.
@@ -587,6 +621,8 @@ Seitenecken-Optionen
 Titelseiten-Policy
 Artikel-Fluss-Policy
 Navigationsstil
+optionale Sections
+Section-Erzeugungsregeln
 Spaltenmodell
 Content-Platzierungen
 Bild-Platzierungen

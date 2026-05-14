@@ -11,12 +11,14 @@ public class NewspaperArticleCompositionService {
     private final NewspaperVisualPaginationService paginationService;
     private final NewspaperLayoutTemplate defaultTemplate;
     private final NewspaperVisualDesignProfile designProfile;
+    private final NewspaperPageSectionPolicy sectionPolicy;
 
     public NewspaperArticleCompositionService() {
         this(
                 new NewspaperVisualPaginationService(),
                 NewspaperLayoutTemplate.classicDoublePage(),
-                NewspaperVisualDesignProfile.athenaReadableNewspaper()
+                NewspaperVisualDesignProfile.athenaReadableNewspaper(),
+                NewspaperPageSectionPolicy.defaultPolicy()
         );
     }
 
@@ -27,7 +29,8 @@ public class NewspaperArticleCompositionService {
         this(
                 paginationService,
                 defaultTemplate,
-                NewspaperVisualDesignProfile.athenaReadableNewspaper()
+                NewspaperVisualDesignProfile.athenaReadableNewspaper(),
+                NewspaperPageSectionPolicy.defaultPolicy()
         );
     }
 
@@ -35,6 +38,20 @@ public class NewspaperArticleCompositionService {
             NewspaperVisualPaginationService paginationService,
             NewspaperLayoutTemplate defaultTemplate,
             NewspaperVisualDesignProfile designProfile
+    ) {
+        this(
+                paginationService,
+                defaultTemplate,
+                designProfile,
+                NewspaperPageSectionPolicy.defaultPolicy()
+        );
+    }
+
+    public NewspaperArticleCompositionService(
+            NewspaperVisualPaginationService paginationService,
+            NewspaperLayoutTemplate defaultTemplate,
+            NewspaperVisualDesignProfile designProfile,
+            NewspaperPageSectionPolicy sectionPolicy
     ) {
         this.paginationService = paginationService == null
                 ? new NewspaperVisualPaginationService()
@@ -45,6 +62,9 @@ public class NewspaperArticleCompositionService {
         this.designProfile = designProfile == null
                 ? NewspaperVisualDesignProfile.athenaReadableNewspaper()
                 : designProfile;
+        this.sectionPolicy = sectionPolicy == null
+                ? NewspaperPageSectionPolicy.defaultPolicy()
+                : sectionPolicy;
     }
 
     public NewspaperVisualIssue compose(GameIssueView issueView) {
@@ -71,32 +91,76 @@ public class NewspaperArticleCompositionService {
         if (designProfile.coverPolicy() != NewspaperCoverPolicy.STANDALONE_TITLE_PAGE) {
             return paginationService.paginate(
                     issueTitle(issueView),
-                    blocksForIssue(issueView),
+                    blocksForSections(sectionsFor(issueView)),
                     defaultTemplate
             );
         }
 
         List<NewspaperVisualPage> pages = new ArrayList<>();
-        pages.add(NewspaperVisualPage.of(
-                1,
-                issueTitle(issueView),
-                coverBlocksFor(issueView)
-        ));
+        sectionPolicy.filter(List.of(titlePageSectionFor(issueView)))
+                .stream()
+                .findFirst()
+                .ifPresent(section -> pages.add(NewspaperVisualPage.of(
+                        1,
+                        section.title(),
+                        section.blocks()
+                )));
         pages.addAll(paginationService.paginate(
                 issueTitle(issueView),
-                articleBlocksFor(issueView),
+                blocksForSections(articleSectionsFor(issueView)),
                 defaultTemplate,
-                2
+                pages.size() + 1
         ));
 
         return pages;
     }
 
     private List<NewspaperVisualBlock> blocksForIssue(GameIssueView issueView) {
-        List<NewspaperVisualBlock> blocks = new ArrayList<>();
-        blocks.addAll(coverBlocksFor(issueView));
-        blocks.addAll(articleBlocksFor(issueView));
-        return blocks;
+        return blocksForSections(sectionsFor(issueView));
+    }
+
+    private List<NewspaperPageSection> sectionsFor(GameIssueView issueView) {
+        List<NewspaperPageSection> sections = new ArrayList<>();
+        sections.add(titlePageSectionFor(issueView));
+        sections.addAll(articleSectionsFor(issueView));
+        return sectionPolicy.filter(sections);
+    }
+
+    private NewspaperPageSection titlePageSectionFor(GameIssueView issueView) {
+        return NewspaperPageSection.of(
+                NewspaperPageSectionType.TITLE_PAGE,
+                issueTitle(issueView),
+                coverBlocksFor(issueView)
+        );
+    }
+
+    private List<NewspaperPageSection> articleSectionsFor(GameIssueView issueView) {
+        List<NewspaperPageSection> sections = new ArrayList<>();
+
+        List<NewspaperVisualBlock> mainArticleBlocks = mainArticleBlocksFor(issueView);
+        sections.add(NewspaperPageSection.of(
+                NewspaperPageSectionType.MAIN_ARTICLE,
+                issueTitle(issueView),
+                mainArticleBlocks
+        ));
+
+        sections.add(NewspaperPageSection.of(
+                NewspaperPageSectionType.MIXED_ARTICLES,
+                issueTitle(issueView),
+                mixedArticleBlocksFor(issueView)
+        ));
+
+        return sectionPolicy.filter(sections);
+    }
+
+    private List<NewspaperVisualBlock> blocksForSections(List<NewspaperPageSection> sections) {
+        if (sections == null || sections.isEmpty()) {
+            return List.of();
+        }
+
+        return sections.stream()
+                .flatMap(section -> section.blocks().stream())
+                .toList();
     }
 
     private List<NewspaperVisualBlock> coverBlocksFor(GameIssueView issueView) {
@@ -119,7 +183,7 @@ public class NewspaperArticleCompositionService {
         return blocks;
     }
 
-    private List<NewspaperVisualBlock> articleBlocksFor(GameIssueView issueView) {
+    private List<NewspaperVisualBlock> mainArticleBlocksFor(GameIssueView issueView) {
         List<NewspaperVisualBlock> blocks = new ArrayList<>();
 
         GameArticleView mainArticle = issueView.findArticleById(issueView.coverMainArticleId());
@@ -127,6 +191,13 @@ public class NewspaperArticleCompositionService {
             addMainArticleBlocks(blocks, mainArticle);
         }
 
+        return blocks;
+    }
+
+    private List<NewspaperVisualBlock> mixedArticleBlocksFor(GameIssueView issueView) {
+        List<NewspaperVisualBlock> blocks = new ArrayList<>();
+
+        GameArticleView mainArticle = issueView.findArticleById(issueView.coverMainArticleId());
         for (GameArticleView article : issueView.articles()) {
             if (mainArticle != null && mainArticle.id().equals(article.id())) {
                 continue;
