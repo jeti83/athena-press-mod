@@ -171,7 +171,91 @@ Erzeugt UI-Views aus Integration-Responses.
 Wichtig:
 Die Spiel-UI kennt dadurch nicht direkt Core-Objekte.
 
-5. UI-Controller-Schicht
+5. Visual-Layout-Schicht
+
+NewspaperVisualIssue
+
+Visuelle Zeitungsstruktur für immersive Ausgaben.
+
+Enthält:
+
+Titel
+Theme
+Seiten
+Doppelseiten-Navigation
+
+NewspaperVisualPage
+
+Visuelle Einzelseite.
+
+Enthält:
+
+Seitennummer
+Seitentitel
+Zeitungsblöcke
+
+NewspaperVisualBlock
+
+Inhaltlicher Layoutblock.
+
+Beispiele:
+
+HEADLINE
+SUBHEADLINE
+BODY_TEXT
+IMAGE
+QUOTE
+NOTICE
+ADVERTISEMENT
+DIVIDER
+
+NewspaperLayoutTemplate
+
+API-neutrales Layoutschema für Zeitungseiten.
+
+Enthält:
+
+Seitenmaße
+Ränder
+Spalten
+Zeilenkapazität
+Spaltenabstände
+
+NewspaperPageLayout
+
+Konkretes Layout einer Seite.
+
+Enthält:
+
+Spalten
+Content-Platzierungen
+Bild-Platzierungen
+
+NewspaperArticleCompositionService
+
+Erzeugt aus einer spielnahen Ausgabe eine visuelle Zeitung.
+
+Verantwortlich für:
+
+Titelblock
+Coverbild
+Artikelblöcke
+Zusammenfassungen
+Seitenaufbau
+
+NewspaperVisualPaginationService
+
+Verteilt Visual-Blöcke auf mehrere Seiten.
+
+NewspaperVisualRenderer
+
+Erzeugt aus visuellen Seiten adapter-neutrale Layoutplatzierungen.
+
+Wichtig:
+Diese Schicht ist keine Browser-, HTML- oder WebView-Lösung.
+Sie bereitet nur Daten für ein späteres natives Hytale-Overlay vor.
+
+6. UI-Controller-Schicht
 PlayerNewspaperUiController
 
 Zentrale UI-Steuerung.
@@ -203,7 +287,7 @@ Text
 Sessionzustand
 offene Ausgabe
 closeRequested
-6. Event-/Input-Layer
+7. Event-/Input-Layer
 PlayerNewspaperInputEvent
 
 Spielereingabe-Ereignis.
@@ -224,7 +308,7 @@ PlayerNewspaperInputDispatcher
 
 Verteilt Eingaben an UI-Controller.
 
-7. Session-/Lifecycle-Management
+8. Session-/Lifecycle-Management
 PlayerNewspaperLifecycleEvent
 
 Lifecycle-Ereignisse:
@@ -240,7 +324,7 @@ Verantwortlich für:
 Sessioncleanup
 Zeitung schließen
 Timeoutverarbeitung
-8. Hytale-API-Adapter
+9. Hytale-API-Adapter
 
 Das ist die wichtigste neue Ebene.
 
@@ -295,7 +379,7 @@ Shutdown
 
 mit AthenaPress-Lifecycle.
 
-9. Architekturfluss
+10. Architekturfluss
 Zeitung öffnen
 Hytale Event
 → InputAdapter
@@ -305,10 +389,12 @@ Hytale Event
 → Core Services
 → Response
 → ViewFactory
+→ Visual Composition
+→ Visual Renderer
 → UiPort
 → HytaleUiBridge
 → Spiel-UI
-10. Wichtige Architekturentscheidungen
+11. Wichtige Architekturentscheidungen
 Kein HTML-System
 
 Bewusst vermieden:
@@ -340,7 +426,7 @@ eigene Zeitung
 eigenen UI-State
 eigene Navigation
 eigene Artikelauswahl
-11. Aktueller Projektstatus
+12. Aktueller Projektstatus
 Architektur
 
 Sehr weit fortgeschritten.
@@ -357,20 +443,35 @@ Echte Hytale-API
 
 Noch nicht konkret angebunden.
 
-12. Nächster realistischer Großschritt
+Visual-System
 
-Nun beginnt erstmals:
+Begonnen.
 
-echte Hytale-API-Recherche
-statt Architekturaufbau.
+Vorhanden sind:
 
-Ab jetzt werden relevant:
+Visual-Blöcke
+Visual-Seiten
+Doppelseiten
+Layout-Templates
+Spaltenmodell
+Content-Platzierungen
+Bild-Platzierungen
+Artikel-Komposition
+Pagination
+adapter-neutrales Rendering
 
-echte UI-Klassen
-echte Eventsysteme
-echte Buttons
-echte Fenster
-echte Server-Callbacks
-echte Player-Objekte
+13. Nächster realistischer Großschritt
+
+Weiterer Ausbau des Visual-Layout-Systems.
+
+Als Nächstes werden relevant:
+
+stärkere Layoutregeln
+Artikelüberläufe
+Doppelseiten-Komposition
+Bildgrößen
+Titel-/Covervarianten
+Anzeigenblöcke
+spätere native Hytale-UI-Verdrahtung
 
 Der große Unterbau dafür existiert inzwischen.
