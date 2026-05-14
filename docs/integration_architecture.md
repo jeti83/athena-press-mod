@@ -649,6 +649,25 @@ PlayerNewspaperInputDispatcher
 
 Verteilt Eingaben an UI-Controller.
 
+PlayerNewspaperVisualInputMapper
+
+Übersetzt Overlay-Eingaben zu Visual-UI-Commands.
+
+Unterstützt unter anderem:
+
+/ap
+öffnen
+weiter
+zurück
+schließen
+
+PlayerNewspaperVisualInputDispatcher
+
+Verteilt Visual-Eingaben an den PlayerNewspaperVisualUiController.
+
+Der Text-Dispatcher bleibt davon getrennt, damit klassische Text-/Debug-Ausgabe
+und native Visual-Zeitung nicht versehentlich dieselben Zustände vermischen.
+
 8. Session-/Lifecycle-Management
 PlayerNewspaperLifecycleEvent
 
@@ -727,6 +746,18 @@ UI-Button
 Keybind
 
 in AthenaPress-InputEvents.
+
+HytaleNewspaperVisualInputAdapter
+
+Übersetzt echte Hytale-Ereignisse in den Visual-Input-Pfad.
+
+Damit können spätere native Overlay-Buttons oder Keybinds direkt steuern:
+
+öffnen
+aktualisieren
+weiterblättern
+zurückblättern
+schließen
 
 HytaleNewspaperLifecycleAdapter
 
