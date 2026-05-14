@@ -55,7 +55,7 @@ Noch nicht enthalten:
 
 ## Projektstruktur
 
-```text
+text
 athena-press-mod/
 ├─ AthenaPress/
 │  ├─ config.json
@@ -84,7 +84,6 @@ athena-press-mod/
 ├─ press.py
 └─ java/
    └─ athena-press-core/
-```
 
 ---
 
@@ -94,37 +93,32 @@ Das Python-CLI wird aus dem Projektwurzelverzeichnis ausgeführt.
 
 Beispiele:
 
-```powershell
+powershell
 python press.py pruefen
 python press.py artikel liste
 python press.py ausgabe liste
 python press.py abonnent liste
 python press.py ausgabe lesen issue_0002 --voll
-```
 
 Artikel erstellen:
 
-```powershell
+powershell
 python press.py artikel erstellen --titel "Titel" --kategorie server_news --autor HF_jeti83
-```
 
 Artikel mit Zusammenfassung erstellen:
 
-```powershell
+powershell
 python press.py artikel erstellen --titel "Titel" --kategorie server_news --autor HF_jeti83 --zusammenfassung "Kurze Vorschau."
-```
 
 Ausgabe zustellen:
 
-```powershell
+powershell
 python press.py ausgabe zustellen issue_0002
-```
 
 Weitere Befehle stehen in:
 
-```text
+text
 docs/commands.md
-```
 
 ---
 
@@ -132,9 +126,8 @@ docs/commands.md
 
 Das Java-Modul liegt unter:
 
-```text
+text
 java/athena-press-core
-```
 
 Der Java-Core ist aktuell ein lokales Werkzeug für:
 
@@ -145,7 +138,6 @@ Der Java-Core ist aktuell ein lokales Werkzeug für:
 - spätere Vorbereitung einer Mod-Anbindung
 
 Er liest echte AthenaPress-JSON-Daten aus dem Projekt.
-
 ---
 
 ## Java-/Maven-Umgebung
@@ -160,17 +152,15 @@ Aktueller Zielstand:
 
 Standard-Testbefehl im Maven-Modul:
 
-```powershell
+powershell
 mvn -B clean verify
-```
 
 Letzter bekannter stabiler Teststand:
 
-```text
+text
 70 runs
 Failures: 0
 Errors: 0
-```
 
 ---
 
@@ -178,57 +168,48 @@ Errors: 0
 
 Standard-Preview:
 
-```powershell
+powershell
 mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo"
-```
 
 Konkrete Ausgabe anzeigen:
 
-```powershell
+powershell
 mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=issue_0002"
-```
 
 Ausgaben auflisten:
 
-```powershell
+powershell
 mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--list"
-```
-
-Deutsch:
-
-```powershell
+bzw.
+powershell
 mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--liste"
-```
+
+Artikel auflisten:
+mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--articles"
+bzw.
+mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--artikel"
 
 Ausgabe validieren:
 
-```powershell
+powershell
 mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--validate issue_0002"
-```
-
-Deutsch:
-
-```powershell
+bzw.
+powershell
 mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--pruefen issue_0002"
-```
 
 Statusübersicht:
 
-```powershell
+powershell
 mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--status"
-```
 
-Deutsch:
-
-```powershell
+bzw.
+powershell
 mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--uebersicht"
-```
 
 Hilfe:
 
-```powershell
+powershell
 mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--hilfe"
-```
 
 ---
 
@@ -238,34 +219,30 @@ AthenaPress trennt Artikel und Ausgaben.
 
 Artikel liegen unter:
 
-```text
+text
 AthenaPress/articles/
-```
 
 Ausgaben liegen unter:
 
-```text
+text
 AthenaPress/issues/
-```
 
 Ausgaben referenzieren Artikel über IDs.
 
 Beispiel:
 
-```json
+json
 {
   "articles": [
     "article_0001",
     "article_0002"
   ]
 }
-```
 
 Kategorien werden datengetrieben gepflegt unter:
 
-```text
+text
 AthenaPress/templates/categories.json
-```
 
 ---
 
@@ -275,14 +252,13 @@ Ausgaben können optional ein Cover enthalten.
 
 Beispiel:
 
-```json
+json
 {
   "cover": {
     "mainArticleId": "article_0001",
     "image": "placeholders/dating.png"
   }
 }
-```
 
 Regeln:
 
@@ -304,9 +280,8 @@ Erlaubte Werte für `image.sourceType`:
 
 Bildpfade werden relativ zu folgendem Verzeichnis interpretiert:
 
-```text
+text
 AthenaPress/images/
-```
 
 ---
 
@@ -325,11 +300,10 @@ Aktuell bekannte Zustellmodi:
 
 Wichtige Dokumente:
 
-```text
+text
 docs/commands.md
 docs/workflow.md
 docs/data_model.md
-```
 
 `docs/commands.md` enthält die Befehlsübersicht.
 
@@ -343,28 +317,28 @@ docs/data_model.md
 
 Zu Beginn:
 
-```powershell
+powershell
 git status
 git pull
-```
 
 Nach Java-Core- oder Datenmodelländerungen:
 
-```powershell
+powershell
 mvn -B clean verify
-```
 
 Optionaler Demo-Check:
 
-```powershell
+powershell
 mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--status"
-```
+
+Optionaler Artikellisten-Check:
+
+mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--articles"
 
 Commit-Beispiel:
 
-```powershell
+powershell
 g_sacp "Update AthenaPress README"
-```
 
 ---
 
