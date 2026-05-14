@@ -1,3 +1,6 @@
 pro\jeti\athenapress\integration\IntegrationPluginMetadata.class
+pro\jeti\athenapress\integration\PlayerNewspaperInteractionService.class
 pro\jeti\athenapress\integration\NewspaperIntegrationGateway.class
+pro\jeti\athenapress\integration\PlayerNewspaperAction.class
+pro\jeti\athenapress\integration\PlayerNewspaperInteractionService$1.class
 pro\jeti\athenapress\integration\AthenaPressIntegrationPlugin.class
