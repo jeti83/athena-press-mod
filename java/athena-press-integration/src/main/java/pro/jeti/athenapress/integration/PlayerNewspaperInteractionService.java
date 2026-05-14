@@ -88,6 +88,23 @@ public class PlayerNewspaperInteractionService {
             }
         };
     }
+    
+    public PlayerNewspaperResponse handleUiCommand(
+            String playerId,
+            PlayerNewspaperUiCommand command
+    ) throws IOException {
+        if (command == null) {
+            return PlayerNewspaperResponse.of(
+                    playerId,
+                    null,
+                    "UI-Befehl konnte nicht verarbeitet werden.\n",
+                    plugin.hasOpenNewspaper(playerId),
+                    plugin.getOpenIssueId(playerId)
+            );
+        }
+
+        return handleActionResponse(command.action(), playerId, command.value());
+    }
 
     private PlayerNewspaperResponse response(
             String playerId,
