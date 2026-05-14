@@ -235,6 +235,7 @@ Zustellplan
  
 ---
 ### Veröffentlichte Ausgaben auflisten
+
 Englisch:
 
 mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--list"
@@ -243,6 +244,33 @@ Deutsch:
 
 mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--liste"
  
+---
+### Artikel auflisten
+
+Englisch:
+
+mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--articles"
+
+Deutsch:
+
+mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--artikel"
+
+Die Artikelliste zeigt gruppiert:
+
+Veröffentlichte Artikel
+Entwürfe
+Archivierte Artikel
+Artikel mit anderem Status
+
+Pro Artikel werden angezeigt:
+
+Artikel-ID
+Kategorie
+Titel
+Status
+Bild-Hinweis
+Zusammenfassung, falls vorhanden
+
 ---
 ### Ausgabe validieren
 Englisch:
@@ -499,10 +527,7 @@ python tools\mark_issue_read.py --name HF_jeti83 --issue issue_0002
  
 ---
 ## 10. Empfohlene Kontrollbefehle
-Python-Backend prüfen:
 
-python press.py pruefen
- 
 Java-Core testen:
 
 mvn -B clean verify
@@ -526,7 +551,30 @@ Pro Ausgabe werden angezeigt:
 - Cover-Hinweis
 - Untertitel, falls vorhanden
 
+Java-Demo-Artikelliste anzeigen:
 
+mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--articles"
+
+Die Artikelliste zeigt zusätzlich eine gruppierte Übersicht mit:
+
+- Veröffentlichte Artikel
+- Entwürfe
+- Archivierte Artikel
+- Artikel mit anderem Status
+
+Pro Artikel werden angezeigt:
+
+- Artikel-ID
+- Kategorie
+- Titel
+- Status
+- Bild-Hinweis
+- Zusammenfassung, falls vorhanden
+
+Python-Backend prüfen:
+
+python press.py pruefen
+ 
 Häufige Python-Übersichten:
 
 python press.py artikel liste
