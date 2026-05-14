@@ -255,6 +255,40 @@ Featured-Bilder
 Hauptartikel-Blöcke
 volle Breite für Headlines und Divider
 
+NewspaperLayoutMood
+
+Beschreibt die gewünschte Layoutstimmung.
+
+Aktuelle Varianten:
+
+CLASSIC_NEWSPAPER
+LOOSE_COMMUNITY_SHEET
+FEATURE_DOCUMENT
+
+NewspaperPageCornerStyle
+
+Beschreibt dekorative Seitenecken.
+
+Aktuelle Varianten:
+
+NONE
+SUBTLE_TOP_FOLDS
+HANGING_TOP_CORNERS
+
+NewspaperVisualDesignProfile
+
+Fasst optische Designentscheidungen backend-neutral zusammen.
+
+AthenaPress nutzt aktuell als Zielrichtung:
+
+klassisches Zeitungsgefühl
+leichte asymmetrische Community-Zeitung
+optional dokumentartige Artikelseiten
+dezente obere Seitenecken
+Anzeigen- und Dokumentblöcke als Stilmittel
+maximal lesbarer Seitenkörper
+keine starre Pflicht zu vier Spalten
+
 NewspaperArticleCompositionService
 
 Erzeugt aus einer spielnahen Ausgabe eine visuelle Zeitung.
@@ -514,6 +548,9 @@ Visual-Seiten
 Doppelseiten
 Layout-Templates
 Layout-Regeln
+Designprofile
+Layoutstimmungen
+Seitenecken-Optionen
 Spaltenmodell
 Content-Platzierungen
 Bild-Platzierungen

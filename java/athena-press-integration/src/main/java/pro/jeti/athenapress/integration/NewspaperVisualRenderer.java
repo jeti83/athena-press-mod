@@ -22,22 +22,38 @@ public class NewspaperVisualRenderer {
             NewspaperVisualIssue issue,
             NewspaperLayoutTemplate template
     ) {
+        return render(
+                issue,
+                template,
+                NewspaperVisualDesignProfile.athenaReadableNewspaper()
+        );
+    }
+
+    public List<NewspaperPageLayout> render(
+            NewspaperVisualIssue issue,
+            NewspaperLayoutTemplate template,
+            NewspaperVisualDesignProfile designProfile
+    ) {
         if (issue == null || !issue.hasPages()) {
             return List.of();
         }
 
+        NewspaperVisualDesignProfile safeDesignProfile = designProfile == null
+                ? NewspaperVisualDesignProfile.athenaReadableNewspaper()
+                : designProfile;
         NewspaperLayoutTemplate safeTemplate = template == null
-                ? NewspaperLayoutTemplate.classicDoublePage()
+                ? safeDesignProfile.toLayoutTemplate()
                 : template;
 
         return issue.pages().stream()
-                .map(page -> renderPage(page, safeTemplate))
+                .map(page -> renderPage(page, safeTemplate, safeDesignProfile))
                 .toList();
     }
 
     private NewspaperPageLayout renderPage(
             NewspaperVisualPage page,
-            NewspaperLayoutTemplate template
+            NewspaperLayoutTemplate template,
+            NewspaperVisualDesignProfile designProfile
     ) {
         List<NewspaperColumn> columns = columnsFor(page.pageNumber(), template);
         List<NewspaperContentPlacement> placements = new ArrayList<>();
@@ -83,6 +99,7 @@ public class NewspaperVisualRenderer {
                 page.pageNumber(),
                 page.title(),
                 template,
+                designProfile,
                 columns,
                 placements,
                 imagePlacements
