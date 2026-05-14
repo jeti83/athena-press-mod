@@ -329,6 +329,35 @@ Aus dem Maven-Modulordner:
 mvn -B clean verify
  
 Dieser Befehl baut den Java-Core und führt alle Tests aus.
+
+---
+## 5a. Java-Integration Visual-Preview
+Das Integration-Modul enthält eine adapter-neutrale Visual-Preview für echte veröffentlichte Ausgaben.
+
+Sie wird aus dem Integration-Modulordner gestartet:
+
+cd java/athena-press-integration
+
+Standardausgabe:
+
+mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.integration.AthenaPressVisualPreviewDemo"
+
+Bestimmte Ausgabe:
+
+mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.integration.AthenaPressVisualPreviewDemo" "-Dexec.args=issue_0002"
+
+Expliziter Preview-Befehl:
+
+mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.integration.AthenaPressVisualPreviewDemo" "-Dexec.args=--visual-preview issue_0002"
+
+Deutscher Alias:
+
+mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.integration.AthenaPressVisualPreviewDemo" "-Dexec.args=--vorschau issue_0002"
+
+Die Ausgabe zeigt Doppelseiten, Seitenrollen, platzierte Blöcke, Spalten-/Zeilenpositionen und Bildpfade.
+
+Wichtig:
+Das ist keine HTML- oder Browser-Preview, sondern eine Textdarstellung der nativen Visual-Struktur.
 ---
 ## 6. Git-Komfortbefehl
 Wenn die-Funktion `g_sacp` geladen ist, kann ein Änderungspaket so gespeichert werden:

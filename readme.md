@@ -215,6 +215,25 @@ mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec
 
 ---
 
+## Java-Integration Visual-Preview
+
+Das Integration-Modul kann echte veröffentlichte Ausgaben bereits als adapter-neutrale Doppelseiten-/Blockstruktur ausgeben.
+
+Aus dem Modulordner:
+
+powershell
+cd java/athena-press-integration
+mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.integration.AthenaPressVisualPreviewDemo" "-Dexec.args=--visual-preview issue_0002"
+
+Deutscher Alias:
+
+powershell
+mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.integration.AthenaPressVisualPreviewDemo" "-Dexec.args=--vorschau issue_0002"
+
+Diese Ausgabe ist nur ein Debug-/Admin-Einstieg für die native Visual-Struktur, keine HTML- oder Browserlösung.
+
+---
+
 ## Datenmodell
 
 AthenaPress trennt Artikel und Ausgaben.
