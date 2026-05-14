@@ -787,6 +787,17 @@ Shutdown
 
 mit AthenaPress-Lifecycle.
 
+Der Adapter ist generisch über TPlayer und nutzt ausschließlich einen
+HytalePlayerContextResolver<TPlayer>. Dadurch bleibt AthenaPress frei von
+erfundenen direkten Hytale-API-Imports.
+
+Bei Join kann der Adapter den Spieler im HytaleNewspaperVisualUiPort
+registrieren.
+
+Bei Disconnect wird nur ein Lifecycle-Event ausgelöst; das eigentliche
+Schließen und Freigeben des Visual-Kontexts übernimmt der
+PlayerNewspaperLifecycleHandler.
+
 10. Architekturfluss
 Zeitung öffnen
 Hytale Event
