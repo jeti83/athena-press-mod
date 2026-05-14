@@ -38,12 +38,34 @@ public record NewspaperVisualBlock(
         );
     }
 
+    public static NewspaperVisualBlock bodyText(String content, int columnSpan) {
+        return new NewspaperVisualBlock(
+                NewspaperVisualBlockType.BODY_TEXT,
+                content,
+                null,
+                columnSpan
+        );
+    }
+
     public static NewspaperVisualBlock image(String assetPath, String caption) {
         return new NewspaperVisualBlock(
                 NewspaperVisualBlockType.IMAGE,
                 caption,
                 assetPath,
                 1
+        );
+    }
+
+    public static NewspaperVisualBlock image(
+            String assetPath,
+            String caption,
+            int columnSpan
+    ) {
+        return new NewspaperVisualBlock(
+                NewspaperVisualBlockType.IMAGE,
+                caption,
+                assetPath,
+                columnSpan
         );
     }
 
