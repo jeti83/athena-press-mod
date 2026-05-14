@@ -138,10 +138,6 @@ public class NewspaperArticleCompositionService {
         return pages;
     }
 
-    private List<NewspaperVisualBlock> blocksForIssue(GameIssueView issueView) {
-        return blocksForSections(sectionsFor(issueView));
-    }
-
     private List<NewspaperPageSection> sectionsFor(GameIssueView issueView) {
         List<NewspaperPageSection> sections = new ArrayList<>();
         sections.add(titlePageSectionFor(issueView));

@@ -2,6 +2,7 @@ package pro.jeti.athenapress.integration;
 
 import java.util.List;
 
+@SuppressWarnings("MismatchedReadAndWriteOfCollection")
 public record NewspaperVisualIssue(
         String issueId,
         String title,

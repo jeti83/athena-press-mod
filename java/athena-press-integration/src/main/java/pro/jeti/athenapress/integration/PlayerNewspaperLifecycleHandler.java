@@ -27,14 +27,14 @@ public class PlayerNewspaperLifecycleHandler {
         }
 
         switch (event.eventType()) {
-            case PLAYER_CONNECTED -> handlePlayerConnected(event.playerId());
+            case PLAYER_CONNECTED -> handlePlayerConnected();
             case PLAYER_DISCONNECTED -> handlePlayerDisconnected(event.playerId());
             case SESSION_TIMEOUT -> handleSessionTimeout(event.playerId());
             case SERVER_SHUTDOWN -> handleServerShutdown();
         }
     }
 
-    private void handlePlayerConnected(String playerId) {
+    private void handlePlayerConnected() {
         // Noch kein automatisches Öffnen.
         // Später: ungelesene Zeitung, Tagesausgabe oder NPC-Hinweis.
     }
