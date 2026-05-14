@@ -147,6 +147,27 @@ aktuelle Doppelseite anzeigen
 weiterblättern
 zurückblättern
 visuelle Session schließen
+
+PlayerNewspaperVisualView
+
+Adapter-neutrale visuelle UI-Ansicht für eine geöffnete Doppelseite.
+
+Enthält:
+
+Spieler-ID
+Ausgaben-ID
+Titel
+Doppelseiten-Index
+linke Seite
+rechte Seite
+Navigationszustand
+Buttons
+
+PlayerNewspaperVisualViewFactory
+
+Erzeugt aus einer PlayerNewspaperVisualResponse eine UI-nahe Visual-View.
+
+Der spätere Hytale-Adapter muss dadurch nicht direkt Session-Responses interpretieren, sondern bekommt bereits eine klare Ansicht mit Seiten und Buttons.
 4. UI-State-/View-Modell
 NewspaperUiView
 
