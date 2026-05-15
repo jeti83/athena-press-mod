@@ -417,6 +417,8 @@ Nur die Titelseite ist standardmäßig verpflichtend.
 Alle weiteren Bereiche entstehen nur, wenn sie Inhalt haben.
 
 Dadurch können Anzeigen-, Kurzmeldungs-, Beileids- oder Rückseitenbereiche komplett wegfallen, wenn die Ausgabe sie nicht braucht.
+Wenn optionale Bereiche tatsächlich vorhanden sind, erhalten sie in der visuellen
+Komposition sichtbare Rubriküberschriften.
 
 Hinweis zur Benennung:
 Im Java-Code wird der englische Begriff `Section` verwendet, weil die technische API bereits englisch benannt ist.

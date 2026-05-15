@@ -273,6 +273,11 @@ public class NewspaperArticleCompositionService {
                     sectionTitleFor(sectionType),
                     blocksForGroups(sectionGroups)
             ))) {
+                List<NewspaperVisualBlock> headingBlocks =
+                        sectionHeadingBlocksFor(sectionType);
+                if (!headingBlocks.isEmpty()) {
+                    groups.add(headingBlocks);
+                }
                 groups.addAll(sectionGroups);
             }
         }
@@ -309,8 +314,32 @@ public class NewspaperArticleCompositionService {
         }
 
         return sections.stream()
-                .flatMap(section -> section.blocks().stream())
+                .flatMap(section -> visibleBlocksFor(section).stream())
                 .toList();
+    }
+
+    private List<NewspaperVisualBlock> visibleBlocksFor(NewspaperPageSection section) {
+        List<NewspaperVisualBlock> blocks = new ArrayList<>(
+                sectionHeadingBlocksFor(section.type())
+        );
+        blocks.addAll(section.blocks());
+        return blocks;
+    }
+
+    private List<NewspaperVisualBlock> sectionHeadingBlocksFor(
+            NewspaperPageSectionType sectionType
+    ) {
+        if (sectionType == null
+                || sectionType == NewspaperPageSectionType.TITLE_PAGE
+                || sectionType == NewspaperPageSectionType.MAIN_ARTICLE
+                || sectionType == NewspaperPageSectionType.MIXED_ARTICLES) {
+            return List.of();
+        }
+
+        return List.of(
+                NewspaperVisualBlock.subheadline(sectionTitleFor(sectionType)),
+                NewspaperVisualBlock.divider()
+        );
     }
 
     private List<NewspaperVisualBlock> coverBlocksFor(GameIssueView issueView) {

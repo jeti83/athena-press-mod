@@ -163,6 +163,24 @@ class NewspaperArticleCompositionServiceTest {
     }
 
     @Test
+    void addsVisibleHeadingsForOptionalSections() {
+        GameIssueView issueView = issueViewWithOptionalSections();
+
+        NewspaperVisualIssue visualIssue = new NewspaperArticleCompositionService()
+                .compose(issueView);
+
+        List<String> visibleBlockTexts = visualIssue.pages().stream()
+                .flatMap(page -> page.blocks().stream())
+                .map(NewspaperVisualBlock::content)
+                .filter(content -> content != null && !content.isBlank())
+                .toList();
+
+        assertTrue(visibleBlockTexts.contains("Kurzmeldungen"));
+        assertTrue(visibleBlockTexts.contains("Verschollen und unvergessen"));
+        assertTrue(visibleBlockTexts.contains("Anzeigen"));
+    }
+
+    @Test
     void rendersVisualPagesIntoAdapterNeutralLayout() {
         GameIssueView issueView = issueViewWithArticles(1);
         NewspaperVisualIssue visualIssue = new NewspaperArticleCompositionService()
@@ -268,6 +286,55 @@ class NewspaperArticleCompositionServiceTest {
                                 + "Zweiter Satz mit noch mehr Berichtswert und ordentlicher Laenge.\n\n"
                                 + "Zweiter ausfuehrlicher Absatz mit weiteren Stimmen vom Platz."
                 ))
+        );
+    }
+
+    private GameIssueView issueViewWithOptionalSections() {
+        return new GameIssueView(
+                "issue_test",
+                7,
+                "Athena Morgenblatt",
+                "Aus der Stadt, fuer die Stadt",
+                "article_main",
+                "placeholders/front.png",
+                List.of(
+                        new GameArticleView(
+                                "article_main",
+                                "server_news",
+                                "Hauptartikel",
+                                null,
+                                "Teaser",
+                                "Zusammenfassung",
+                                "Langer Hauptartikeltext."
+                        ),
+                        new GameArticleView(
+                                "article_short",
+                                "kurzmeldung",
+                                "Kurze Nachricht",
+                                null,
+                                "Kurz",
+                                "Kurz",
+                                "Kurz"
+                        ),
+                        new GameArticleView(
+                                "article_memorial",
+                                "server_news",
+                                "Verschollen im Nebel",
+                                null,
+                                "Hinweis",
+                                "Ein stiller Moment.",
+                                "Ein Spieler gilt als verschollen."
+                        ),
+                        new GameArticleView(
+                                "article_ad",
+                                "anzeigen",
+                                "Marktstand sucht Kundschaft",
+                                null,
+                                "Heute frisch",
+                                "Heute frisch",
+                                "Kommt vorbei."
+                        )
+                )
         );
     }
 }
