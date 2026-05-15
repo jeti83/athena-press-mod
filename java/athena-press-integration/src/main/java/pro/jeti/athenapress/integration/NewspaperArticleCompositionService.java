@@ -13,6 +13,7 @@ public class NewspaperArticleCompositionService {
     private final NewspaperVisualDesignProfile designProfile;
     private final NewspaperPageSectionPolicy sectionPolicy;
     private final NewspaperArticleClassifier articleClassifier;
+    private final NewspaperArticleTextFlowService articleTextFlowService;
 
     public NewspaperArticleCompositionService() {
         this(
@@ -20,7 +21,8 @@ public class NewspaperArticleCompositionService {
                 NewspaperLayoutTemplate.classicDoublePage(),
                 NewspaperVisualDesignProfile.athenaReadableNewspaper(),
                 NewspaperPageSectionPolicy.defaultPolicy(),
-                new NewspaperArticleClassifier()
+                new NewspaperArticleClassifier(),
+                new NewspaperArticleTextFlowService()
         );
     }
 
@@ -62,7 +64,8 @@ public class NewspaperArticleCompositionService {
                 defaultTemplate,
                 designProfile,
                 sectionPolicy,
-                new NewspaperArticleClassifier()
+                new NewspaperArticleClassifier(),
+                new NewspaperArticleTextFlowService()
         );
     }
 
@@ -72,6 +75,24 @@ public class NewspaperArticleCompositionService {
             NewspaperVisualDesignProfile designProfile,
             NewspaperPageSectionPolicy sectionPolicy,
             NewspaperArticleClassifier articleClassifier
+    ) {
+        this(
+                paginationService,
+                defaultTemplate,
+                designProfile,
+                sectionPolicy,
+                articleClassifier,
+                new NewspaperArticleTextFlowService()
+        );
+    }
+
+    public NewspaperArticleCompositionService(
+            NewspaperVisualPaginationService paginationService,
+            NewspaperLayoutTemplate defaultTemplate,
+            NewspaperVisualDesignProfile designProfile,
+            NewspaperPageSectionPolicy sectionPolicy,
+            NewspaperArticleClassifier articleClassifier,
+            NewspaperArticleTextFlowService articleTextFlowService
     ) {
         this.paginationService = paginationService == null
                 ? new NewspaperVisualPaginationService()
@@ -88,6 +109,9 @@ public class NewspaperArticleCompositionService {
         this.articleClassifier = articleClassifier == null
                 ? new NewspaperArticleClassifier()
                 : articleClassifier;
+        this.articleTextFlowService = articleTextFlowService == null
+                ? new NewspaperArticleTextFlowService()
+                : articleTextFlowService;
     }
 
     public NewspaperVisualIssue compose(GameIssueView issueView) {
@@ -439,7 +463,7 @@ public class NewspaperArticleCompositionService {
         }
 
         if (hasText(article.body())) {
-            blocks.add(NewspaperVisualBlock.bodyText(article.body()));
+            addBodyTextBlocks(blocks, article.body(), 1);
         }
 
         blocks.add(NewspaperVisualBlock.divider());
@@ -462,10 +486,7 @@ public class NewspaperArticleCompositionService {
         }
 
         if (hasText(article.body())) {
-            blocks.add(NewspaperVisualBlock.bodyText(
-                    article.body(),
-                    defaultTemplate.columnsPerPage()
-            ));
+            addBodyTextBlocks(blocks, article.body(), defaultTemplate.columnsPerPage());
         }
 
         blocks.add(NewspaperVisualBlock.divider());
@@ -488,7 +509,7 @@ public class NewspaperArticleCompositionService {
         }
 
         if (hasText(article.body())) {
-            blocks.add(NewspaperVisualBlock.bodyText(article.body()));
+            addBodyTextBlocks(blocks, article.body(), 1);
         }
 
         blocks.add(NewspaperVisualBlock.divider());
@@ -521,5 +542,15 @@ public class NewspaperArticleCompositionService {
 
     private boolean hasText(String value) {
         return value != null && !value.isBlank();
+    }
+
+    private void addBodyTextBlocks(
+            List<NewspaperVisualBlock> blocks,
+            String body,
+            int columnSpan
+    ) {
+        for (String segment : articleTextFlowService.split(body)) {
+            blocks.add(NewspaperVisualBlock.bodyText(segment, columnSpan));
+        }
     }
 }

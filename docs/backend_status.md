@@ -39,6 +39,7 @@ Das Backend kann derzeit:
 - Daten über das Java-Integration-Modul spielnah darstellen
 - Visual-Doppelseiten und Blocklayouts vorbereiten
 - lesbare Artikelgruppen beim Seitenumbruch geschlossen halten
+- lange Artikeltexte absatzorientiert in Seitenfluss-Blöcke zerlegen
 - Visual-Previews zwischenspeichern
 - Visual-Input und Lifecycle-Ereignisse adapter-neutral verarbeiten
 - eine native Hytale-Visual-Runtime ohne direkte Hytale-API-Imports zusammensetzen
@@ -124,7 +125,7 @@ Erwarteter Stand:
 Der zuletzt bekannte Stand lag bei:
 
 - Core: 91 Tests
-- Integration: 133 Tests
+- Integration: 137 Tests
 - 0 Failures
 - 0 Errors
 

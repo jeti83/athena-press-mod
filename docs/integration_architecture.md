@@ -548,6 +548,19 @@ Artikelblöcke
 Zusammenfassungen
 Seitenaufbau
 
+NewspaperArticleTextFlowService
+
+Zerlegt Artikeltext vor der visuellen Komposition in lesbare Textsegmente.
+
+Grundregel:
+
+Absätze bleiben als natürliche Einheiten erhalten.
+Zu lange Absätze werden bevorzugt an Satzgrenzen und nur im Notfall an
+Wortgrenzen weitergeteilt.
+
+Dadurch kann die spätere Seitenlogik echte Textmenge berücksichtigen, ohne
+dass ein einzelner `BODY_TEXT`-Block beliebig viel Inhalt versteckt.
+
 NewspaperVisualPaginationService
 
 Verteilt Visual-Blöcke auf mehrere Seiten.

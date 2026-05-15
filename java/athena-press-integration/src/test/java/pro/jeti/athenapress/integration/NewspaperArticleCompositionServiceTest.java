@@ -112,6 +112,28 @@ class NewspaperArticleCompositionServiceTest {
     }
 
     @Test
+    void splitsLongArticleBodyIntoMultipleBodyTextBlocks() {
+        NewspaperArticleCompositionService service = new NewspaperArticleCompositionService(
+                new NewspaperVisualPaginationService(),
+                NewspaperLayoutTemplate.classicDoublePage(),
+                NewspaperVisualDesignProfile.athenaReadableNewspaper(),
+                NewspaperPageSectionPolicy.defaultPolicy(),
+                new NewspaperArticleClassifier(),
+                new NewspaperArticleTextFlowService(80)
+        );
+        GameIssueView issueView = issueViewWithLongBody();
+
+        NewspaperVisualIssue visualIssue = service.compose(issueView);
+
+        long bodyTextBlocks = visualIssue.pages().stream()
+                .flatMap(page -> page.blocks().stream())
+                .filter(block -> block.type() == NewspaperVisualBlockType.BODY_TEXT)
+                .count();
+
+        assertTrue(bodyTextBlocks > 1);
+    }
+
+    @Test
     void rendersVisualPagesIntoAdapterNeutralLayout() {
         GameIssueView issueView = issueViewWithArticles(1);
         NewspaperVisualIssue visualIssue = new NewspaperArticleCompositionService()
@@ -194,6 +216,28 @@ class NewspaperArticleCompositionServiceTest {
                         "Schaut vorbei.",
                         "Heute frisch.",
                         "Die Anzeige darf verschwinden."
+                ))
+        );
+    }
+
+    private GameIssueView issueViewWithLongBody() {
+        return new GameIssueView(
+                "issue_test",
+                7,
+                "Athena Morgenblatt",
+                "Aus der Stadt, fuer die Stadt",
+                "article_1",
+                "placeholders/front.png",
+                List.of(new GameArticleView(
+                        "article_1",
+                        "server_news",
+                        "Artikel 1",
+                        "Untertitel 1",
+                        "Teaser 1",
+                        "Zusammenfassung 1",
+                        "Erster ausfuehrlicher Absatz mit allerlei Beobachtungen aus Athena. "
+                                + "Zweiter Satz mit noch mehr Berichtswert und ordentlicher Laenge.\n\n"
+                                + "Zweiter ausfuehrlicher Absatz mit weiteren Stimmen vom Platz."
                 ))
         );
     }
