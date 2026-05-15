@@ -47,7 +47,7 @@ public class NewspaperPreviewImageRenderer {
         List<Path> spreadImages = new ArrayList<>();
         for (NewspaperPreviewSpread spread : previewIssue.spreads()) {
             Path output = safeOutputDirectory.resolve(fileNameFor(previewIssue, spread));
-            BufferedImage image = renderSpread(spread, imagesRoot);
+            BufferedImage image = renderSpread(previewIssue.title(), spread, imagesRoot);
             ImageIO.write(image, "png", output.toFile());
             spreadImages.add(output);
         }
@@ -56,6 +56,7 @@ public class NewspaperPreviewImageRenderer {
     }
 
     private BufferedImage renderSpread(
+            String issueTitle,
             NewspaperPreviewSpread spread,
             Path imagesRoot
     ) {
@@ -68,10 +69,11 @@ public class NewspaperPreviewImageRenderer {
 
         graphics.setColor(BACKGROUND);
         graphics.fillRect(0, 0, width, height);
-        drawPage(graphics, spread.leftPage(), OUTER_PADDING, OUTER_PADDING, imagesRoot);
+        drawPage(graphics, issueTitle, spread.leftPage(), OUTER_PADDING, OUTER_PADDING, imagesRoot);
         if (hasRightPage) {
             drawPage(
                     graphics,
+                    issueTitle,
                     spread.rightPage(),
                     OUTER_PADDING + PAGE_WIDTH + SPREAD_GAP,
                     OUTER_PADDING,
@@ -85,6 +87,7 @@ public class NewspaperPreviewImageRenderer {
 
     private void drawPage(
             Graphics2D graphics,
+            String issueTitle,
             NewspaperPreviewPage page,
             int x,
             int y,
@@ -110,7 +113,7 @@ public class NewspaperPreviewImageRenderer {
         int columnWidth = (contentWidth - gutter * (columns - 1)) / columns;
         int rowHeight = contentHeight / 24;
 
-        drawMasthead(graphics, page, contentX, contentY, contentWidth);
+        drawMasthead(graphics, issueTitle, page, contentX, contentY, contentWidth);
 
         for (NewspaperPreviewBlock block : page.blocks()) {
             drawBlock(
@@ -128,6 +131,7 @@ public class NewspaperPreviewImageRenderer {
 
     private void drawMasthead(
             Graphics2D graphics,
+            String issueTitle,
             NewspaperPreviewPage page,
             int x,
             int y,
@@ -135,8 +139,25 @@ public class NewspaperPreviewImageRenderer {
     ) {
         graphics.setColor(MUTED_INK);
         graphics.setFont(new Font("Serif", Font.PLAIN, 14));
-        graphics.drawString(page.role().name(), x, y + 14);
-        graphics.drawString("Seite " + page.pageNumber(), x + width - 60, y + 14);
+        graphics.drawString(page.role().displayName(), x, y + 14);
+
+        String folio = "Seite " + page.pageNumber();
+        FontMetrics smallMetrics = graphics.getFontMetrics();
+        graphics.drawString(folio, x + width - smallMetrics.stringWidth(folio), y + 14);
+
+        if (page.role() != NewspaperPageRole.FRONT_COVER) {
+            String headerTitle = issueTitle == null || issueTitle.isBlank()
+                    ? page.title()
+                    : issueTitle;
+            graphics.setFont(new Font("Serif", Font.BOLD, 16));
+            FontMetrics titleMetrics = graphics.getFontMetrics();
+            graphics.drawString(
+                    headerTitle,
+                    x + (width - titleMetrics.stringWidth(headerTitle)) / 2,
+                    y + 15
+            );
+        }
+
         graphics.setStroke(new BasicStroke(1f));
         graphics.drawLine(x, y + 26, x + width, y + 26);
     }
