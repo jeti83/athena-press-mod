@@ -134,6 +134,35 @@ class NewspaperArticleCompositionServiceTest {
     }
 
     @Test
+    void marksContinuationWhenLongArticleFlowsOntoAnotherPage() {
+        NewspaperArticleCompositionService service = new NewspaperArticleCompositionService(
+                new NewspaperVisualPaginationService(),
+                new NewspaperLayoutTemplate(
+                        "compact_test",
+                        "Kompakter Test",
+                        100,
+                        140,
+                        6,
+                        4,
+                        2,
+                        12
+                ),
+                NewspaperVisualDesignProfile.athenaReadableNewspaper(),
+                NewspaperPageSectionPolicy.defaultPolicy(),
+                new NewspaperArticleClassifier(),
+                new NewspaperArticleTextFlowService(80)
+        );
+        GameIssueView issueView = issueViewWithLongBody();
+
+        NewspaperVisualIssue visualIssue = service.compose(issueView);
+
+        assertTrue(visualIssue.pages().stream()
+                .skip(2)
+                .flatMap(page -> page.blocks().stream())
+                .anyMatch(block -> "Fortsetzung: Artikel 1".equals(block.content())));
+    }
+
+    @Test
     void rendersVisualPagesIntoAdapterNeutralLayout() {
         GameIssueView issueView = issueViewWithArticles(1);
         NewspaperVisualIssue visualIssue = new NewspaperArticleCompositionService()

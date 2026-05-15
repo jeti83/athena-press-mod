@@ -95,6 +95,8 @@ public class NewspaperVisualPaginationService {
                 continue;
             }
 
+            String continuationTitle = continuationTitleFor(group);
+            boolean groupContinues = false;
             int groupWeight = group.stream()
                     .mapToInt(block -> layoutRules.weightFor(block, safeTemplate))
                     .sum();
@@ -123,6 +125,19 @@ public class NewspaperVisualPaginationService {
                     ));
                     currentBlocks = new ArrayList<>();
                     currentWeight = 0;
+                    groupContinues = true;
+                }
+
+                if (groupContinues && currentBlocks.isEmpty()) {
+                    NewspaperVisualBlock continuationBlock =
+                            NewspaperVisualBlock.subheadline(
+                                    continuationTitle == null
+                                            ? "Fortsetzung"
+                                            : "Fortsetzung: " + continuationTitle
+                            );
+                    currentBlocks.add(continuationBlock);
+                    currentWeight += layoutRules.weightFor(continuationBlock, safeTemplate);
+                    groupContinues = false;
                 }
 
                 currentBlocks.add(block);
@@ -142,6 +157,16 @@ public class NewspaperVisualPaginationService {
         return pages;
     }
 
+    private String continuationTitleFor(List<NewspaperVisualBlock> group) {
+        return group.stream()
+                .filter(block -> block != null)
+                .filter(block -> block.type() == NewspaperVisualBlockType.SUBHEADLINE)
+                .map(NewspaperVisualBlock::content)
+                .filter(this::hasText)
+                .findFirst()
+                .orElse(null);
+    }
+
     private NewspaperVisualPage pageFor(
             String baseTitle,
             int pageNumber,
@@ -157,5 +182,9 @@ public class NewspaperVisualPaginationService {
         }
 
         return NewspaperVisualPage.of(pageNumber, title, blocks);
+    }
+
+    private boolean hasText(String value) {
+        return value != null && !value.isBlank();
     }
 }

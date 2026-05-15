@@ -569,7 +569,8 @@ Bei `KEEP_ARTICLES_TOGETHER_WHEN_READABLE` behandelt die Pagination lesbare
 Artikelblöcke als Gruppen: Passt ein Artikel vollständig auf eine Seite, wird
 er nicht auf einer fast vollen Vorgängerseite angerissen, sondern geschlossen
 auf die nächste Seite verschoben. Nur zu große Artikel dürfen weiter natürlich
-überlaufen.
+überlaufen. Wenn ein Artikel tatsächlich auf einer Folgeseite weiterläuft,
+erhält diese eine dezente `Fortsetzung:`-Markierung mit Artikeltitel.
 
 NewspaperVisualRenderer
 

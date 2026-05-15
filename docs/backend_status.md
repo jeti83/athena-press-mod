@@ -40,6 +40,7 @@ Das Backend kann derzeit:
 - Visual-Doppelseiten und Blocklayouts vorbereiten
 - lesbare Artikelgruppen beim Seitenumbruch geschlossen halten
 - lange Artikeltexte absatzorientiert in Seitenfluss-Blöcke zerlegen
+- fortlaufende Artikel auf Folgeseiten kenntlich machen
 - Visual-Previews zwischenspeichern
 - Visual-Input und Lifecycle-Ereignisse adapter-neutral verarbeiten
 - eine native Hytale-Visual-Runtime ohne direkte Hytale-API-Imports zusammensetzen
@@ -125,7 +126,7 @@ Erwarteter Stand:
 Der zuletzt bekannte Stand lag bei:
 
 - Core: 91 Tests
-- Integration: 138 Tests
+- Integration: 139 Tests
 - 0 Failures
 - 0 Errors
 
