@@ -45,6 +45,10 @@ public record NewspaperPreviewSpread(
             return "Titelseite";
         }
 
+        if (hasRole(NewspaperPageRole.BACK_COVER)) {
+            return "Rückseite";
+        }
+
         if (hasLeftPage() && hasRightPage()) {
             return "Seiten " + leftPage.pageNumber() + "-" + rightPage.pageNumber();
         }
@@ -54,7 +58,7 @@ public record NewspaperPreviewSpread(
     }
 
     private String hintFor() {
-        NewspaperPreviewPage page = hasLeftPage() ? leftPage : rightPage;
+        NewspaperPreviewPage page = pageForHint();
         if (page == null) {
             return "";
         }
@@ -66,6 +70,18 @@ public record NewspaperPreviewSpread(
 
         String headline = firstContentFor(page, NewspaperVisualBlockType.HEADLINE);
         return headline.isBlank() ? page.title() : headline;
+    }
+
+    private NewspaperPreviewPage pageForHint() {
+        if (hasRightPage() && rightPage.role() == NewspaperPageRole.BACK_COVER) {
+            return rightPage;
+        }
+
+        if (hasLeftPage() && leftPage.role() == NewspaperPageRole.BACK_COVER) {
+            return leftPage;
+        }
+
+        return hasLeftPage() ? leftPage : rightPage;
     }
 
     private boolean hasRole(NewspaperPageRole role) {

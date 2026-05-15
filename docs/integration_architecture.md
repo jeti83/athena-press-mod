@@ -472,6 +472,10 @@ linke Seite
 rechte Seite
 Navigationsbuttons
 
+Spreads mit einer Rückseite werden im dezenten Seitenmenü bewusst als
+`Rückseite` bezeichnet; als Hinweistext wird dann der Inhalt der Rückseite
+bevorzugt, nicht die linke Innenseite daneben.
+
 NewspaperPreviewPage
 
 Vorschau einer einzelnen Zeitungsseite.

@@ -63,6 +63,49 @@ class NewspaperPreviewServiceTest {
         assertFalse(previewIssue.hasSpreads());
     }
 
+    @Test
+    void namesBackCoverSpreadsAfterTheBackPage() {
+        NewspaperPreviewSpread spread = new NewspaperPreviewSpread(
+                2,
+                new NewspaperPreviewPage(
+                        4,
+                        "Innenseite",
+                        NewspaperPageRole.LEFT_INNER,
+                        NewspaperVisualDesignProfile.athenaReadableNewspaper(),
+                        List.of(new NewspaperPreviewBlock(
+                                NewspaperVisualBlockType.SUBHEADLINE,
+                                "Baumfarm",
+                                null,
+                                0,
+                                0,
+                                2,
+                                1
+                        ))
+                ),
+                new NewspaperPreviewPage(
+                        5,
+                        "Rückseite",
+                        NewspaperPageRole.BACK_COVER,
+                        NewspaperVisualDesignProfile.athenaReadableNewspaper(),
+                        List.of(new NewspaperPreviewBlock(
+                                NewspaperVisualBlockType.SUBHEADLINE,
+                                "Kleinanzeigen",
+                                null,
+                                0,
+                                0,
+                                2,
+                                2
+                        ))
+                ),
+                List.of()
+        );
+
+        NewspaperSpreadSignature signature = spread.signature();
+
+        assertEquals("Rückseite", signature.label());
+        assertEquals("Kleinanzeigen", signature.hint());
+    }
+
     private NewspaperVisualIssue visualIssue() {
         return new NewspaperVisualIssue(
                 "issue_preview",
