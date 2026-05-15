@@ -206,7 +206,25 @@ class NewspaperArticleCompositionServiceTest {
 
         assertTrue(visibleBlockTexts.contains("Kurzmeldungen"));
         assertTrue(visibleBlockTexts.contains("Verschollen und unvergessen"));
-        assertTrue(visibleBlockTexts.contains("Anzeigen"));
+        assertTrue(visibleBlockTexts.contains("Rückseite"));
+    }
+
+    @Test
+    void movesAdvertisementsIntoBackPageSection() {
+        GameIssueView issueView = issueViewWithImageAdvertisement();
+
+        NewspaperVisualIssue visualIssue = new NewspaperArticleCompositionService()
+                .compose(issueView);
+
+        List<String> visibleBlockTexts = visualIssue.pages().stream()
+                .flatMap(page -> page.blocks().stream())
+                .map(NewspaperVisualBlock::content)
+                .filter(content -> content != null && !content.isBlank())
+                .toList();
+
+        assertTrue(visibleBlockTexts.contains("Rückseite"));
+        assertTrue(visibleBlockTexts.contains("Anzeige 1"));
+        assertFalse(visibleBlockTexts.contains("Anzeigen"));
     }
 
     @Test

@@ -217,9 +217,9 @@ public class NewspaperArticleCompositionService {
         ));
 
         sections.add(NewspaperPageSection.of(
-                NewspaperPageSectionType.ADVERTISEMENTS,
-                "Anzeigen",
-                articleBlocksForSection(issueView, NewspaperPageSectionType.ADVERTISEMENTS)
+                NewspaperPageSectionType.BACK_PAGE,
+                "Rückseite",
+                backPageBlocksFor(issueView)
         ));
 
         return sectionPolicy.filter(sections);
@@ -242,8 +242,7 @@ public class NewspaperArticleCompositionService {
         for (NewspaperPageSectionType sectionType : List.of(
                 NewspaperPageSectionType.MIXED_ARTICLES,
                 NewspaperPageSectionType.SHORT_NOTICES,
-                NewspaperPageSectionType.MEMORIAL,
-                NewspaperPageSectionType.ADVERTISEMENTS
+                NewspaperPageSectionType.MEMORIAL
         )) {
             List<List<NewspaperVisualBlock>> sectionGroups = new ArrayList<>();
 
@@ -283,7 +282,26 @@ public class NewspaperArticleCompositionService {
             }
         }
 
+        List<List<NewspaperVisualBlock>> backPageGroups = backPageBlockGroupsFor(issueView);
+        if (shouldIncludeBackPage(backPageGroups)) {
+            groups.add(sectionHeadingBlocksFor(NewspaperPageSectionType.BACK_PAGE));
+            groups.addAll(backPageGroups);
+        }
+
         return groups;
+    }
+
+    private boolean shouldIncludeBackPage(List<List<NewspaperVisualBlock>> backPageGroups) {
+        List<NewspaperVisualBlock> blocks = blocksForGroups(backPageGroups);
+        return sectionPolicy.shouldInclude(NewspaperPageSection.of(
+                NewspaperPageSectionType.ADVERTISEMENTS,
+                sectionTitleFor(NewspaperPageSectionType.ADVERTISEMENTS),
+                blocks
+        )) && sectionPolicy.shouldInclude(NewspaperPageSection.of(
+                NewspaperPageSectionType.BACK_PAGE,
+                sectionTitleFor(NewspaperPageSectionType.BACK_PAGE),
+                blocks
+        ));
     }
 
     private List<NewspaperVisualBlock> blocksForGroups(
@@ -325,6 +343,36 @@ public class NewspaperArticleCompositionService {
         );
         blocks.addAll(section.blocks());
         return blocks;
+    }
+
+    private List<NewspaperVisualBlock> backPageBlocksFor(GameIssueView issueView) {
+        return blocksForGroups(backPageBlockGroupsFor(issueView));
+    }
+
+    private List<List<NewspaperVisualBlock>> backPageBlockGroupsFor(GameIssueView issueView) {
+        List<List<NewspaperVisualBlock>> groups = new ArrayList<>();
+
+        GameArticleView mainArticle = issueView.findArticleById(issueView.coverMainArticleId());
+        for (GameArticleView article : issueView.articles()) {
+            if (mainArticle != null && mainArticle.id().equals(article.id())) {
+                continue;
+            }
+
+            NewspaperArticleClassification classification = articleClassifier.classify(
+                    article,
+                    false
+            );
+            if (classification.sectionType() != NewspaperPageSectionType.ADVERTISEMENTS) {
+                continue;
+            }
+
+            List<NewspaperVisualBlock> blocks = classifiedArticleBlocksFor(article, classification);
+            if (!blocks.isEmpty()) {
+                groups.add(blocks);
+            }
+        }
+
+        return groups;
     }
 
     private List<NewspaperVisualBlock> sectionHeadingBlocksFor(
