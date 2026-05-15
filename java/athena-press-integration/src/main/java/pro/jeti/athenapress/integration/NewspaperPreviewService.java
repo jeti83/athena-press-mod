@@ -74,7 +74,8 @@ public class NewspaperPreviewService {
                 pageLayout.designProfile(),
                 pageLayout.placements().stream()
                         .map(this::toPreviewBlock)
-                        .toList()
+                        .toList(),
+                pageLayout.imagePlacements()
         );
     }
 

@@ -67,5 +67,24 @@ public class NewspaperPreviewTextRenderer {
 
             text.append("\n");
         }
+
+        for (NewspaperImagePlacement imagePlacement : page.imagePlacements()) {
+            text.append("  - IMAGE_PLACEMENT c")
+                    .append(imagePlacement.columnIndex())
+                    .append(" r")
+                    .append(imagePlacement.rowStart())
+                    .append("+")
+                    .append(imagePlacement.rowSpan())
+                    .append(" span ")
+                    .append(imagePlacement.columnSpan())
+                    .append(" asset=")
+                    .append(imagePlacement.assetPath());
+
+            if (!imagePlacement.caption().isBlank()) {
+                text.append(": ").append(imagePlacement.caption());
+            }
+
+            text.append("\n");
+        }
     }
 }

@@ -49,6 +49,33 @@ class NewspaperPreviewPipelineServiceTest {
     }
 
     @Test
+    void preservesArticleImagePlacementsInPublishedIssuePreview() throws IOException {
+        createPreviewDataSet();
+        AthenaPressCore core = new AthenaPressCore(tempDir);
+        NewspaperPreviewPipelineService service =
+                new NewspaperPreviewPipelineService(core.getGameViewService());
+
+        NewspaperPreviewIssue previewIssue = service.createPreview("issue_preview");
+
+        List<NewspaperPreviewPage> pages = previewIssue.spreads().stream()
+                .flatMap(spread -> java.util.stream.Stream.of(
+                        spread.leftPage(),
+                        spread.rightPage()
+                ))
+                .filter(page -> page != null)
+                .toList();
+
+        assertTrue(pages.stream()
+                .flatMap(page -> page.blocks().stream())
+                .anyMatch(block -> block.type() == NewspaperVisualBlockType.CAPTION
+                        && "Der Ratssaal aus ungewoehnlicher Perspektive.".equals(block.content())));
+        assertTrue(pages.stream()
+                .flatMap(page -> page.imagePlacements().stream())
+                .anyMatch(image -> "placeholders/article_market.png".equals(image.assetPath())
+                        && "Der Marktstand blockiert den Ratssaal".equals(image.caption())));
+    }
+
+    @Test
     void rendersPreviewTextFromPublishedIssueData() throws IOException {
         createPreviewDataSet();
         AthenaPressCore core = new AthenaPressCore(tempDir);
@@ -61,6 +88,8 @@ class NewspaperPreviewPipelineServiceTest {
         assertTrue(text.contains("FRONT_COVER"));
         assertTrue(text.contains("SUBHEADLINE"));
         assertTrue(text.contains("Der Marktstand blockiert"));
+        assertTrue(text.contains("IMAGE_PLACEMENT"));
+        assertTrue(text.contains("placeholders/article_market.png"));
     }
 
     @Test
@@ -139,7 +168,13 @@ class NewspaperPreviewPipelineServiceTest {
                   "subtitle": "Eine ernste Lage mit sehr dekorativem Verlauf",
                   "teaser": "Niemand kam vorbei.",
                   "summary": "Der Marktstand blockiert seit Sonnenaufgang den Eingang.",
-                  "body": "Der Marktstand blockiert weiter den Ratssaal und zwingt alle Beteiligten zu ungeplanter Gelassenheit."
+                  "body": "Der Marktstand blockiert weiter den Ratssaal und zwingt alle Beteiligten zu ungeplanter Gelassenheit.",
+                  "image": {
+                    "file": "placeholders/article_market.png",
+                    "caption": "Der Ratssaal aus ungewoehnlicher Perspektive.",
+                    "credit": "AthenaPress",
+                    "source": "local"
+                  }
                 }
                 """
         );
