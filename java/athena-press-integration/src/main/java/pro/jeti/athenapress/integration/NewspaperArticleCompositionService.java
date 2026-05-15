@@ -351,6 +351,17 @@ public class NewspaperArticleCompositionService {
             blocks.add(NewspaperVisualBlock.subheadline(issueView.subtitle()));
         }
 
+        GameArticleView mainArticle = issueView.findArticleById(issueView.coverMainArticleId());
+        if (mainArticle != null) {
+            blocks.add(NewspaperVisualBlock.subheadline(articleTitle(mainArticle)));
+
+            if (hasText(mainArticle.summary())) {
+                blocks.add(NewspaperVisualBlock.notice(mainArticle.summary()));
+            } else if (hasText(mainArticle.teaser())) {
+                blocks.add(NewspaperVisualBlock.notice(mainArticle.teaser()));
+            }
+        }
+
         if (hasText(issueView.coverImage())) {
             String caption = coverCaption(issueView);
             blocks.add(NewspaperVisualBlock.coverImage(

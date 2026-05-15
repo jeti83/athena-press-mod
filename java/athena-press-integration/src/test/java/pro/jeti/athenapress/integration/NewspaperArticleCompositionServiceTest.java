@@ -32,6 +32,12 @@ class NewspaperArticleCompositionServiceTest {
                 .anyMatch(block -> block.type() == NewspaperVisualBlockType.CAPTION
                         && "Artikel 1".equals(block.content())));
         assertTrue(visualIssue.pages().getFirst().blocks().stream()
+                .anyMatch(block -> block.type() == NewspaperVisualBlockType.SUBHEADLINE
+                        && "Artikel 1".equals(block.content())));
+        assertTrue(visualIssue.pages().getFirst().blocks().stream()
+                .anyMatch(block -> block.type() == NewspaperVisualBlockType.NOTICE
+                        && "Zusammenfassung 1".equals(block.content())));
+        assertTrue(visualIssue.pages().getFirst().blocks().stream()
                 .noneMatch(block -> block.type() == NewspaperVisualBlockType.QUOTE));
         assertTrue(visualIssue.pages().stream()
                 .flatMap(page -> page.blocks().stream())
