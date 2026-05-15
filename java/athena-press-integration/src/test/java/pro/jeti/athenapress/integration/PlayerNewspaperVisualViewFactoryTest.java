@@ -47,6 +47,9 @@ class PlayerNewspaperVisualViewFactoryTest {
         assertFalse(view.hasRightPage());
         assertFalse(view.hasPreviousSpread());
         assertFalse(view.hasNextSpread());
+        assertEquals("Titelseite", view.spreadStatus().label());
+        assertTrue(view.spreadStatus().frontCover());
+        assertTrue(view.spreadStatus().hasSpreadMenu());
         assertEquals("Titelseite", view.spreadSignatures().getFirst().label());
         assertEquals("Titelseite", view.spreadMenuItems().getFirst().label());
         assertTrue(view.spreadMenuItems().getFirst().current());
@@ -82,6 +85,9 @@ class PlayerNewspaperVisualViewFactoryTest {
         assertEquals(3, view.spreadMenuItems().size());
         assertTrue(view.spreadMenuItems().get(1).current());
         assertEquals("Anzeigen", view.spreadMenuItems().get(2).hint());
+        assertEquals("Seiten 2-3", view.spreadStatus().label());
+        assertEquals(2, view.spreadStatus().leftPageNumber());
+        assertEquals(3, view.spreadStatus().rightPageNumber());
         assertEquals(4, view.buttons().size());
     }
 

@@ -14,6 +14,7 @@ public record PlayerNewspaperVisualView(
         boolean hasPreviousSpread,
         boolean hasNextSpread,
         String message,
+        NewspaperSpreadStatus spreadStatus,
         List<NewspaperSpreadSignature> spreadSignatures,
         List<NewspaperSpreadMenuItem> spreadMenuItems,
         List<NewspaperUiButton> buttons
@@ -24,6 +25,9 @@ public record PlayerNewspaperVisualView(
         spreadIndex = Math.max(0, spreadIndex);
         totalSpreadCount = Math.max(0, totalSpreadCount);
         message = message == null ? "" : message;
+        spreadStatus = spreadStatus == null
+                ? new NewspaperSpreadStatus(0, 0, "Doppelseite 1", "", 0, 0, false, false, false)
+                : spreadStatus;
         spreadSignatures = spreadSignatures == null ? List.of() : List.copyOf(spreadSignatures);
         spreadMenuItems = spreadMenuItems == null ? List.of() : List.copyOf(spreadMenuItems);
         buttons = buttons == null ? List.of() : List.copyOf(buttons);

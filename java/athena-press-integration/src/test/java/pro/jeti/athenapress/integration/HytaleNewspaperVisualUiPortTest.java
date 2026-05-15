@@ -91,6 +91,7 @@ class HytaleNewspaperVisualUiPortTest {
                 false,
                 false,
                 "",
+                new NewspaperSpreadStatus(0, 1, "Titelseite", "", 1, 0, true, false, false),
                 List.of(),
                 List.of(),
                 List.of()

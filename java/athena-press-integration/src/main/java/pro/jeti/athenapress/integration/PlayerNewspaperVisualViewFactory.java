@@ -31,6 +31,7 @@ public class PlayerNewspaperVisualViewFactory {
                 response.hasPreviousSpread(),
                 response.hasNextSpread(),
                 "",
+                spreadStatusFor(response),
                 response.spreadSignatures(),
                 spreadMenuItemsFor(response),
                 buttonsFor(response)
@@ -53,6 +54,7 @@ public class PlayerNewspaperVisualViewFactory {
                 false,
                 false,
                 hasText(message) ? message : "Diese Ausgabe ist nicht verfügbar.",
+                new NewspaperSpreadStatus(0, 0, "Doppelseite 1", "", 0, 0, false, false, false),
                 List.of(),
                 List.of(),
                 List.of(NewspaperUiButton.danger(
@@ -103,6 +105,35 @@ public class PlayerNewspaperVisualViewFactory {
                         NewspaperVisualUiCommands.selectSpread(signature.spreadIndex())
                 ))
                 .toList();
+    }
+
+    private NewspaperSpreadStatus spreadStatusFor(PlayerNewspaperVisualResponse response) {
+        NewspaperSpreadSignature currentSignature = response.spreadSignatures().stream()
+                .filter(signature -> signature.spreadIndex() == response.spreadIndex())
+                .findFirst()
+                .orElseGet(() -> response.spread() == null
+                        ? new NewspaperSpreadSignature(
+                                response.spreadIndex(),
+                                "Doppelseite " + (response.spreadIndex() + 1),
+                                "",
+                                0,
+                                0,
+                                false,
+                                false
+                        )
+                        : response.spread().signature());
+
+        return new NewspaperSpreadStatus(
+                response.spreadIndex(),
+                response.totalSpreadCount(),
+                currentSignature.label(),
+                currentSignature.hint(),
+                currentSignature.leftPageNumber(),
+                currentSignature.rightPageNumber(),
+                currentSignature.frontCover(),
+                currentSignature.backCover(),
+                !response.spreadSignatures().isEmpty()
+        );
     }
 
     private boolean hasText(String value) {
