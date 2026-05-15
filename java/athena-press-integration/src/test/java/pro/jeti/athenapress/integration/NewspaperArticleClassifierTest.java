@@ -33,6 +33,16 @@ class NewspaperArticleClassifierTest {
     }
 
     @Test
+    void detectsClassifiedsAsAdvertisements() {
+        NewspaperArticleClassification classification = classifier.classify(
+                article("classifieds", "Suche Brett", "Kurzer Text"),
+                false
+        );
+
+        assertEquals(NewspaperPageSectionType.ADVERTISEMENTS, classification.sectionType());
+    }
+
+    @Test
     void detectsShortNoticesByCategoryOrLength() {
         NewspaperArticleClassification byCategory = classifier.classify(
                 article("kurzmeldung", "Heute Kuchen", "Kurz"),

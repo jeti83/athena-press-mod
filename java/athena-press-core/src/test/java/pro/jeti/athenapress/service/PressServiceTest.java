@@ -44,7 +44,7 @@ class PressServiceTest {
 
         List<Article> articles = service.findArticlesForIssue("issue_0002");
 
-        assertEquals(2, articles.size(), "Expected issue_0002 to contain two resolvable articles.");
+        assertEquals(3, articles.size(), "Expected issue_0002 to contain three resolvable articles.");
 
         assertTrue(
                 articles.stream().anyMatch(article -> "article_0001".equals(article.id())),
@@ -54,6 +54,11 @@ class PressServiceTest {
         assertTrue(
                 articles.stream().anyMatch(article -> "article_0002".equals(article.id())),
                 "Expected article_0002 to be resolved."
+        );
+
+        assertTrue(
+                articles.stream().anyMatch(article -> "article_0004".equals(article.id())),
+                "Expected article_0004 to be resolved."
         );
     }
 
@@ -107,7 +112,7 @@ class PressServiceTest {
 
         assertNotNull(resolvedIssue, "Expected issue_0002 to be resolved.");
         assertEquals("issue_0002", resolvedIssue.issue().id());
-        assertEquals(2, resolvedIssue.articles().size(), "Expected issue_0002 to contain two resolved articles.");
+        assertEquals(3, resolvedIssue.articles().size(), "Expected issue_0002 to contain three resolved articles.");
 
         assertTrue(
                 resolvedIssue.articles().stream().anyMatch(article -> "article_0001".equals(article.id())),
@@ -117,6 +122,11 @@ class PressServiceTest {
         assertTrue(
                 resolvedIssue.articles().stream().anyMatch(article -> "article_0002".equals(article.id())),
                 "Expected article_0002 to be resolved."
+        );
+
+        assertTrue(
+                resolvedIssue.articles().stream().anyMatch(article -> "article_0004".equals(article.id())),
+                "Expected article_0004 to be resolved."
         );
     }
 }

@@ -229,6 +229,14 @@ class NewspaperArticleCompositionServiceTest {
                 .flatMap(page -> page.blocks().stream())
                 .anyMatch(block -> "Anzeige 1".equals(block.content())
                         && block.layoutIntent() == NewspaperBlockLayoutIntent.BACK_PAGE));
+        assertTrue(visualIssue.pages().getLast().blocks().stream()
+                .anyMatch(block -> "Rückseite".equals(block.content())));
+        assertTrue(visualIssue.pages().getLast().blocks().stream()
+                .anyMatch(block -> "Anzeige 1".equals(block.content())));
+        assertTrue(visualIssue.pages().stream()
+                .limit(visualIssue.pages().size() - 1L)
+                .flatMap(page -> page.blocks().stream())
+                .noneMatch(block -> "Anzeige 1".equals(block.content())));
     }
 
     @Test

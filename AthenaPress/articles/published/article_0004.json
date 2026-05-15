@@ -1,0 +1,35 @@
+{
+  "id": "article_0004",
+  "status": "published",
+  "categoryId": "classifieds",
+  "title": "Aushangplatz gesucht",
+  "subtitle": "Kleine Anzeige mit großem Brettbedarf",
+  "summary": "Gesucht wird ein wetterfester Platz für wichtige Zettel, unwichtige Gerüchte und gelegentlich einen Kuchenhinweis.",
+  "teaser": "Wer ein Brett hat, möge sich melden.",
+  "author": {
+    "playerName": "Athena Redaktion",
+    "playerUuid": "unknown"
+  },
+  "body": "Die Redaktion sucht einen gut sichtbaren Aushangplatz nahe des Spawns. Geboten werden sorgfältige Beschriftung, wechselnde Inhalte und die feste Zusage, keine drei Monate alten Angebote kleben zu lassen.",
+  "image": {
+    "file": "placeholders/dating.png",
+    "caption": "Symbolbild: Zwei Herzen, ein Plot und offenbar auch Platz für einen Aushang.",
+    "credit": "Athena Botenblatt",
+    "sourceType": "placeholder"
+  },
+  "location": {
+    "enabled": false,
+    "world": "",
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "tags": [
+    "kleinanzeige",
+    "aushang",
+    "redaktion"
+  ],
+  "createdAt": "2026-05-15T17:29:00+02:00",
+  "updatedAt": "2026-05-15T17:29:00+02:00",
+  "publishedAt": "2026-05-15T17:29:00+02:00"
+}

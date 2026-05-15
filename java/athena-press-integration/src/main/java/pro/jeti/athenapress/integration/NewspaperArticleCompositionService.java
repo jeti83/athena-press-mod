@@ -137,11 +137,13 @@ public class NewspaperArticleCompositionService {
 
     private List<NewspaperVisualPage> pagesFor(GameIssueView issueView) {
         if (designProfile.coverPolicy() != NewspaperCoverPolicy.STANDALONE_TITLE_PAGE) {
-            return paginationService.paginate(
+            List<NewspaperVisualPage> pages = new ArrayList<>(paginationService.paginate(
                     issueTitle(issueView),
                     blocksForSections(sectionsFor(issueView)),
                     defaultTemplate
-            );
+            ));
+            appendBackPages(pages, issueView);
+            return pages;
         }
 
         List<NewspaperVisualPage> pages = new ArrayList<>();
@@ -170,6 +172,7 @@ public class NewspaperArticleCompositionService {
             ));
         }
 
+        appendBackPages(pages, issueView);
         return pages;
     }
 
@@ -214,12 +217,6 @@ public class NewspaperArticleCompositionService {
                 NewspaperPageSectionType.MEMORIAL,
                 "Verschollen und unvergessen",
                 articleBlocksForSection(issueView, NewspaperPageSectionType.MEMORIAL)
-        ));
-
-        sections.add(NewspaperPageSection.of(
-                NewspaperPageSectionType.BACK_PAGE,
-                "Rückseite",
-                backPageBlocksFor(issueView)
         ));
 
         return sectionPolicy.filter(sections);
@@ -282,12 +279,6 @@ public class NewspaperArticleCompositionService {
             }
         }
 
-        List<List<NewspaperVisualBlock>> backPageGroups = backPageBlockGroupsFor(issueView);
-        if (shouldIncludeBackPage(backPageGroups)) {
-            groups.add(sectionHeadingBlocksFor(NewspaperPageSectionType.BACK_PAGE));
-            groups.addAll(backPageGroups);
-        }
-
         return groups;
     }
 
@@ -347,6 +338,27 @@ public class NewspaperArticleCompositionService {
 
     private List<NewspaperVisualBlock> backPageBlocksFor(GameIssueView issueView) {
         return blocksForGroups(backPageBlockGroupsFor(issueView));
+    }
+
+    private void appendBackPages(
+            List<NewspaperVisualPage> pages,
+            GameIssueView issueView
+    ) {
+        List<List<NewspaperVisualBlock>> backPageGroups = backPageBlockGroupsFor(issueView);
+        if (!shouldIncludeBackPage(backPageGroups)) {
+            return;
+        }
+
+        List<NewspaperVisualBlock> blocks = new ArrayList<>(
+                sectionHeadingBlocksFor(NewspaperPageSectionType.BACK_PAGE)
+        );
+        blocks.addAll(blocksForGroups(backPageGroups));
+        pages.addAll(paginationService.paginate(
+                sectionTitleFor(NewspaperPageSectionType.BACK_PAGE),
+                blocks,
+                defaultTemplate,
+                pages.size() + 1
+        ));
     }
 
     private List<List<NewspaperVisualBlock>> backPageBlockGroupsFor(GameIssueView issueView) {
