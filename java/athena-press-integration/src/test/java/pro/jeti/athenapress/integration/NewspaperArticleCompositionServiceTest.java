@@ -225,6 +225,10 @@ class NewspaperArticleCompositionServiceTest {
         assertTrue(visibleBlockTexts.contains("Rückseite"));
         assertTrue(visibleBlockTexts.contains("Anzeige 1"));
         assertFalse(visibleBlockTexts.contains("Anzeigen"));
+        assertTrue(visualIssue.pages().stream()
+                .flatMap(page -> page.blocks().stream())
+                .anyMatch(block -> "Anzeige 1".equals(block.content())
+                        && block.layoutIntent() == NewspaperBlockLayoutIntent.BACK_PAGE));
     }
 
     @Test

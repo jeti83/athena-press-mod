@@ -103,6 +103,10 @@ public class NewspaperBlockLayoutRuleSet {
             return coverRowSpanFor(block);
         }
 
+        if (block != null && block.layoutIntent() == NewspaperBlockLayoutIntent.BACK_PAGE) {
+            return backPageRowSpanFor(block);
+        }
+
         return ruleFor(block).rowSpanFor(block, template);
     }
 
@@ -135,6 +139,15 @@ public class NewspaperBlockLayoutRuleSet {
             case NOTICE -> 3;
             case IMAGE -> 10;
             case CAPTION, DIVIDER -> 1;
+            default -> ruleFor(block).defaultRowSpan();
+        };
+    }
+
+    private int backPageRowSpanFor(NewspaperVisualBlock block) {
+        return switch (block.type()) {
+            case ADVERTISEMENT -> 8;
+            case NOTICE -> 2;
+            case DIVIDER -> 1;
             default -> ruleFor(block).defaultRowSpan();
         };
     }

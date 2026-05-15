@@ -2,5 +2,6 @@ package pro.jeti.athenapress.integration;
 
 public enum NewspaperBlockLayoutIntent {
     STANDARD,
-    COVER
+    COVER,
+    BACK_PAGE
 }

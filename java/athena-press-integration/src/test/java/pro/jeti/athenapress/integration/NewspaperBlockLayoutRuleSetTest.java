@@ -91,4 +91,23 @@ class NewspaperBlockLayoutRuleSetTest {
         ));
         assertEquals(1, rules.rowSpanFor(NewspaperVisualBlock.coverCaption("Bildtext", 2), template));
     }
+
+    @Test
+    void expandsBackPageAdvertisementsWithoutChangingRegularAds() {
+        NewspaperBlockLayoutRuleSet rules = NewspaperBlockLayoutRuleSet.defaultRules();
+        NewspaperLayoutTemplate template = NewspaperLayoutTemplate.classicDoublePage();
+
+        assertEquals(6, rules.rowSpanFor(
+                NewspaperVisualBlock.advertisement("Standard", "ad.png"),
+                template
+        ));
+        assertEquals(8, rules.rowSpanFor(
+                NewspaperVisualBlock.backPageAdvertisement("Rückseite", "ad.png"),
+                template
+        ));
+        assertEquals(2, rules.rowSpanFor(
+                NewspaperVisualBlock.backPageNotice("Hinweis"),
+                template
+        ));
+    }
 }

@@ -517,16 +517,16 @@ public class NewspaperArticleCompositionService {
             return;
         }
 
-        blocks.add(NewspaperVisualBlock.advertisement(
+        blocks.add(NewspaperVisualBlock.backPageAdvertisement(
                 articleTitle(article),
                 advertisementAssetPath(article)
         ));
 
         if (hasText(article.summary())) {
-            blocks.add(NewspaperVisualBlock.notice(article.summary()));
+            blocks.add(NewspaperVisualBlock.backPageNotice(article.summary()));
         }
 
-        blocks.add(NewspaperVisualBlock.coverDivider());
+        blocks.add(NewspaperVisualBlock.backPageDivider());
     }
 
     private String advertisementAssetPath(GameArticleView article) {

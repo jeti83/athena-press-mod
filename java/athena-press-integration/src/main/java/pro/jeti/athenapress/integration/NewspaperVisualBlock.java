@@ -135,12 +135,30 @@ public record NewspaperVisualBlock(
         );
     }
 
+    public static NewspaperVisualBlock backPageAdvertisement(String content, String assetPath) {
+        return backPageBlock(
+                NewspaperVisualBlockType.ADVERTISEMENT,
+                content,
+                assetPath,
+                1,
+                NewspaperImageRole.ADVERTISEMENT
+        );
+    }
+
     public static NewspaperVisualBlock divider() {
         return new NewspaperVisualBlock(NewspaperVisualBlockType.DIVIDER, null, null, 2);
     }
 
     public static NewspaperVisualBlock coverDivider() {
         return coverBlock(NewspaperVisualBlockType.DIVIDER, null, null, 2, null);
+    }
+
+    public static NewspaperVisualBlock backPageNotice(String content) {
+        return backPageBlock(NewspaperVisualBlockType.NOTICE, content, null, 1, null);
+    }
+
+    public static NewspaperVisualBlock backPageDivider() {
+        return backPageBlock(NewspaperVisualBlockType.DIVIDER, null, null, 2, null);
     }
 
     private static NewspaperVisualBlock coverBlock(
@@ -157,6 +175,23 @@ public record NewspaperVisualBlock(
                 columnSpan,
                 imageRole,
                 NewspaperBlockLayoutIntent.COVER
+        );
+    }
+
+    private static NewspaperVisualBlock backPageBlock(
+            NewspaperVisualBlockType type,
+            String content,
+            String assetPath,
+            int columnSpan,
+            NewspaperImageRole imageRole
+    ) {
+        return new NewspaperVisualBlock(
+                type,
+                content,
+                assetPath,
+                columnSpan,
+                imageRole,
+                NewspaperBlockLayoutIntent.BACK_PAGE
         );
     }
 }
