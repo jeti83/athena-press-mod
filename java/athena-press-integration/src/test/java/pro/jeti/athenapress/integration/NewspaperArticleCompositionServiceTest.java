@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import pro.jeti.athenapress.model.GameArticleView;
 import pro.jeti.athenapress.model.GameIssueView;
+import pro.jeti.athenapress.model.ImageInfo;
 
 class NewspaperArticleCompositionServiceTest {
 
@@ -181,6 +182,18 @@ class NewspaperArticleCompositionServiceTest {
     }
 
     @Test
+    void addsArticleImagesToVisualComposition() {
+        GameIssueView issueView = issueViewWithArticleImage();
+
+        NewspaperVisualIssue visualIssue = new NewspaperArticleCompositionService()
+                .compose(issueView);
+
+        assertTrue(visualIssue.pages().stream()
+                .flatMap(page -> page.blocks().stream())
+                .anyMatch(block -> "placeholders/article.png".equals(block.assetPath())));
+    }
+
+    @Test
     void rendersVisualPagesIntoAdapterNeutralLayout() {
         GameIssueView issueView = issueViewWithArticles(1);
         NewspaperVisualIssue visualIssue = new NewspaperArticleCompositionService()
@@ -335,6 +348,32 @@ class NewspaperArticleCompositionServiceTest {
                                 "Kommt vorbei."
                         )
                 )
+        );
+    }
+
+    private GameIssueView issueViewWithArticleImage() {
+        return new GameIssueView(
+                "issue_test",
+                7,
+                "Athena Morgenblatt",
+                "Aus der Stadt, fuer die Stadt",
+                "article_1",
+                "placeholders/front.png",
+                List.of(new GameArticleView(
+                        "article_1",
+                        "server_news",
+                        "Artikel 1",
+                        "Untertitel 1",
+                        "Teaser 1",
+                        "Zusammenfassung 1",
+                        "Artikeltext mit Bild.",
+                        new ImageInfo(
+                                "placeholders/article.png",
+                                "Bildunterschrift",
+                                null,
+                                "local"
+                        )
+                ))
         );
     }
 }

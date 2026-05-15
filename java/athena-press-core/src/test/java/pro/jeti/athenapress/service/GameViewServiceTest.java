@@ -43,6 +43,7 @@ class GameViewServiceTest {
         assertEquals("Erster Spielartikel", article.title());
         assertEquals("Kurzfassung für die Artikelliste", article.summary());
         assertEquals("Dies ist der lesbare Artikeltext.", article.body());
+        assertEquals("placeholders/article.png", article.image().file());
     }
 
     @Test
@@ -94,6 +95,11 @@ class GameViewServiceTest {
                   "subtitle": "Untertitel im Artikel",
                   "teaser": "Kurzer Teaser",
                   "summary": "Kurzfassung für die Artikelliste",
+                  "image": {
+                    "file": "placeholders/article.png",
+                    "caption": "Der Artikel im Bild",
+                    "sourceType": "local"
+                  },
                   "body": "Dies ist der lesbare Artikeltext."
                 }
                 """

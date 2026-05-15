@@ -5,6 +5,7 @@ import java.util.List;
 
 import pro.jeti.athenapress.model.GameArticleView;
 import pro.jeti.athenapress.model.GameIssueView;
+import pro.jeti.athenapress.model.ImageInfo;
 
 public class NewspaperArticleCompositionService {
 
@@ -491,6 +492,8 @@ public class NewspaperArticleCompositionService {
             blocks.add(NewspaperVisualBlock.quote(article.teaser()));
         }
 
+        addArticleImageBlock(blocks, article, 1);
+
         if (hasText(article.body())) {
             addBodyTextBlocks(blocks, article.body(), 1);
         }
@@ -514,6 +517,8 @@ public class NewspaperArticleCompositionService {
             blocks.add(NewspaperVisualBlock.quote(article.teaser()));
         }
 
+        addArticleImageBlock(blocks, article, defaultTemplate.columnsPerPage());
+
         if (hasText(article.body())) {
             addBodyTextBlocks(blocks, article.body(), defaultTemplate.columnsPerPage());
         }
@@ -536,6 +541,8 @@ public class NewspaperArticleCompositionService {
         } else if (hasText(article.teaser())) {
             blocks.add(NewspaperVisualBlock.notice(article.teaser()));
         }
+
+        addArticleImageBlock(blocks, article, 1);
 
         if (hasText(article.body())) {
             addBodyTextBlocks(blocks, article.body(), 1);
@@ -581,5 +588,22 @@ public class NewspaperArticleCompositionService {
         for (String segment : articleTextFlowService.split(body)) {
             blocks.add(NewspaperVisualBlock.bodyText(segment, columnSpan));
         }
+    }
+
+    private void addArticleImageBlock(
+            List<NewspaperVisualBlock> blocks,
+            GameArticleView article,
+            int columnSpan
+    ) {
+        ImageInfo image = article == null ? null : article.image();
+        if (image == null || !hasText(image.file())) {
+            return;
+        }
+
+        blocks.add(NewspaperVisualBlock.image(
+                image.file(),
+                hasText(image.caption()) ? image.caption() : articleTitle(article),
+                columnSpan
+        ));
     }
 }

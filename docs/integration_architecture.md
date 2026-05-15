@@ -547,6 +547,7 @@ Verantwortlich für:
 Titelblock
 Coverbild
 Artikelblöcke
+Artikelbilder
 Zusammenfassungen
 Seitenaufbau
 
