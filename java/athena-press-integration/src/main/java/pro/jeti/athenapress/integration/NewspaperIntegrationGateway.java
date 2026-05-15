@@ -14,6 +14,7 @@ public class NewspaperIntegrationGateway {
     private final AthenaPressCore core;
     private final NewspaperPreviewPipelineService previewPipelineService;
     private final PlayerNewspaperVisualNavigationService visualNavigationService;
+    private final ArticleEditorService articleEditorService;
     private final Map<String, GameNewspaperSessionService> sessionsByPlayerId = new HashMap<>();
 
     public NewspaperIntegrationGateway(AthenaPressCore core) {
@@ -25,6 +26,10 @@ public class NewspaperIntegrationGateway {
         this.previewPipelineService = new NewspaperPreviewPipelineService(core.getGameViewService());
         this.visualNavigationService =
                 new PlayerNewspaperVisualNavigationService(previewPipelineService);
+        this.articleEditorService = new ArticleEditorService(
+                core.getArticleWriteService(),
+                core.getCategoryRepository()
+        );
     }
 
     public String openIssueForPlayer(String playerId, String issueId) throws IOException {
@@ -191,6 +196,26 @@ public class NewspaperIntegrationGateway {
 
     public int getCachedPreviewCount() {
         return previewPipelineService.cachedPreviewCount();
+    }
+
+    public ArticleEditorView startArticleEditor(String playerId, String playerName, boolean admin) {
+        return articleEditorService.startEditing(playerId, playerName, admin);
+    }
+
+    public ArticleEditorView handleEditorInput(String playerId, String input) throws IOException {
+        return articleEditorService.handleInput(playerId, input);
+    }
+
+    public ArticleEditorView attachCameraImage(String playerId, String imagePath, String caption) {
+        return articleEditorService.attachCameraImage(playerId, imagePath, caption);
+    }
+
+    public boolean hasActiveEditorSession(String playerId) {
+        return articleEditorService.hasActiveSession(playerId);
+    }
+
+    public void cancelEditorSession(String playerId) {
+        articleEditorService.cancelSession(playerId);
     }
 
     private GameNewspaperSessionService getOrCreateSession(String playerId) {
