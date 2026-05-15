@@ -12,7 +12,7 @@ public final class AthenaPressVisualPngPreviewDemo {
     public static void main(String[] args) throws IOException {
         VisualPngCommand command = parse(args);
         NewspaperPreviewImageRenderResult result = render(
-                Path.of("..", "..", "AthenaPress").toAbsolutePath().normalize(),
+                AthenaPressVisualPreviewDemo.findDataRoot(),
                 command.issueId(),
                 command.outputDirectory()
         );

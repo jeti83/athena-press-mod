@@ -68,7 +68,7 @@ public final class AthenaPressVisualPreviewDemo {
         return help.toString();
     }
 
-    private static Path findDataRoot() {
+    static Path findDataRoot() {
         List<Path> candidates = List.of(
                 Path.of("AthenaPress"),
                 Path.of("..", "AthenaPress"),
