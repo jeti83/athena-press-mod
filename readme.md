@@ -179,7 +179,7 @@ Letzter bekannter stabiler Teststand:
 
 text
 Core: 91 Tests
-Integration: 120 Tests
+Integration: 149 Tests
 Failures: 0
 Errors: 0
 
@@ -250,6 +250,18 @@ powershell
 mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.integration.AthenaPressVisualPreviewDemo" "-Dexec.args=--vorschau issue_0002"
 
 Diese Ausgabe ist nur ein Debug-/Admin-Einstieg für die native Visual-Struktur, keine HTML- oder Browserlösung.
+
+Bildvorschau als echte PNG-Doppelseiten:
+
+powershell
+mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.integration.AthenaPressVisualPngPreviewDemo" "-Dexec.args=issue_0002"
+
+Die PNG-Dateien werden unter folgendem Ordner erzeugt:
+
+text
+java/athena-press-integration/target/visual-preview-png/
+
+Auch diese Vorschau bleibt adapter-neutral. Sie rendert dieselbe native Visual-Struktur lediglich als lokale Bilddatei, damit Layoutentscheidungen früh sichtbar geprüft werden können.
 
 ---
 

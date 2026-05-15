@@ -359,6 +359,22 @@ Die Ausgabe zeigt Doppelseiten, Seitenrollen, platzierte Blöcke, Spalten-/Zeile
 Wichtig:
 Das ist keine HTML- oder Browser-Preview, sondern eine Textdarstellung der nativen Visual-Struktur.
 
+### PNG-Doppelseitenvorschau erzeugen
+
+Zusätzlich kann dieselbe native Visual-Struktur lokal als PNG gerendert werden:
+
+mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.integration.AthenaPressVisualPngPreviewDemo" "-Dexec.args=issue_0002"
+
+Standardzielordner:
+
+java/athena-press-integration/target/visual-preview-png/
+
+Optional kann als zweites Argument ein anderer Ausgabeordner übergeben werden:
+
+mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.integration.AthenaPressVisualPngPreviewDemo" "-Dexec.args=issue_0002 target/custom-preview"
+
+Auch das ist keine HTML-, Browser- oder WebView-Lösung, sondern eine lokale Bildprüfung für das spätere native Overlay.
+
 ### Native Visual-Runtime vorbereiten
 
 Für spätere echte Hytale-Hooks gibt es im Integration-Modul:
