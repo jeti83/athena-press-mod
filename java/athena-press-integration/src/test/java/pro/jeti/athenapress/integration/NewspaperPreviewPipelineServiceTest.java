@@ -64,6 +64,26 @@ class NewspaperPreviewPipelineServiceTest {
     }
 
     @Test
+    void longPublishedArticleCreatesAdditionalPreviewPages() throws IOException {
+        createLongPreviewDataSet();
+        AthenaPressCore core = new AthenaPressCore(tempDir);
+        NewspaperPreviewPipelineService service =
+                new NewspaperPreviewPipelineService(core.getGameViewService());
+
+        NewspaperPreviewIssue previewIssue = service.createPreview("issue_preview_long");
+
+        long pageCount = previewIssue.spreads().stream()
+                .flatMap(spread -> java.util.stream.Stream.of(
+                        spread.leftPage(),
+                        spread.rightPage()
+                ))
+                .filter(page -> page != null)
+                .count();
+
+        assertTrue(pageCount > 2);
+    }
+
+    @Test
     void returnsHelpfulPreviewTextForMissingIssue() throws IOException {
         AthenaPressCore core = new AthenaPressCore(tempDir);
         NewspaperPreviewPipelineService service =
@@ -142,6 +162,61 @@ class NewspaperPreviewPipelineServiceTest {
                   }
                 }
                 """
+        );
+    }
+
+    private void createLongPreviewDataSet() throws IOException {
+        createFolders();
+
+        Files.writeString(
+                tempDir.resolve("articles").resolve("published")
+                        .resolve("article_long.json"),
+                """
+                {
+                  "id": "article_long",
+                  "status": "published",
+                  "categoryId": "stadtklatsch",
+                  "title": "Die Laterne berichtet ausfuehrlich",
+                  "subtitle": "Ein Lichtblick mit sehr viel Redebedarf",
+                  "teaser": "Der Platz hoerte geduldig zu.",
+                  "summary": "Die Laterne begann knapp und fand dann doch noch viele Einzelheiten.",
+                  "body": "%s"
+                }
+                """.formatted(longBody())
+        );
+
+        Files.writeString(
+                tempDir.resolve("issues").resolve("published")
+                        .resolve("issue_preview_long.json"),
+                """
+                {
+                  "id": "issue_preview_long",
+                  "status": "published",
+                  "issueNumber": 13,
+                  "title": "Athena Abendblatt",
+                  "subtitle": "Serioes im Auftreten, frech im Inhalt",
+                  "articles": [
+                    "article_long"
+                  ],
+                  "cover": {
+                    "mainArticleId": "article_long",
+                    "image": "placeholders/market_stand.png"
+                  }
+                }
+                """
+        );
+    }
+
+    private String longBody() {
+        return String.join(
+                "\\n\\n",
+                java.util.stream.IntStream.rangeClosed(1, 8)
+                        .mapToObj(index -> "Absatz %d berichtet ausfuehrlich von Lampenlicht, "
+                                .formatted(index)
+                                + "Geruechten, wartenden Leuten und einer Reihe sehr ernst "
+                                + "gemeinter Beobachtungen, die zusammen deutlich mehr Raum "
+                                + "beanspruchen als eine kurze Meldung.")
+                        .toList()
         );
     }
 
