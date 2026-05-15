@@ -78,6 +78,24 @@ public record NewspaperVisualBlock(
         );
     }
 
+    public static NewspaperVisualBlock caption(String content) {
+        return new NewspaperVisualBlock(
+                NewspaperVisualBlockType.CAPTION,
+                content,
+                null,
+                1
+        );
+    }
+
+    public static NewspaperVisualBlock caption(String content, int columnSpan) {
+        return new NewspaperVisualBlock(
+                NewspaperVisualBlockType.CAPTION,
+                content,
+                null,
+                columnSpan
+        );
+    }
+
     public static NewspaperVisualBlock notice(String content) {
         return new NewspaperVisualBlock(
                 NewspaperVisualBlockType.NOTICE,

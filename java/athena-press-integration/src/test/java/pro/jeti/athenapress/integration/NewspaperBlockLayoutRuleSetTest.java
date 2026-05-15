@@ -47,4 +47,18 @@ class NewspaperBlockLayoutRuleSetTest {
         assertEquals(2, rules.columnSpanFor(featuredBody, template));
         assertEquals(8, rules.rowSpanFor(featuredBody, template));
     }
+
+    @Test
+    void keepsCaptionAlignedWithRequestedImageWidth() {
+        NewspaperBlockLayoutRuleSet rules = NewspaperBlockLayoutRuleSet.defaultRules();
+        NewspaperLayoutTemplate template = NewspaperLayoutTemplate.classicDoublePage();
+
+        NewspaperVisualBlock featuredCaption = NewspaperVisualBlock.caption(
+                "Bildunterschrift",
+                template.columnsPerPage()
+        );
+
+        assertEquals(2, rules.columnSpanFor(featuredCaption, template));
+        assertEquals(1, rules.rowSpanFor(featuredCaption, template));
+    }
 }

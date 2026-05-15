@@ -602,8 +602,12 @@ public class NewspaperArticleCompositionService {
 
         blocks.add(NewspaperVisualBlock.image(
                 image.file(),
-                hasText(image.caption()) ? image.caption() : articleTitle(article),
+                articleTitle(article),
                 columnSpan
         ));
+
+        if (hasText(image.caption())) {
+            blocks.add(NewspaperVisualBlock.caption(image.caption(), columnSpan));
+        }
     }
 }

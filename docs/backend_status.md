@@ -43,6 +43,7 @@ Das Backend kann derzeit:
 - fortlaufende Artikel auf Folgeseiten kenntlich machen
 - optionale Rubriken sichtbar als Zeitungsbereiche ausgeben
 - vorhandene Artikelbilder in die visuelle Komposition übernehmen
+- Bildunterschriften als eigene visuelle Blöcke ausgeben
 - Visual-Previews zwischenspeichern
 - Visual-Input und Lifecycle-Ereignisse adapter-neutral verarbeiten
 - eine native Hytale-Visual-Runtime ohne direkte Hytale-API-Imports zusammensetzen
@@ -128,7 +129,7 @@ Erwarteter Stand:
 Der zuletzt bekannte Stand lag bei:
 
 - Core: 91 Tests
-- Integration: 141 Tests
+- Integration: 142 Tests
 - 0 Failures
 - 0 Errors
 

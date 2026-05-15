@@ -548,6 +548,7 @@ Titelblock
 Coverbild
 Artikelblöcke
 Artikelbilder
+Bildunterschriften
 Zusammenfassungen
 Seitenaufbau
 

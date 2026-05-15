@@ -191,6 +191,10 @@ class NewspaperArticleCompositionServiceTest {
         assertTrue(visualIssue.pages().stream()
                 .flatMap(page -> page.blocks().stream())
                 .anyMatch(block -> "placeholders/article.png".equals(block.assetPath())));
+        assertTrue(visualIssue.pages().stream()
+                .flatMap(page -> page.blocks().stream())
+                .anyMatch(block -> block.type() == NewspaperVisualBlockType.CAPTION
+                        && "Bildunterschrift".equals(block.content())));
     }
 
     @Test
