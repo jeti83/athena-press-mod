@@ -1,5 +1,7 @@
 package pro.jeti.athenapress.integration;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -168,6 +170,47 @@ class HytaleNewspaperVisualRuntimeTest {
         assertNull(bridge.lastView);
     }
 
+    @Test
+    void runtimeOpensRealVisualIssueFromPlayerChatCommand() throws IOException {
+        createVisualDataSet();
+        CapturingVisualBridge bridge = new CapturingVisualBridge();
+        HytaleNewspaperVisualRuntime<String> runtime =
+                new HytaleNewspaperVisualRuntime<>(
+                        new AthenaPressIntegrationPlugin(tempDir),
+                        new NoopTextUiPort(),
+                        bridge,
+                        new StubResolver()
+                );
+
+        runtime.onPlayerConnected("player-1");
+        runtime.onPlayerChatCommand("player-1", "/ap", "issue_visual");
+
+        assertNotNull(bridge.lastView);
+        assertTrue(bridge.lastView.newspaperOpen());
+        assertEquals("issue_visual", bridge.lastView.issueId());
+        assertEquals(0, bridge.lastView.spreadIndex());
+    }
+
+    @Test
+    void runtimeDisconnectClosesRealVisualIssueAndReleasesPlayer() throws IOException {
+        createVisualDataSet();
+        CapturingVisualBridge bridge = new CapturingVisualBridge();
+        HytaleNewspaperVisualRuntime<String> runtime =
+                new HytaleNewspaperVisualRuntime<>(
+                        new AthenaPressIntegrationPlugin(tempDir),
+                        new NoopTextUiPort(),
+                        bridge,
+                        new StubResolver()
+                );
+
+        runtime.onPlayerConnected("player-1");
+        runtime.onPlayerChatCommand("player-1", "/ap", "issue_visual");
+        runtime.onPlayerDisconnected("player-1");
+
+        assertEquals("player-1", bridge.closedPlayer.playerId());
+        assertTrue(!runtime.visualUiPort().hasRegisteredPlayer("player-1"));
+    }
+
     private static class StubResolver implements HytalePlayerContextResolver<String> {
         @Override
         public HytalePlayerContext resolve(String player) {
@@ -191,6 +234,7 @@ class HytaleNewspaperVisualRuntimeTest {
 
     private static class CapturingVisualBridge implements HytaleNewspaperVisualUiBridge {
         private PlayerNewspaperVisualView lastView;
+        private HytalePlayerContext closedPlayer;
 
         @Override
         public void openOrUpdate(
@@ -202,6 +246,7 @@ class HytaleNewspaperVisualRuntimeTest {
 
         @Override
         public void close(HytalePlayerContext player) {
+            this.closedPlayer = player;
         }
     }
 
@@ -245,5 +290,50 @@ class HytaleNewspaperVisualRuntimeTest {
                     ""
             );
         }
+    }
+
+    private void createVisualDataSet() throws IOException {
+        Files.createDirectories(tempDir.resolve("articles").resolve("draft"));
+        Files.createDirectories(tempDir.resolve("articles").resolve("published"));
+        Files.createDirectories(tempDir.resolve("articles").resolve("archived"));
+        Files.createDirectories(tempDir.resolve("issues").resolve("draft"));
+        Files.createDirectories(tempDir.resolve("issues").resolve("published"));
+        Files.createDirectories(tempDir.resolve("issues").resolve("archived"));
+
+        Files.writeString(
+                tempDir.resolve("articles").resolve("published").resolve("article_visual.json"),
+                """
+                {
+                  "id": "article_visual",
+                  "status": "published",
+                  "categoryId": "stadtklatsch",
+                  "title": "Laterne auf dem Platz",
+                  "subtitle": "Ein helles Ereignis",
+                  "teaser": "Die Menge wurde aufmerksam.",
+                  "summary": "Die Laterne berichtete ausführlich.",
+                  "body": "Kurzer Artikeltext."
+                }
+                """
+        );
+
+        Files.writeString(
+                tempDir.resolve("issues").resolve("published").resolve("issue_visual.json"),
+                """
+                {
+                  "id": "issue_visual",
+                  "status": "published",
+                  "issueNumber": 7,
+                  "title": "Athena Sichtblatt",
+                  "subtitle": "Frisch geblättert",
+                  "articles": [
+                    "article_visual"
+                  ],
+                  "cover": {
+                    "mainArticleId": "article_visual",
+                    "image": "placeholders/lantern.png"
+                  }
+                }
+                """
+        );
     }
 }
