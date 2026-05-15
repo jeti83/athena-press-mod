@@ -11,9 +11,10 @@ import pro.jeti.athenapress.model.DeliveryTarget;
 import pro.jeti.athenapress.model.Issue;
 import pro.jeti.athenapress.model.ResolvedIssue;
 import pro.jeti.athenapress.model.Subscriber;
+import pro.jeti.athenapress.service.DemoCommand;
 import pro.jeti.athenapress.service.DemoCommandService;
-import pro.jeti.athenapress.service.DemoCommandService.DemoCommand;
-import pro.jeti.athenapress.service.DemoCommandService.DemoCommandType;
+import pro.jeti.athenapress.service.DemoCommandType;
+import pro.jeti.athenapress.service.DemoTextService;
 import pro.jeti.athenapress.service.ValidationResult;
 
 public final class AthenaPressDemo {
@@ -25,23 +26,23 @@ public final class AthenaPressDemo {
         Path dataRoot = findDataRoot();
 
         AthenaPressCore core = new AthenaPressCore(dataRoot);
-        DemoCommandService demoCommandService = new DemoCommandService();
-        DemoCommand command = demoCommandService.parse(args);
+        DemoCommand command = new DemoCommandService().parse(args);
+        DemoTextService demoTextService = new DemoTextService();
 
         if (command.type() == DemoCommandType.SHOW_HELP) {
-            System.out.print(demoCommandService.createHelpText());
+            System.out.print(demoTextService.createHelpText());
             return;
         }
 
         if (command.type() == DemoCommandType.LIST_PUBLISHED_ISSUES) {
-            System.out.print(demoCommandService.createPublishedIssuesText(
+            System.out.print(demoTextService.createPublishedIssuesText(
                     core.getPressService().findPublishedIssues()
             ));
             return;
         }
 
         if (command.type() == DemoCommandType.LIST_ARTICLES) {
-            System.out.print(demoCommandService.createArticleListText(
+            System.out.print(demoTextService.createArticleListText(
                     core.getArticleRepository().findAll()
             ));
             return;
@@ -54,12 +55,8 @@ public final class AthenaPressDemo {
             List<Category> categories = core.getCategoryRepository().findAll();
             ValidationResult validationResult = core.getValidationService().validate();
 
-            System.out.print(demoCommandService.createStatusText(
-                    articles,
-                    issues,
-                    subscribers,
-                    categories,
-                    validationResult
+            System.out.print(demoTextService.createStatusText(
+                    articles, issues, subscribers, categories, validationResult
             ));
             return;
         }
@@ -68,9 +65,8 @@ public final class AthenaPressDemo {
             ValidationResult validationResult = core.getValidationService()
                     .validateIssueForDelivery(command.issueId());
 
-            System.out.print(demoCommandService.createValidationText(
-                    command.issueId(),
-                    validationResult
+            System.out.print(demoTextService.createValidationText(
+                    command.issueId(), validationResult
             ));
             return;
         }
