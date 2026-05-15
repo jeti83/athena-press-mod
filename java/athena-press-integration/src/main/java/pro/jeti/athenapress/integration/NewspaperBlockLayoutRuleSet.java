@@ -146,7 +146,7 @@ public class NewspaperBlockLayoutRuleSet {
     private int backPageRowSpanFor(NewspaperVisualBlock block) {
         return switch (block.type()) {
             case ADVERTISEMENT -> 8;
-            case NOTICE -> 2;
+            case NOTICE -> block.columnSpan() > 1 ? 2 : 3;
             case DIVIDER -> 1;
             default -> ruleFor(block).defaultRowSpan();
         };

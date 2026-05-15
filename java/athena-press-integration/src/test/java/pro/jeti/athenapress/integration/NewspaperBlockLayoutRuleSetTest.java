@@ -106,7 +106,11 @@ class NewspaperBlockLayoutRuleSetTest {
                 template
         ));
         assertEquals(2, rules.rowSpanFor(
-                NewspaperVisualBlock.backPageNotice("Hinweis"),
+                NewspaperVisualBlock.backPageNotice("Breiter Hinweis", 2),
+                template
+        ));
+        assertEquals(3, rules.rowSpanFor(
+                NewspaperVisualBlock.backPageNotice("Kompakter Hinweis"),
                 template
         ));
     }
