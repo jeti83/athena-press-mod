@@ -47,6 +47,10 @@ public record NewspaperVisualBlock(
         return new NewspaperVisualBlock(NewspaperVisualBlockType.SUBHEADLINE, content, null, 2);
     }
 
+    public static NewspaperVisualBlock memorialSubheadline(String content) {
+        return memorialBlock(NewspaperVisualBlockType.SUBHEADLINE, content, null, 2, null);
+    }
+
     public static NewspaperVisualBlock coverSubheadline(String content) {
         return coverBlock(NewspaperVisualBlockType.SUBHEADLINE, content, null, 2, null);
     }
@@ -101,6 +105,10 @@ public record NewspaperVisualBlock(
         return new NewspaperVisualBlock(NewspaperVisualBlockType.QUOTE, content, null, 1);
     }
 
+    public static NewspaperVisualBlock memorialQuote(String content) {
+        return memorialBlock(NewspaperVisualBlockType.QUOTE, content, null, 1, null);
+    }
+
     public static NewspaperVisualBlock caption(String content) {
         return new NewspaperVisualBlock(NewspaperVisualBlockType.CAPTION, content, null, 1);
     }
@@ -115,6 +123,10 @@ public record NewspaperVisualBlock(
 
     public static NewspaperVisualBlock notice(String content) {
         return new NewspaperVisualBlock(NewspaperVisualBlockType.NOTICE, content, null, 1);
+    }
+
+    public static NewspaperVisualBlock shortNotice(String content) {
+        return shortNoticeBlock(NewspaperVisualBlockType.NOTICE, content, null, 1, null);
     }
 
     public static NewspaperVisualBlock notice(String content, int columnSpan) {
@@ -204,6 +216,40 @@ public record NewspaperVisualBlock(
                 columnSpan,
                 imageRole,
                 NewspaperBlockLayoutIntent.BACK_PAGE
+        );
+    }
+
+    private static NewspaperVisualBlock shortNoticeBlock(
+            NewspaperVisualBlockType type,
+            String content,
+            String assetPath,
+            int columnSpan,
+            NewspaperImageRole imageRole
+    ) {
+        return new NewspaperVisualBlock(
+                type,
+                content,
+                assetPath,
+                columnSpan,
+                imageRole,
+                NewspaperBlockLayoutIntent.SHORT_NOTICE
+        );
+    }
+
+    private static NewspaperVisualBlock memorialBlock(
+            NewspaperVisualBlockType type,
+            String content,
+            String assetPath,
+            int columnSpan,
+            NewspaperImageRole imageRole
+    ) {
+        return new NewspaperVisualBlock(
+                type,
+                content,
+                assetPath,
+                columnSpan,
+                imageRole,
+                NewspaperBlockLayoutIntent.MEMORIAL
         );
     }
 }

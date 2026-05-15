@@ -210,6 +210,27 @@ class NewspaperArticleCompositionServiceTest {
     }
 
     @Test
+    void marksShortNoticeAndMemorialBlocksWithEditorialLayoutIntent() {
+        GameIssueView issueView = issueViewWithOptionalSections();
+
+        NewspaperVisualIssue visualIssue = new NewspaperArticleCompositionService()
+                .compose(issueView);
+
+        assertTrue(visualIssue.pages().stream()
+                .flatMap(page -> page.blocks().stream())
+                .anyMatch(block -> "Kurze Nachricht".equals(block.content())
+                        && block.layoutIntent() == NewspaperBlockLayoutIntent.SHORT_NOTICE));
+        assertTrue(visualIssue.pages().stream()
+                .flatMap(page -> page.blocks().stream())
+                .anyMatch(block -> "Verschollen im Nebel".equals(block.content())
+                        && block.layoutIntent() == NewspaperBlockLayoutIntent.MEMORIAL));
+        assertTrue(visualIssue.pages().stream()
+                .flatMap(page -> page.blocks().stream())
+                .anyMatch(block -> "Ein stiller Moment.".equals(block.content())
+                        && block.layoutIntent() == NewspaperBlockLayoutIntent.MEMORIAL));
+    }
+
+    @Test
     void movesAdvertisementsIntoBackPageSection() {
         GameIssueView issueView = issueViewWithImageAdvertisement();
 

@@ -1,0 +1,35 @@
+{
+  "id": "article_0007",
+  "status": "published",
+  "categoryId": "server_news",
+  "title": "Verschollen im Nebel",
+  "subtitle": "Die Redaktion wartet weiter auf ein Lebenszeichen",
+  "summary": "Seit drei Tagen fehlt jede Spur von einem Spieler, der zuletzt Richtung Nordpfad aufbrach.",
+  "teaser": "Ein stiller Gruß an alle, die noch auf Rückkehr hoffen.",
+  "author": {
+    "playerName": "Athena Redaktion",
+    "playerUuid": "unknown"
+  },
+  "body": "Die Redaktion nimmt Anteil und hält den Platz am Feuer frei. Hinweise werden entgegengenommen, Gerüchte bitte erst nach dem zweiten Kaffee.",
+  "image": {
+    "file": "placeholders/no_image.png",
+    "caption": "Symbolbild: Ein freier Platz am Feuer.",
+    "credit": "Athena Botenblatt",
+    "sourceType": "placeholder"
+  },
+  "location": {
+    "enabled": false,
+    "world": "",
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "tags": [
+    "verschollen",
+    "gedenken",
+    "community"
+  ],
+  "createdAt": "2026-05-15T18:35:00+02:00",
+  "updatedAt": "2026-05-15T18:35:00+02:00",
+  "publishedAt": "2026-05-15T18:35:00+02:00"
+}

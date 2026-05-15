@@ -42,6 +42,30 @@ class NewspaperPreviewServiceTest {
     }
 
     @Test
+    void preservesEditorialLayoutIntentInPreviewBlocks() {
+        NewspaperVisualIssue visualIssue = new NewspaperVisualIssue(
+                "issue_editorial",
+                "Athena Editorial",
+                NewspaperVisualTheme.defaultTheme(),
+                List.of(NewspaperVisualPage.of(
+                        1,
+                        "Kurzmeldungen",
+                        List.of(NewspaperVisualBlock.shortNotice("Kurze Nachricht"))
+                ))
+        );
+
+        NewspaperPreviewBlock block = new NewspaperPreviewService()
+                .createPreview(visualIssue)
+                .spreads()
+                .getFirst()
+                .leftPage()
+                .blocks()
+                .getFirst();
+
+        assertEquals(NewspaperBlockLayoutIntent.SHORT_NOTICE, block.layoutIntent());
+    }
+
+    @Test
     void rendersReadableTextPreview() {
         NewspaperPreviewIssue previewIssue = new NewspaperPreviewService()
                 .createPreview(visualIssue());

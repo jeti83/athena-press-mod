@@ -186,17 +186,48 @@ public class NewspaperPreviewImageRenderer {
 
         switch (block.type()) {
             case HEADLINE -> drawTextBlock(graphics, block.content(), x, y, width, height, 30, Font.BOLD, INK);
-            case SUBHEADLINE -> drawTextBlock(graphics, block.content(), x, y, width, height, 21, Font.BOLD, ACCENT);
+            case SUBHEADLINE -> drawTextBlock(
+                    graphics,
+                    block.content(),
+                    x,
+                    y,
+                    width,
+                    height,
+                    21,
+                    Font.BOLD,
+                    block.layoutIntent() == NewspaperBlockLayoutIntent.MEMORIAL
+                            ? MUTED_INK
+                            : ACCENT
+            );
             case BODY_TEXT -> drawTextBlock(graphics, block.content(), x, y, width, height, 16, Font.PLAIN, INK);
             case QUOTE -> {
-                graphics.setColor(new Color(225, 215, 198));
+                graphics.setColor(block.layoutIntent() == NewspaperBlockLayoutIntent.MEMORIAL
+                        ? new Color(230, 224, 214)
+                        : new Color(225, 215, 198));
                 graphics.fillRect(x, y, width, height);
                 drawTextBlock(graphics, block.content(), x + 12, y + 8, width - 24, height - 16, 17, Font.ITALIC, INK);
             }
             case NOTICE -> {
-                graphics.setColor(new Color(235, 228, 214));
-                graphics.fillRect(x, y, width, height);
-                drawTextBlock(graphics, block.content(), x + 10, y + 8, width - 20, height - 16, 15, Font.BOLD, INK);
+                if (block.layoutIntent() == NewspaperBlockLayoutIntent.SHORT_NOTICE) {
+                    graphics.setColor(ACCENT);
+                    graphics.setStroke(new BasicStroke(3f));
+                    graphics.drawLine(x, y + 4, x, y + height - 4);
+                    drawTextBlock(
+                            graphics,
+                            block.content(),
+                            x + 12,
+                            y + 5,
+                            width - 12,
+                            height - 10,
+                            15,
+                            Font.BOLD,
+                            INK
+                    );
+                } else {
+                    graphics.setColor(new Color(235, 228, 214));
+                    graphics.fillRect(x, y, width, height);
+                    drawTextBlock(graphics, block.content(), x + 10, y + 8, width - 20, height - 16, 15, Font.BOLD, INK);
+                }
             }
             case IMAGE -> drawImageBlock(graphics, block, x, y, width, height, imagesRoot);
             case CAPTION -> drawTextBlock(graphics, block.content(), x, y, width, height, 13, Font.ITALIC, MUTED_INK);

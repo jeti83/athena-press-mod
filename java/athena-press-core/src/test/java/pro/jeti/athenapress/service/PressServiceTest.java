@@ -44,7 +44,7 @@ class PressServiceTest {
 
         List<Article> articles = service.findArticlesForIssue("issue_0002");
 
-        assertEquals(4, articles.size(), "Expected issue_0002 to contain four resolvable articles.");
+        assertEquals(6, articles.size(), "Expected issue_0002 to contain six resolvable articles.");
 
         assertTrue(
                 articles.stream().anyMatch(article -> "article_0001".equals(article.id())),
@@ -64,6 +64,16 @@ class PressServiceTest {
         assertTrue(
                 articles.stream().anyMatch(article -> "article_0005".equals(article.id())),
                 "Expected article_0005 to be resolved."
+        );
+
+        assertTrue(
+                articles.stream().anyMatch(article -> "article_0006".equals(article.id())),
+                "Expected article_0006 to be resolved."
+        );
+
+        assertTrue(
+                articles.stream().anyMatch(article -> "article_0007".equals(article.id())),
+                "Expected article_0007 to be resolved."
         );
     }
 
@@ -117,7 +127,7 @@ class PressServiceTest {
 
         assertNotNull(resolvedIssue, "Expected issue_0002 to be resolved.");
         assertEquals("issue_0002", resolvedIssue.issue().id());
-        assertEquals(4, resolvedIssue.articles().size(), "Expected issue_0002 to contain four resolved articles.");
+        assertEquals(6, resolvedIssue.articles().size(), "Expected issue_0002 to contain six resolved articles.");
 
         assertTrue(
                 resolvedIssue.articles().stream().anyMatch(article -> "article_0001".equals(article.id())),
@@ -137,6 +147,16 @@ class PressServiceTest {
         assertTrue(
                 resolvedIssue.articles().stream().anyMatch(article -> "article_0005".equals(article.id())),
                 "Expected article_0005 to be resolved."
+        );
+
+        assertTrue(
+                resolvedIssue.articles().stream().anyMatch(article -> "article_0006".equals(article.id())),
+                "Expected article_0006 to be resolved."
+        );
+
+        assertTrue(
+                resolvedIssue.articles().stream().anyMatch(article -> "article_0007".equals(article.id())),
+                "Expected article_0007 to be resolved."
         );
     }
 }

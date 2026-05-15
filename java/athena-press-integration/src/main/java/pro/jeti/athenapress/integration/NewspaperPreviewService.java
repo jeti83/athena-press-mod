@@ -89,7 +89,10 @@ public class NewspaperPreviewService {
                 placement.columnIndex(),
                 placement.rowStart(),
                 placement.rowSpan(),
-                placement.columnSpan()
+                placement.columnSpan(),
+                block == null
+                        ? NewspaperBlockLayoutIntent.STANDARD
+                        : block.layoutIntent()
         );
     }
 }

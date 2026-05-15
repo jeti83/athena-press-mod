@@ -1,0 +1,35 @@
+{
+  "id": "article_0006",
+  "status": "published",
+  "categoryId": "server_news",
+  "title": "Spawnbrunnen wieder begehbar",
+  "subtitle": "Nasse Schuhe weiterhin möglich",
+  "summary": "Nach kurzer Baupause ist der Weg um den Spawnbrunnen wieder frei.",
+  "teaser": "Der Brunnenweg ist wieder offen.",
+  "author": {
+    "playerName": "Athena Redaktion",
+    "playerUuid": "unknown"
+  },
+  "body": "Der Weg um den Spawnbrunnen ist wieder begehbar. Die Redaktion empfiehlt weiterhin Abstand zu allen Spielern mit Eimern.",
+  "image": {
+    "file": "placeholders/no_image.png",
+    "caption": "Symbolbild: Der Brunnen blieb zum Redaktionsschluss auffallend gelassen.",
+    "credit": "Athena Botenblatt",
+    "sourceType": "placeholder"
+  },
+  "location": {
+    "enabled": false,
+    "world": "",
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "tags": [
+    "kurzmeldung",
+    "spawn",
+    "brunnen"
+  ],
+  "createdAt": "2026-05-15T18:35:00+02:00",
+  "updatedAt": "2026-05-15T18:35:00+02:00",
+  "publishedAt": "2026-05-15T18:35:00+02:00"
+}

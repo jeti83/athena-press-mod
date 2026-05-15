@@ -7,7 +7,8 @@ public record NewspaperPreviewBlock(
         int columnIndex,
         int rowStart,
         int rowSpan,
-        int columnSpan
+        int columnSpan,
+        NewspaperBlockLayoutIntent layoutIntent
 ) {
 
     public NewspaperPreviewBlock {
@@ -17,6 +18,30 @@ public record NewspaperPreviewBlock(
         rowStart = Math.max(0, rowStart);
         rowSpan = Math.max(1, rowSpan);
         columnSpan = Math.max(1, columnSpan);
+        layoutIntent = layoutIntent == null
+                ? NewspaperBlockLayoutIntent.STANDARD
+                : layoutIntent;
+    }
+
+    public NewspaperPreviewBlock(
+            NewspaperVisualBlockType type,
+            String content,
+            String assetPath,
+            int columnIndex,
+            int rowStart,
+            int rowSpan,
+            int columnSpan
+    ) {
+        this(
+                type,
+                content,
+                assetPath,
+                columnIndex,
+                rowStart,
+                rowSpan,
+                columnSpan,
+                NewspaperBlockLayoutIntent.STANDARD
+        );
     }
 
     public boolean hasAsset() {

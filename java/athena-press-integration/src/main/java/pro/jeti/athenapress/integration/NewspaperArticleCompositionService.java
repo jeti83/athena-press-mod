@@ -576,7 +576,7 @@ public class NewspaperArticleCompositionService {
             return;
         }
 
-        blocks.add(NewspaperVisualBlock.notice(articleTitle(article)));
+        blocks.add(NewspaperVisualBlock.shortNotice(articleTitle(article)));
 
         if (hasText(article.summary())) {
             blocks.add(NewspaperVisualBlock.bodyText(article.summary()));
@@ -595,12 +595,12 @@ public class NewspaperArticleCompositionService {
             return;
         }
 
-        blocks.add(NewspaperVisualBlock.subheadline(articleTitle(article)));
+        blocks.add(NewspaperVisualBlock.memorialSubheadline(articleTitle(article)));
 
         if (hasText(article.summary())) {
-            blocks.add(NewspaperVisualBlock.quote(article.summary()));
+            blocks.add(NewspaperVisualBlock.memorialQuote(article.summary()));
         } else if (hasText(article.teaser())) {
-            blocks.add(NewspaperVisualBlock.quote(article.teaser()));
+            blocks.add(NewspaperVisualBlock.memorialQuote(article.teaser()));
         }
 
         addArticleImageBlock(blocks, article, 1);
