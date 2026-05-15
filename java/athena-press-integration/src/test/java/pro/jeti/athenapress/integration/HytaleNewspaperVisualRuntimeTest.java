@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -209,6 +210,27 @@ class HytaleNewspaperVisualRuntimeTest {
 
         assertEquals("player-1", bridge.closedPlayer.playerId());
         assertTrue(!runtime.visualUiPort().hasRegisteredPlayer("player-1"));
+    }
+
+    @Test
+    void runtimeTimeoutClosesRealVisualIssueButKeepsPlayerRegistered() throws IOException {
+        createVisualDataSet();
+        CapturingVisualBridge bridge = new CapturingVisualBridge();
+        HytaleNewspaperVisualRuntime<String> runtime =
+                new HytaleNewspaperVisualRuntime<>(
+                        new AthenaPressIntegrationPlugin(tempDir),
+                        new NoopTextUiPort(),
+                        bridge,
+                        new StubResolver()
+                );
+
+        runtime.onPlayerConnected("player-1");
+        runtime.onPlayerChatCommand("player-1", "/ap", "issue_visual");
+        runtime.onSessionTimeout("player-1");
+
+        assertEquals("player-1", bridge.closedPlayer.playerId());
+        assertFalse(runtime.plugin().hasOpenVisualNewspaper("player-1"));
+        assertTrue(runtime.visualUiPort().hasRegisteredPlayer("player-1"));
     }
 
     private static class StubResolver implements HytalePlayerContextResolver<String> {
