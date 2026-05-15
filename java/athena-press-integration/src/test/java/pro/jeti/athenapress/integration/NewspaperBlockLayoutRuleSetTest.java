@@ -62,4 +62,18 @@ class NewspaperBlockLayoutRuleSetTest {
         assertEquals(2, rules.columnSpanFor(featuredCaption, template));
         assertEquals(1, rules.rowSpanFor(featuredCaption, template));
     }
+
+    @Test
+    void respectsRequestedNoticeColumnSpan() {
+        NewspaperBlockLayoutRuleSet rules = NewspaperBlockLayoutRuleSet.defaultRules();
+        NewspaperLayoutTemplate template = NewspaperLayoutTemplate.classicDoublePage();
+
+        NewspaperVisualBlock featuredNotice = NewspaperVisualBlock.notice(
+                "Aufmacher",
+                template.columnsPerPage()
+        );
+
+        assertEquals(2, rules.columnSpanFor(featuredNotice, template));
+        assertEquals(4, rules.rowSpanFor(featuredNotice, template));
+    }
 }

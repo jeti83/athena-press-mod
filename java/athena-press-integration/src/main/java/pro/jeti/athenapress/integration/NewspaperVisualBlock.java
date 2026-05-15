@@ -131,6 +131,15 @@ public record NewspaperVisualBlock(
         );
     }
 
+    public static NewspaperVisualBlock notice(String content, int columnSpan) {
+        return new NewspaperVisualBlock(
+                NewspaperVisualBlockType.NOTICE,
+                content,
+                null,
+                columnSpan
+        );
+    }
+
     public static NewspaperVisualBlock advertisement(String content, String assetPath) {
         return new NewspaperVisualBlock(
                 NewspaperVisualBlockType.ADVERTISEMENT,

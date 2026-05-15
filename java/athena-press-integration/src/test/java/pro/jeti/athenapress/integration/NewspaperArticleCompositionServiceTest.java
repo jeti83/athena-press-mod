@@ -36,7 +36,9 @@ class NewspaperArticleCompositionServiceTest {
                         && "Artikel 1".equals(block.content())));
         assertTrue(visualIssue.pages().getFirst().blocks().stream()
                 .anyMatch(block -> block.type() == NewspaperVisualBlockType.NOTICE
-                        && "Zusammenfassung 1".equals(block.content())));
+                        && "Zusammenfassung 1".equals(block.content())
+                        && block.columnSpan() == NewspaperLayoutTemplate.classicDoublePage()
+                                .columnsPerPage()));
         assertTrue(visualIssue.pages().getFirst().blocks().stream()
                 .noneMatch(block -> block.type() == NewspaperVisualBlockType.QUOTE));
         assertTrue(visualIssue.pages().stream()

@@ -356,9 +356,15 @@ public class NewspaperArticleCompositionService {
             blocks.add(NewspaperVisualBlock.subheadline(articleTitle(mainArticle)));
 
             if (hasText(mainArticle.summary())) {
-                blocks.add(NewspaperVisualBlock.notice(mainArticle.summary()));
+                blocks.add(NewspaperVisualBlock.notice(
+                        mainArticle.summary(),
+                        defaultTemplate.columnsPerPage()
+                ));
             } else if (hasText(mainArticle.teaser())) {
-                blocks.add(NewspaperVisualBlock.notice(mainArticle.teaser()));
+                blocks.add(NewspaperVisualBlock.notice(
+                        mainArticle.teaser(),
+                        defaultTemplate.columnsPerPage()
+                ));
             }
         }
 
