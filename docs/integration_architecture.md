@@ -722,8 +722,8 @@ timeout
 → Visual-Zeitung schließen
 → Spieler-Kontext behalten
 
-Server-Shutdown bleibt bewusst placeholder-only, solange kein globales
-closeAllNewspapers() im Plugin existiert.
+Server-Shutdown räumt inzwischen globale Text- und Visual-Sessions über
+`closeAllNewspapers()` und `closeAllVisualNewspapers()` ab.
 
 9. Hytale-API-Adapter
 

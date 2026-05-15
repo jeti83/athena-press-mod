@@ -70,6 +70,21 @@ class NewspaperIntegrationGatewayTest {
     }
 
     @Test
+    void closesAllTextIssues() throws IOException {
+        createMinimalDataSet();
+
+        NewspaperIntegrationGateway gateway = createGateway();
+
+        gateway.openIssueForPlayer("player-1", "issue_test");
+        gateway.openIssueForPlayer("player-2", "issue_test");
+        gateway.closeAllIssues();
+
+        assertEquals(0, gateway.getOpenSessionCount());
+        assertFalse(gateway.hasOpenIssueForPlayer("player-1"));
+        assertFalse(gateway.hasOpenIssueForPlayer("player-2"));
+    }
+
+    @Test
     void returnsHelpfulTextWhenPlayerHasNoOpenIssue() {
         NewspaperIntegrationGateway gateway = createGateway();
 
@@ -162,6 +177,21 @@ class NewspaperIntegrationGatewayTest {
         assertTrue(response.hasSpread());
         assertTrue(gateway.hasOpenVisualIssueForPlayer("player-1"));
         assertEquals(1, gateway.getOpenVisualSessionCount());
+    }
+
+    @Test
+    void closesAllVisualIssues() throws IOException {
+        createMinimalDataSet();
+
+        NewspaperIntegrationGateway gateway = createGateway();
+
+        gateway.openVisualIssueForPlayer("player-1", "issue_test");
+        gateway.openVisualIssueForPlayer("player-2", "issue_test");
+        gateway.closeAllVisualIssues();
+
+        assertEquals(0, gateway.getOpenVisualSessionCount());
+        assertFalse(gateway.hasOpenVisualIssueForPlayer("player-1"));
+        assertFalse(gateway.hasOpenVisualIssueForPlayer("player-2"));
     }
 
     private NewspaperIntegrationGateway createGateway() {

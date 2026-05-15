@@ -79,8 +79,8 @@ public class PlayerNewspaperLifecycleHandler {
     }
 
     private void handleServerShutdown() {
-        // Noch kein globales Session-Cleanup im Plugin verfügbar.
-        // Später: alle offenen Spieler-Sessions schließen.
+        plugin.closeAllNewspapers();
+        plugin.closeAllVisualNewspapers();
     }
 
     private void closeVisualNewspaperForDisconnectedPlayer(String playerId) {

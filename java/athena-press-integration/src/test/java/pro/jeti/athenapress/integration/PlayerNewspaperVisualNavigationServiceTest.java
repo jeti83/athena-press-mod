@@ -113,6 +113,19 @@ class PlayerNewspaperVisualNavigationServiceTest {
         assertEquals(0, service.getOpenSessionCount());
     }
 
+    @Test
+    void closesAllVisualSessions() throws IOException {
+        PlayerNewspaperVisualNavigationService service = createService(3);
+
+        service.openIssue("player-1", "issue_visual");
+        service.openIssue("player-2", "issue_visual");
+        service.closeAllIssues();
+
+        assertEquals(0, service.getOpenSessionCount());
+        assertFalse(service.hasOpenIssue("player-1"));
+        assertFalse(service.hasOpenIssue("player-2"));
+    }
+
     private PlayerNewspaperVisualNavigationService createService(int spreadCount) {
         NewspaperPreviewPipelineService pipelineService =
                 new NewspaperPreviewPipelineService(

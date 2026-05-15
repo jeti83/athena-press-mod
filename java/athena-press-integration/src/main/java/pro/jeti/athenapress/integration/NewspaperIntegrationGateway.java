@@ -93,6 +93,11 @@ public class NewspaperIntegrationGateway {
         }
     }
 
+    public void closeAllIssues() {
+        sessionsByPlayerId.values().forEach(GameNewspaperSessionService::closeIssue);
+        sessionsByPlayerId.clear();
+    }
+
     public boolean hasOpenIssueForPlayer(String playerId) {
         if (!hasText(playerId)) {
             return false;
@@ -154,6 +159,10 @@ public class NewspaperIntegrationGateway {
 
     public void closeVisualIssueForPlayer(String playerId) {
         visualNavigationService.closeIssue(playerId);
+    }
+
+    public void closeAllVisualIssues() {
+        visualNavigationService.closeAllIssues();
     }
 
     public boolean hasOpenVisualIssueForPlayer(String playerId) {

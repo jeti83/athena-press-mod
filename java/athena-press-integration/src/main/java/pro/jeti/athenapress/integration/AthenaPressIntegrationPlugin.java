@@ -56,6 +56,10 @@ public class AthenaPressIntegrationPlugin {
         gateway.closeIssueForPlayer(playerId);
     }
 
+    public void closeAllNewspapers() {
+        gateway.closeAllIssues();
+    }
+
     public boolean hasOpenNewspaper(String playerId) {
         return gateway.hasOpenIssueForPlayer(playerId);
     }
@@ -98,6 +102,10 @@ public class AthenaPressIntegrationPlugin {
 
     public void onPlayerCloseVisualNewspaper(String playerId) {
         gateway.closeVisualIssueForPlayer(playerId);
+    }
+
+    public void closeAllVisualNewspapers() {
+        gateway.closeAllVisualIssues();
     }
 
     public boolean hasOpenVisualNewspaper(String playerId) {

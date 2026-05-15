@@ -129,6 +129,10 @@ public class PlayerNewspaperVisualNavigationService {
         sessionsByPlayerId.remove(playerId);
     }
 
+    public void closeAllIssues() {
+        sessionsByPlayerId.clear();
+    }
+
     public boolean hasOpenIssue(String playerId) {
         return hasText(playerId) && sessionsByPlayerId.containsKey(playerId);
     }

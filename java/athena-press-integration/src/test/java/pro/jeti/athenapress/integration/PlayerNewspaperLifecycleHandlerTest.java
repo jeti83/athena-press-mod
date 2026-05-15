@@ -96,6 +96,24 @@ class PlayerNewspaperLifecycleHandlerTest {
         assertFalse(port.hasRegisteredPlayer("player-1"));
     }
 
+    @Test
+    void serverShutdownClosesAllTextAndVisualSessions() {
+        StubPlugin plugin = new StubPlugin();
+        plugin.textOpen = true;
+        plugin.visualOpen = true;
+        PlayerNewspaperLifecycleHandler handler =
+                new PlayerNewspaperLifecycleHandler(
+                        plugin,
+                        new CapturingUiPort(),
+                        new CapturingVisualUiPort()
+                );
+
+        handler.handle(PlayerNewspaperLifecycleEvent.serverShutdown());
+
+        assertFalse(plugin.textOpen);
+        assertFalse(plugin.visualOpen);
+    }
+
     private class StubPlugin extends AthenaPressIntegrationPlugin {
         private boolean textOpen;
         private boolean visualOpen;
@@ -122,6 +140,16 @@ class PlayerNewspaperLifecycleHandlerTest {
         @Override
         public boolean hasOpenVisualNewspaper(String playerId) {
             return visualOpen;
+        }
+
+        @Override
+        public void closeAllNewspapers() {
+            textOpen = false;
+        }
+
+        @Override
+        public void closeAllVisualNewspapers() {
+            visualOpen = false;
         }
     }
 
