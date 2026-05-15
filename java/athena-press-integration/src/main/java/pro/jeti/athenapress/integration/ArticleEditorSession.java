@@ -12,6 +12,7 @@ public class ArticleEditorSession {
     private String imagePath;
     private String imageCaption;
     private String imageSourceType = "placeholder";
+    private java.util.List<pro.jeti.athenapress.model.PlayerPhoto> albumSnapshot;
 
     public ArticleEditorSession(String playerName, boolean admin) {
         this.playerName = playerName;
@@ -27,6 +28,11 @@ public class ArticleEditorSession {
     public String imagePath() { return imagePath; }
     public String imageCaption() { return imageCaption; }
     public String imageSourceType() { return imageSourceType; }
+    public java.util.List<pro.jeti.athenapress.model.PlayerPhoto> albumSnapshot() { return albumSnapshot; }
+
+    public void setAlbumSnapshot(java.util.List<pro.jeti.athenapress.model.PlayerPhoto> photos) {
+        this.albumSnapshot = photos;
+    }
 
     public boolean isActive() {
         return step != ArticleEditorStep.SUBMITTED && step != ArticleEditorStep.CANCELLED;

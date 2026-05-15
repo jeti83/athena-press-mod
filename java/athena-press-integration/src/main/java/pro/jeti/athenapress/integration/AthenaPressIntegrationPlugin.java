@@ -155,4 +155,16 @@ public class AthenaPressIntegrationPlugin {
     public void cancelEditorSession(String playerId) {
         gateway.cancelEditorSession(playerId);
     }
+
+    public AlbumView openAlbum(String playerName) throws IOException {
+        return gateway.openAlbum(playerName);
+    }
+
+    public AlbumView handleAlbumCommand(String playerName, String[] args) throws IOException {
+        return gateway.handleAlbumCommand(playerName, args);
+    }
+
+    public AlbumView registerCameraCapture(String playerName, String displayName) throws IOException {
+        return gateway.registerCameraCapture(playerName, displayName);
+    }
 }

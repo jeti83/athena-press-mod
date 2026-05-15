@@ -57,6 +57,28 @@ public record ArticleEditorView(
         );
     }
 
+    public static ArticleEditorView attachImageWithAlbum(
+            String title, String categoryId, String body,
+            java.util.List<pro.jeti.athenapress.model.PlayerPhoto> photos
+    ) {
+        StringBuilder prompt = new StringBuilder("Wähle ein Foto aus deinem Album (Nummer eingeben) oder tippe 'weiter':\n");
+        if (photos == null || photos.isEmpty()) {
+            prompt.append("(Album ist leer — nimm zuerst ein Foto mit der Kamera auf)");
+        } else {
+            for (int i = 0; i < photos.size(); i++) {
+                var p = photos.get(i);
+                prompt.append(i + 1).append(". ").append(p.name());
+                if (p.favorite()) prompt.append(" ★");
+                prompt.append("\n");
+            }
+        }
+        return new ArticleEditorView(
+                ArticleEditorStep.ATTACH_IMAGE,
+                prompt.toString().trim(),
+                title, categoryId, body, null, List.of(), null, null
+        );
+    }
+
     public static ArticleEditorView review(ArticleEditorSession session) {
         String imageSummary = session.imagePath() != null
                 ? session.imagePath() + " (" + session.imageSourceType() + ")"

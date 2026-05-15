@@ -5,23 +5,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import pro.jeti.athenapress.model.PlayerPhoto;
+import pro.jeti.athenapress.service.AlbumSortOrder;
 import pro.jeti.athenapress.service.ArticleDraftRequest;
 import pro.jeti.athenapress.service.ArticleWriteService;
+import pro.jeti.athenapress.service.PlayerAlbumService;
 import pro.jeti.athenapress.repository.CategoryRepository;
 
 public class ArticleEditorService {
 
     private final ArticleWriteService articleWriteService;
     private final CategoryRepository categoryRepository;
+    private final PlayerAlbumService albumService;
     private final ArticleContentPolicy contentPolicy;
     private final Map<String, ArticleEditorSession> sessionsByPlayerId = new HashMap<>();
 
     public ArticleEditorService(
             ArticleWriteService articleWriteService,
-            CategoryRepository categoryRepository
+            CategoryRepository categoryRepository,
+            PlayerAlbumService albumService
     ) {
         this.articleWriteService = articleWriteService;
         this.categoryRepository = categoryRepository;
+        this.albumService = albumService;
         this.contentPolicy = new ArticleContentPolicy();
     }
 
@@ -122,7 +128,7 @@ public class ArticleEditorService {
         return ArticleEditorView.enterBody(session.title(), session.categoryId());
     }
 
-    private ArticleEditorView handleBody(ArticleEditorSession session, String input) {
+    private ArticleEditorView handleBody(ArticleEditorSession session, String input) throws IOException {
         if (input.isBlank()) {
             return ArticleEditorView.error(
                     ArticleEditorStep.ENTER_BODY,
@@ -131,21 +137,40 @@ public class ArticleEditorService {
             );
         }
         session.setBody(input.trim());
-        return ArticleEditorView.attachImage(
-                session.title(), session.categoryId(), session.body(), session.isAdmin()
+
+        List<PlayerPhoto> photos = albumService.listPhotos(session.playerName(), AlbumSortOrder.DATE);
+        session.setAlbumSnapshot(photos);
+        return ArticleEditorView.attachImageWithAlbum(
+                session.title(), session.categoryId(), session.body(), photos
         );
     }
 
-    private ArticleEditorView handleImageOrSkip(ArticleEditorSession session, String input) {
+    private ArticleEditorView handleImageOrSkip(ArticleEditorSession session, String input) throws IOException {
         if (isSkipCommand(input)) {
             session.skipImage();
             return ArticleEditorView.review(session);
         }
+
+        List<PlayerPhoto> snapshot = session.albumSnapshot();
+        if (snapshot != null && !snapshot.isEmpty()) {
+            try {
+                int index = Integer.parseInt(input.trim()) - 1;
+                if (index >= 0 && index < snapshot.size()) {
+                    PlayerPhoto selected = snapshot.get(index);
+                    session.setImage(selected.imagePath(), selected.name(), "camera_marker");
+                    return ArticleEditorView.review(session);
+                }
+            } catch (NumberFormatException ignored) {
+            }
+        }
+
+        List<PlayerPhoto> photos = albumService.listPhotos(session.playerName(), AlbumSortOrder.DATE);
+        session.setAlbumSnapshot(photos);
         return ArticleEditorView.error(
                 ArticleEditorStep.ATTACH_IMAGE,
-                "Benutze das Kamera-Item um ein Foto aufzunehmen, oder tippe 'weiter'.",
-                ArticleEditorView.attachImage(
-                        session.title(), session.categoryId(), session.body(), session.isAdmin()
+                "Bitte eine Nummer aus dem Album wählen oder 'weiter' tippen.",
+                ArticleEditorView.attachImageWithAlbum(
+                        session.title(), session.categoryId(), session.body(), photos
                 )
         );
     }
@@ -180,8 +205,8 @@ public class ArticleEditorService {
     }
 
     private ArticleEditorView currentView(ArticleEditorSession session) {
-        return ArticleEditorView.attachImage(
-                session.title(), session.categoryId(), session.body(), session.isAdmin()
+        return ArticleEditorView.attachImageWithAlbum(
+                session.title(), session.categoryId(), session.body(), session.albumSnapshot()
         );
     }
 

@@ -15,7 +15,9 @@ import org.junit.jupiter.api.io.TempDir;
 
 import pro.jeti.athenapress.model.Category;
 import pro.jeti.athenapress.repository.CategoryRepository;
+import pro.jeti.athenapress.repository.PlayerAlbumRepository;
 import pro.jeti.athenapress.service.ArticleWriteService;
+import pro.jeti.athenapress.service.PlayerAlbumService;
 
 class ArticleEditorServiceTest {
 
@@ -29,7 +31,8 @@ class ArticleEditorServiceTest {
         writeCategoriesJson();
         service = new ArticleEditorService(
                 new ArticleWriteService(tempDir),
-                new CategoryRepository(tempDir)
+                new CategoryRepository(tempDir),
+                new PlayerAlbumService(new PlayerAlbumRepository(tempDir))
         );
     }
 
