@@ -278,6 +278,45 @@ class NewspaperArticleCompositionServiceTest {
         assertEquals(2, firstLayout.imagePlacements().getFirst().columnSpan());
     }
 
+    @Test
+    void usesLooseCompositionToBreakSymmetricColumnStarts() {
+        NewspaperVisualIssue visualIssue = new NewspaperVisualIssue(
+                "issue_loose",
+                "Athena Lockerblatt",
+                NewspaperVisualTheme.defaultTheme(),
+                List.of(NewspaperVisualPage.of(
+                        1,
+                        "Athena Lockerblatt",
+                        List.of(
+                                NewspaperVisualBlock.divider(),
+                                NewspaperVisualBlock.notice("Nicht streng links beginnen")
+                        )
+                ))
+        );
+        NewspaperVisualDesignProfile looseProfile = new NewspaperVisualDesignProfile(
+                "always_loose",
+                NewspaperLayoutMood.LOOSE_COMMUNITY_SHEET,
+                NewspaperPageCornerStyle.HANGING_TOP_CORNERS,
+                3,
+                4,
+                100,
+                NewspaperCoverPolicy.STANDALONE_TITLE_PAGE,
+                NewspaperArticleFlowPolicy.KEEP_ARTICLES_TOGETHER_WHEN_READABLE,
+                NewspaperNavigationStyle.PAGE_TURNING_WITH_SUBTLE_MENU,
+                true,
+                true,
+                true
+        );
+
+        NewspaperPageLayout layout = new NewspaperVisualRenderer().render(
+                visualIssue,
+                looseProfile.toLayoutTemplate(),
+                looseProfile
+        ).getFirst();
+
+        assertEquals(2, layout.placements().get(1).columnIndex());
+    }
+
     private GameIssueView issueViewWithArticles(int articleCount) {
         List<GameArticleView> articles = java.util.stream.IntStream.rangeClosed(1, articleCount)
                 .mapToObj(index -> new GameArticleView(

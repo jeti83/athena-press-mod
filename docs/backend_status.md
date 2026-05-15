@@ -38,6 +38,7 @@ Das Backend kann derzeit:
 - Daten über den Java-Core lesen und anzeigen
 - Daten über das Java-Integration-Modul spielnah darstellen
 - Visual-Doppelseiten und Blocklayouts vorbereiten
+- leichte Layout-Asymmetrie für lockerere Zeitungsseiten steuern
 - lesbare Artikelgruppen beim Seitenumbruch geschlossen halten
 - lange Artikeltexte absatzorientiert in Seitenfluss-Blöcke zerlegen
 - fortlaufende Artikel auf Folgeseiten kenntlich machen
@@ -130,7 +131,7 @@ Erwarteter Stand:
 Der zuletzt bekannte Stand lag bei:
 
 - Core: 91 Tests
-- Integration: 162 Tests
+- Integration: 163 Tests
 - 0 Failures
 - 0 Errors
 

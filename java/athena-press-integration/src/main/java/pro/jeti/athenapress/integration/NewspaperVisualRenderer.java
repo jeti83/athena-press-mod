@@ -63,7 +63,13 @@ public class NewspaperVisualRenderer {
         for (NewspaperVisualBlock block : page.blocks()) {
             int rowSpan = layoutRules.rowSpanFor(block, template);
             int columnSpan = layoutRules.columnSpanFor(block, template);
-            int columnIndex = columnIndexFor(rowCursors, columnSpan);
+            int columnIndex = columnIndexFor(
+                    rowCursors,
+                    columnSpan,
+                    page.pageNumber(),
+                    placements.size(),
+                    designProfile
+            );
             int rowStart = maxCursor(rowCursors, columnIndex, columnSpan);
 
             NewspaperContentPlacement placement = new NewspaperContentPlacement(
@@ -131,15 +137,52 @@ public class NewspaperVisualRenderer {
         return columns;
     }
 
-    private int columnIndexFor(int[] rowCursors, int columnSpan) {
+    private int columnIndexFor(
+            int[] rowCursors,
+            int columnSpan,
+            int pageNumber,
+            int placementIndex,
+            NewspaperVisualDesignProfile designProfile
+    ) {
         if (columnSpan >= rowCursors.length) {
             return 0;
         }
 
-        return java.util.stream.IntStream.range(0, rowCursors.length - columnSpan + 1)
+        List<Integer> candidates = java.util.stream.IntStream
+                .range(0, rowCursors.length - columnSpan + 1)
                 .boxed()
-                .min(Comparator.comparingInt(index -> maxCursor(rowCursors, index, columnSpan)))
+                .toList();
+        int minimumCursor = candidates.stream()
+                .mapToInt(index -> maxCursor(rowCursors, index, columnSpan))
+                .min()
                 .orElse(0);
+        List<Integer> bestCandidates = candidates.stream()
+                .filter(index -> maxCursor(rowCursors, index, columnSpan) == minimumCursor)
+                .toList();
+
+        if (columnSpan == 1
+                && bestCandidates.size() > 1
+                && shouldUseAsymmetry(pageNumber, placementIndex, designProfile)) {
+            int offset = Math.floorMod(pageNumber + placementIndex, bestCandidates.size());
+            return bestCandidates.get(offset);
+        }
+
+        return bestCandidates.stream()
+                .min(Comparator.naturalOrder())
+                .orElse(0);
+    }
+
+    private boolean shouldUseAsymmetry(
+            int pageNumber,
+            int placementIndex,
+            NewspaperVisualDesignProfile designProfile
+    ) {
+        if (designProfile == null || !designProfile.allowsLooseComposition()) {
+            return false;
+        }
+
+        int sample = Math.floorMod((pageNumber * 31) + (placementIndex * 17), 100);
+        return sample < designProfile.asymmetryPercent();
     }
 
     private int maxCursor(int[] rowCursors, int columnIndex, int columnSpan) {

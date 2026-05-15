@@ -351,6 +351,7 @@ kurze nach hinten hängende obere Seitenecken als aktuelle AthenaPress-Zieloptik
 Anzeigen- und Dokumentblöcke als Stilmittel
 maximal lesbarer Seitenkörper
 keine starre Pflicht zu vier Spalten
+leichte deterministische Asymmetrie, wenn mehrere Spalten gleich gut passen
 einzelne Titelseite vor den Artikeln
 Artikel möglichst geschlossen lesbar
 Umbruch auf Folgeseiten, wenn Lesbarkeit es erfordert
@@ -580,6 +581,10 @@ erhält diese eine dezente `Fortsetzung:`-Markierung mit Artikeltitel.
 NewspaperVisualRenderer
 
 Erzeugt aus visuellen Seiten adapter-neutrale Layoutplatzierungen.
+
+Bei lockeren Layoutprofilen kann der Renderer gleich gute Spaltenstarts
+deterministisch leicht variieren, damit Seiten weniger rasterstarr wirken,
+ohne Lesbarkeit oder stabile Pagination zu opfern.
 
 NewspaperPageRole
 
