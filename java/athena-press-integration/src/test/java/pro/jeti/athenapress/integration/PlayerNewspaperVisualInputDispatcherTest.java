@@ -164,6 +164,7 @@ class PlayerNewspaperVisualInputDispatcherTest {
                             null,
                             List.of()
                     ),
+                    List.of(),
                     true,
                     ""
             );

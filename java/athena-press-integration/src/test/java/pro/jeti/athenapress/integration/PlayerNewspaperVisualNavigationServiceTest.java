@@ -39,6 +39,8 @@ class PlayerNewspaperVisualNavigationServiceTest {
         assertEquals("issue_visual", response.issueId());
         assertEquals(0, response.spreadIndex());
         assertEquals(3, response.totalSpreadCount());
+        assertEquals("Titelseite", response.spreadSignatures().getFirst().label());
+        assertEquals("Spread 0", response.spreadSignatures().getFirst().hint());
         assertFalse(response.hasPreviousSpread());
         assertTrue(response.hasNextSpread());
         assertEquals(1, service.getOpenSessionCount());

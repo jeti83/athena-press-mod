@@ -31,6 +31,7 @@ public class PlayerNewspaperVisualViewFactory {
                 response.hasPreviousSpread(),
                 response.hasNextSpread(),
                 "",
+                response.spreadSignatures(),
                 buttonsFor(response)
         );
     }
@@ -51,6 +52,7 @@ public class PlayerNewspaperVisualViewFactory {
                 false,
                 false,
                 hasText(message) ? message : "Diese Ausgabe ist nicht verfügbar.",
+                List.of(),
                 List.of(NewspaperUiButton.danger(
                         "Schließen",
                         PlayerNewspaperUiCommand.closeIssue()

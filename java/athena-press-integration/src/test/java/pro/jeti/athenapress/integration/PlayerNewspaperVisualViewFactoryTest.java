@@ -47,6 +47,7 @@ class PlayerNewspaperVisualViewFactoryTest {
         assertFalse(view.hasRightPage());
         assertFalse(view.hasPreviousSpread());
         assertFalse(view.hasNextSpread());
+        assertEquals("Titelseite", view.spreadSignatures().getFirst().label());
         assertEquals(2, view.buttons().size());
         assertTrue(view.buttons().stream()
                 .anyMatch(button -> button.command().action() == PlayerNewspaperAction.SHOW_OVERVIEW));
@@ -101,6 +102,7 @@ class PlayerNewspaperVisualViewFactoryTest {
                 spreadIndex,
                 totalSpreadCount,
                 spread,
+                List.of(spread.signature()),
                 true,
                 ""
         );

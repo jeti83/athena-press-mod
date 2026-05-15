@@ -91,6 +91,7 @@ class HytaleNewspaperVisualUiPortTest {
                 false,
                 false,
                 "",
+                List.of(),
                 List.of()
         );
     }

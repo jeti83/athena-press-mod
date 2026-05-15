@@ -1,5 +1,7 @@
 package pro.jeti.athenapress.integration;
 
+import java.util.List;
+
 public record PlayerNewspaperVisualResponse(
         String playerId,
         String issueId,
@@ -7,6 +9,7 @@ public record PlayerNewspaperVisualResponse(
         int spreadIndex,
         int totalSpreadCount,
         NewspaperPreviewSpread spread,
+        List<NewspaperSpreadSignature> spreadSignatures,
         boolean newspaperOpen,
         String message
 ) {
@@ -15,6 +18,7 @@ public record PlayerNewspaperVisualResponse(
         title = title == null || title.isBlank() ? "AthenaPress" : title;
         spreadIndex = Math.max(0, spreadIndex);
         totalSpreadCount = Math.max(0, totalSpreadCount);
+        spreadSignatures = spreadSignatures == null ? List.of() : List.copyOf(spreadSignatures);
         message = message == null ? "" : message;
     }
 
@@ -29,6 +33,7 @@ public record PlayerNewspaperVisualResponse(
                 0,
                 0,
                 null,
+                List.of(),
                 false,
                 message
         );

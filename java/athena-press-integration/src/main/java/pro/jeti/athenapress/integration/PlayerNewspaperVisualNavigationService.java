@@ -153,6 +153,7 @@ public class PlayerNewspaperVisualNavigationService {
                 safeSpreadIndex,
                 previewIssue.spreads().size(),
                 spread,
+                previewIssue.spreadSignatures(),
                 true,
                 ""
         );

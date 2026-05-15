@@ -231,6 +231,7 @@ class PlayerNewspaperVisualUiControllerTest {
                             null,
                             java.util.List.of()
                     ),
+                    java.util.List.of(),
                     true,
                     ""
             );

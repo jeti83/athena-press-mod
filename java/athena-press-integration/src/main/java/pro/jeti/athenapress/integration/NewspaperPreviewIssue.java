@@ -23,4 +23,10 @@ public record NewspaperPreviewIssue(
     public boolean hasSpreads() {
         return !spreads.isEmpty();
     }
+
+    public List<NewspaperSpreadSignature> spreadSignatures() {
+        return spreads.stream()
+                .map(NewspaperPreviewSpread::signature)
+                .toList();
+    }
 }
