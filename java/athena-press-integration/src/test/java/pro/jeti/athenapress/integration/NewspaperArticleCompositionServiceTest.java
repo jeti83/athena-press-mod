@@ -1,6 +1,7 @@
 package pro.jeti.athenapress.integration;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -89,6 +90,28 @@ class NewspaperArticleCompositionServiceTest {
     }
 
     @Test
+    void respectsDisabledSectionsWhenKeepingArticlesTogether() {
+        NewspaperArticleCompositionService service = new NewspaperArticleCompositionService(
+                new NewspaperVisualPaginationService(),
+                NewspaperLayoutTemplate.classicDoublePage(),
+                NewspaperVisualDesignProfile.athenaReadableNewspaper(),
+                new NewspaperPageSectionPolicy(Map.of(
+                        NewspaperPageSectionType.TITLE_PAGE,
+                        NewspaperSectionRequirement.REQUIRED,
+                        NewspaperPageSectionType.ADVERTISEMENTS,
+                        NewspaperSectionRequirement.DISABLED
+                ))
+        );
+        GameIssueView issueView = issueViewWithAdvertisement();
+
+        NewspaperVisualIssue visualIssue = service.compose(issueView);
+
+        assertTrue(visualIssue.pages().stream()
+                .flatMap(page -> page.blocks().stream())
+                .noneMatch(block -> "Anzeige 1".equals(block.content())));
+    }
+
+    @Test
     void rendersVisualPagesIntoAdapterNeutralLayout() {
         GameIssueView issueView = issueViewWithArticles(1);
         NewspaperVisualIssue visualIssue = new NewspaperArticleCompositionService()
@@ -152,6 +175,26 @@ class NewspaperArticleCompositionServiceTest {
                 "missing_article",
                 "placeholders/front.png",
                 articles
+        );
+    }
+
+    private GameIssueView issueViewWithAdvertisement() {
+        return new GameIssueView(
+                "issue_test",
+                7,
+                "Athena Morgenblatt",
+                "Aus der Stadt, fuer die Stadt",
+                "missing_article",
+                "placeholders/front.png",
+                List.of(new GameArticleView(
+                        "ad_1",
+                        "anzeigen",
+                        "Anzeige 1",
+                        null,
+                        "Schaut vorbei.",
+                        "Heute frisch.",
+                        "Die Anzeige darf verschwinden."
+                ))
         );
     }
 }

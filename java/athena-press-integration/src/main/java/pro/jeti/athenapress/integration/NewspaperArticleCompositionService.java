@@ -204,7 +204,12 @@ public class NewspaperArticleCompositionService {
         List<List<NewspaperVisualBlock>> groups = new ArrayList<>();
 
         List<NewspaperVisualBlock> mainArticleBlocks = mainArticleBlocksFor(issueView);
-        if (!mainArticleBlocks.isEmpty()) {
+        if (!mainArticleBlocks.isEmpty()
+                && sectionPolicy.shouldInclude(NewspaperPageSection.of(
+                        NewspaperPageSectionType.MAIN_ARTICLE,
+                        issueTitle(issueView),
+                        mainArticleBlocks
+                ))) {
             groups.add(mainArticleBlocks);
         }
 
@@ -215,6 +220,8 @@ public class NewspaperArticleCompositionService {
                 NewspaperPageSectionType.MEMORIAL,
                 NewspaperPageSectionType.ADVERTISEMENTS
         )) {
+            List<List<NewspaperVisualBlock>> sectionGroups = new ArrayList<>();
+
             for (GameArticleView article : issueView.articles()) {
                 if (mainArticle != null && mainArticle.id().equals(article.id())) {
                     continue;
@@ -233,12 +240,43 @@ public class NewspaperArticleCompositionService {
                         classification
                 );
                 if (!blocks.isEmpty()) {
-                    groups.add(blocks);
+                    sectionGroups.add(blocks);
                 }
+            }
+
+            if (sectionPolicy.shouldInclude(NewspaperPageSection.of(
+                    sectionType,
+                    sectionTitleFor(sectionType),
+                    blocksForGroups(sectionGroups)
+            ))) {
+                groups.addAll(sectionGroups);
             }
         }
 
         return groups;
+    }
+
+    private List<NewspaperVisualBlock> blocksForGroups(
+            List<List<NewspaperVisualBlock>> groups
+    ) {
+        if (groups == null || groups.isEmpty()) {
+            return List.of();
+        }
+
+        return groups.stream()
+                .flatMap(List::stream)
+                .toList();
+    }
+
+    private String sectionTitleFor(NewspaperPageSectionType sectionType) {
+        return switch (sectionType) {
+            case MAIN_ARTICLE, MIXED_ARTICLES -> "AthenaPress";
+            case SHORT_NOTICES -> "Kurzmeldungen";
+            case MEMORIAL -> "Verschollen und unvergessen";
+            case ADVERTISEMENTS -> "Anzeigen";
+            case TITLE_PAGE -> "Titelseite";
+            case BACK_PAGE -> "Rückseite";
+        };
     }
 
     private List<NewspaperVisualBlock> blocksForSections(List<NewspaperPageSection> sections) {
