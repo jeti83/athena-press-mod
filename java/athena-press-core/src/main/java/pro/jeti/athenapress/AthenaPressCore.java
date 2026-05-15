@@ -7,7 +7,9 @@ import pro.jeti.athenapress.repository.CategoryRepository;
 import pro.jeti.athenapress.repository.IssueRepository;
 import pro.jeti.athenapress.repository.SubscriberRepository;
 import pro.jeti.athenapress.repository.PlayerAlbumRepository;
+import pro.jeti.athenapress.service.ArticleStatusService;
 import pro.jeti.athenapress.service.ArticleWriteService;
+import pro.jeti.athenapress.service.IssueWriteService;
 import pro.jeti.athenapress.service.PlayerAlbumService;
 import pro.jeti.athenapress.service.DeliveryService;
 import pro.jeti.athenapress.service.GameNewspaperSessionService;
@@ -35,6 +37,8 @@ public class AthenaPressCore {
     private final PlayerAlbumRepository playerAlbumRepository;
     private final PlayerAlbumService playerAlbumService;
     private final ArticleWriteService articleWriteService;
+    private final ArticleStatusService articleStatusService;
+    private final IssueWriteService issueWriteService;
     private final GameViewService gameViewService;
     private final GameTextRendererService gameTextRendererService;
     private final GameNewspaperSessionService gameNewspaperSessionService;
@@ -59,6 +63,8 @@ public class AthenaPressCore {
         this.playerAlbumRepository = new PlayerAlbumRepository(athenaPressRoot);
         this.playerAlbumService = new PlayerAlbumService(playerAlbumRepository);
         this.articleWriteService = new ArticleWriteService(athenaPressRoot);
+        this.articleStatusService = new ArticleStatusService(athenaPressRoot);
+        this.issueWriteService = new IssueWriteService(athenaPressRoot);
         this.previewService = new PreviewService();
         this.gameViewService = new GameViewService(pressService);
         this.gameTextRendererService = new GameTextRendererService();
@@ -122,6 +128,14 @@ public class AthenaPressCore {
 
     public PlayerAlbumService getPlayerAlbumService() {
         return playerAlbumService;
+    }
+
+    public ArticleStatusService getArticleStatusService() {
+        return articleStatusService;
+    }
+
+    public IssueWriteService getIssueWriteService() {
+        return issueWriteService;
     }
 
     public ArticleWriteService getArticleWriteService() {

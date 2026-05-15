@@ -167,4 +167,12 @@ public class AthenaPressIntegrationPlugin {
     public AlbumView registerCameraCapture(String playerName, String displayName) throws IOException {
         return gateway.registerCameraCapture(playerName, displayName);
     }
+
+    public String handleChefRedakteurCommand(String[] args) throws IOException {
+        return gateway.handleChefRedakteurCommand(args);
+    }
+
+    public String chefRedakteurHelpText() {
+        return gateway.chefRedakteurHelpText();
+    }
 }

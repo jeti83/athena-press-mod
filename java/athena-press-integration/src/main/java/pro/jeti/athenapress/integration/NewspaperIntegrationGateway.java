@@ -16,6 +16,7 @@ public class NewspaperIntegrationGateway {
     private final PlayerNewspaperVisualNavigationService visualNavigationService;
     private final ArticleEditorService articleEditorService;
     private final AlbumCommandService albumCommandService;
+    private final ChefRedakteurService chefRedakteurService;
     private final Map<String, GameNewspaperSessionService> sessionsByPlayerId = new HashMap<>();
 
     public NewspaperIntegrationGateway(AthenaPressCore core) {
@@ -33,6 +34,13 @@ public class NewspaperIntegrationGateway {
                 core.getPlayerAlbumService()
         );
         this.albumCommandService = new AlbumCommandService(core.getPlayerAlbumService());
+        this.chefRedakteurService = new ChefRedakteurService(
+                core.getArticleStatusService(),
+                core.getIssueWriteService(),
+                core.getValidationService(),
+                core.getArticleRepository(),
+                core.getIssueRepository()
+        );
     }
 
     public String openIssueForPlayer(String playerId, String issueId) throws IOException {
@@ -227,6 +235,14 @@ public class NewspaperIntegrationGateway {
 
     public AlbumView handleAlbumCommand(String playerName, String[] args) throws IOException {
         return albumCommandService.handleCommand(playerName, args);
+    }
+
+    public String handleChefRedakteurCommand(String[] args) throws IOException {
+        return chefRedakteurService.handle(args);
+    }
+
+    public String chefRedakteurHelpText() {
+        return chefRedakteurService.helpText();
     }
 
     public AlbumView registerCameraCapture(String playerName, String displayName) throws IOException {

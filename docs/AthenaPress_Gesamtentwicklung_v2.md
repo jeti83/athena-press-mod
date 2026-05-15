@@ -1,4 +1,4 @@
-# AthenaPress – Gesamtentwicklung
+﻿# AthenaPress – Gesamtentwicklung
 
 **Stand: Mai 2026**
 **Version: 0.4**
@@ -21,24 +21,13 @@ Der Entwicklungsansatz ist bewusst backend-first und API-neutral: Alle Kernfunkt
 
 AthenaPress besteht aus drei Schichten:
 
-```
-┌─────────────────────────────────────────────────────┐
-│  Hytale-Spiel (NoesisGUI, Plugin-API)               │
-│  ← Noch nicht angebunden (3 Adapter-Stubs)          │
-├─────────────────────────────────────────────────────┤
-│  athena-press-integration (Java)                    │
-│  Visual-Layout, Editor, Album, Kamera, Sessions     │
-├─────────────────────────────────────────────────────┤
-│  athena-press-core (Java)                           │
-│  Datenmodell, Repositories, Services, Validierung   │
-├─────────────────────────────────────────────────────┤
-│  Python-CLI (press.py)                              │
-│  Redaktions-Werkzeuge, Dateiverwaltung              │
-├─────────────────────────────────────────────────────┤
-│  AthenaPress/ (JSON-Datenspeicher)                  │
-│  Artikel, Ausgaben, Abonnenten, Bilder, Alben       │
-└─────────────────────────────────────────────────────┘
-```
+| Schicht | Beschreibung |
+|---|---|
+| Hytale-Spiel (NoesisGUI, Plugin-API) | Noch nicht angebunden – 3 Adapter-Stubs offen |
+| athena-press-integration (Java) | Visual-Layout, Editor, Album, Kamera, Sessions |
+| athena-press-core (Java) | Datenmodell, Repositories, Services, Validierung |
+| Python-CLI (press.py) | Redaktions-Werkzeuge, Dateiverwaltung |
+| AthenaPress/ (JSON-Datenspeicher) | Artikel, Ausgaben, Abonnenten, Bilder, Alben |
 
 ---
 
@@ -364,41 +353,41 @@ cd java && mvn -B clean verify
 
 ```
 athena-press-mod/
-├── AthenaPress/
-│   ├── config.json
-│   ├── articles/
-│   │   ├── draft/
-│   │   ├── published/       ← article_0001 bis article_0015
-│   │   └── archived/
-│   ├── issues/
-│   │   ├── draft/
-│   │   ├── published/       ← issue_0002 bis issue_0004
-│   │   └── archived/
-│   ├── images/
-│   │   ├── placeholders/
-│   │   └── uploaded/        ← Kamera-Fotos (cam_*.png)
-│   ├── players/
-│   │   └── <name>/album.json
-│   ├── subscriptions/
-│   │   └── subscribers.json
-│   └── templates/
-│       ├── categories.json
-│       ├── article_template.json
-│       └── issue_template.json
-├── docs/
-│   ├── backend_status.md
-│   ├── camera_workflow.md
-│   ├── commands.md
-│   ├── data_model.md
-│   ├── integration_architecture.md
-│   ├── mod_mvp.md
-│   └── workflow.md
-├── tools/                   ← Python-Einzelwerkzeuge
-├── press.py                 ← Zentrales Python-CLI
-└── java/
-    ├── pom.xml
-    ├── athena-press-core/
-    └── athena-press-integration/
++-- AthenaPress/
+|   +-- config.json
+|   +-- articles/
+|   |   +-- draft/
+|   |   +-- published/       (article_0001 bis article_0015)
+|   |   +-- archived/
+|   +-- issues/
+|   |   +-- draft/
+|   |   +-- published/       (issue_0002 bis issue_0004)
+|   |   +-- archived/
+|   +-- images/
+|   |   +-- placeholders/
+|   |   +-- uploaded/        (Kamera-Fotos: cam_*.png)
+|   +-- players/
+|   |   +-- <name>/album.json
+|   +-- subscriptions/
+|   |   +-- subscribers.json
+|   +-- templates/
+|       +-- categories.json
+|       +-- article_template.json
+|       +-- issue_template.json
++-- docs/
+|   +-- backend_status.md
+|   +-- camera_workflow.md
+|   +-- commands.md
+|   +-- data_model.md
+|   +-- integration_architecture.md
+|   +-- mod_mvp.md
+|   +-- workflow.md
++-- tools/                   (Python-Einzelwerkzeuge)
++-- press.py                 (Zentrales Python-CLI)
++-- java/
+    +-- pom.xml
+    +-- athena-press-core/
+    +-- athena-press-integration/
 ```
 
 ---
