@@ -352,11 +352,18 @@ public class NewspaperArticleCompositionService {
         }
 
         if (hasText(issueView.coverImage())) {
+            String caption = coverCaption(issueView);
             blocks.add(NewspaperVisualBlock.image(
                     issueView.coverImage(),
-                    coverCaption(issueView),
+                    caption,
                     defaultTemplate.columnsPerPage()
             ));
+            if (hasText(caption)) {
+                blocks.add(NewspaperVisualBlock.caption(
+                        caption,
+                        defaultTemplate.columnsPerPage()
+                ));
+            }
         }
 
         blocks.add(NewspaperVisualBlock.divider());
