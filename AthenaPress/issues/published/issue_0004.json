@@ -1,0 +1,22 @@
+{
+  "id": "issue_0004",
+  "status": "published",
+  "issueNumber": 4,
+  "title": "Athena Botenblatt",
+  "subtitle": "Sonderausgabe: Stadtentwicklung",
+  "editionName": "Marktfest & Bauprojekte",
+  "cover": {
+    "mainArticleId": "article_0012",
+    "image": "placeholders/no_image.png"
+  },
+  "articles": [
+    "article_0012",
+    "article_0013",
+    "article_0014",
+    "article_0015"
+  ],
+  "createdAt": "2026-05-15T20:30:00+02:00",
+  "updatedAt": "2026-05-15T20:30:00+02:00",
+  "publishedAt": "2026-05-15T20:30:00+02:00",
+  "deliveredToSubscribers": false
+}

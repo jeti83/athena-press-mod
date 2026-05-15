@@ -1,0 +1,24 @@
+{
+  "id": "article_0015",
+  "status": "published",
+  "categoryId": "classifieds",
+  "title": "Kleinanzeigen: Wollbert ist zurück",
+  "subtitle": "Sowie: Karotten-Preisdebatte eskaliert, Treppe gesucht",
+  "summary": "Die Kleinanzeigen dieser Ausgabe: Ein Schaf kehrt zurück, ein Händler bleibt stur und eine Treppe ist verschwunden.",
+  "teaser": "Wollbert lebt. Einzelheiten auf dieser Seite.",
+  "author": {
+    "playerName": "Athena Redaktion",
+    "playerUuid": "unknown"
+  },
+  "body": "GEFUNDEN: Ein weißes Schaf, hört auf den Namen Wollbert, wurde am Dienstagabend in der Nähe des Ostflusses wiedergefunden. Das Schaf ist wohlauf, hat offenbar gut gefressen und zeigt keine Reue. Abzuholen bei Jeti, Haus 3 am Marktplatz. Bitte vorher ankündigen.\n\nBIETE: Eisenbarren, frisch aus der Mine, faire Preise, keine Verhandlungen mit Felix_Bauer. Zuschriften an Spieler Torben_Handelt, Marktstand 12.\n\nGESUCHT: Eine hölzerne Treppe, zuletzt gesehen zwischen dem Rathaus-Rohbau und dem Lagerplatz. Wer sie hat, möge sie zurückbringen. Keine Fragen werden gestellt, solange die Treppe vollständig ist.\n\nZU VERMIETEN: Ein kleiner Lagerraum unter dem Marktplatz. Trocken, dunkel, gelegentlich Geräusche ungeklärter Herkunft. Preis verhandelbar. Karottenzahlungen ausdrücklich ausgeschlossen.\n\nHINWEIS DER REDAKTION: Die Karottenfrage wurde der Redaktion in dieser Woche neunzehn Mal gestellt. Die Antwort bleibt: Karotten sind kein anerkanntes Zahlungsmittel. Felix_Bauer wurde informiert. Felix_Bauer zeigt sich unbeeindruckt.",
+  "image": {
+    "file": "placeholders/dating.png",
+    "caption": "Wollbert. Zurück. Unverändert.",
+    "credit": "Athena Botenblatt",
+    "sourceType": "placeholder"
+  },
+  "tags": ["kleinanzeigen", "wollbert", "schaf", "humor", "markt"],
+  "createdAt": "2026-05-15T20:00:00+02:00",
+  "updatedAt": "2026-05-15T20:00:00+02:00",
+  "publishedAt": "2026-05-15T20:00:00+02:00"
+}

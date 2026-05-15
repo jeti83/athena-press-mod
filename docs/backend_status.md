@@ -1,203 +1,105 @@
 # AthenaPress Backend-Status
 
-Stand: AthenaPress Backend/Integration v0.4
-
-Dieses Dokument beschreibt den aktuellen Abschlussstand des AthenaPress-Backends.
-
-Ziel ist nicht, das Backend als eigenständiges Endprodukt weiter auszubauen, sondern es als stabiles Fundament für die spätere Mod-/Ingame-Schicht zu nutzen.
+Stand: AthenaPress v0.4
 
 ---
 
 ## Aktueller Fokus
 
-AthenaPress soll am Ende ein Zeitungssystem für den Athena-Hytale-Server werden.
+AthenaPress ist eine Zeitungs-Mod für den Athena-Hytale-Server.
 
-Das Backend dient aktuell dazu, echte Zeitungsdaten strukturiert zu speichern, zu prüfen und für spätere Ingame-Anzeigen vorzubereiten.
-
-Der aktuelle Entwicklungsfokus liegt auf der spielnahen Mod-/Preview-Schicht und einer adapter-neutralen Vorbereitung für native Hytale-UI.
+Das Backend ist stabil. Das Visual-Preview-System erzeugt echte PNG-Doppelseiten aus den Zeitungsdaten. Die nächste Entwicklungsphase ist die Anbindung an die Hytale Plugin-API.
 
 ---
 
-## Aktuell stabil genug
+## Was aktuell stabil funktioniert
 
-Das Backend kann derzeit:
-
+### Python-Backend
 - Artikel als JSON-Daten verwalten
 - Ausgaben als JSON-Daten verwalten
 - Ausgaben mit mehreren Artikeln verbinden
-- Artikel über IDs in Ausgaben referenzieren
 - Kategorien datengetrieben nutzen
 - Abonnenten verwalten
 - Zustell- und Lesestatus abbilden
-- veröffentlichte, archivierte und Entwurfsdaten unterscheiden
 - Entwürfe gezielt löschen
-- veröffentlichte und archivierte Inhalte erhalten
-- Bild-Metadaten speichern und prüfen
-- Cover-Daten für Ausgaben speichern und prüfen
-- Daten über Python-Werkzeuge bearbeiten
-- Daten über den Java-Core lesen und anzeigen
-- Daten über das Java-Integration-Modul spielnah darstellen
-- Visual-Doppelseiten und Blocklayouts vorbereiten
-- leichte Layout-Asymmetrie für lockerere Zeitungsseiten steuern
-- lesbare Artikelgruppen beim Seitenumbruch geschlossen halten
-- lange Artikeltexte absatzorientiert in Seitenfluss-Blöcke zerlegen
-- fortlaufende Artikel auf Folgeseiten kenntlich machen
-- optionale Rubriken sichtbar als Zeitungsbereiche ausgeben
-- optionale Anzeigen als eigene Rückseiten ausgeben
-- einzelne Rückseitenanzeigen bei wenig Inhalt großzügiger setzen
-- vorhandene Artikelbilder in die visuelle Komposition übernehmen
-- Bildunterschriften als eigene visuelle Blöcke ausgeben
-- Visual-Previews zwischenspeichern
-- Visual-Input und Lifecycle-Ereignisse adapter-neutral verarbeiten
-- eine native Hytale-Visual-Runtime ohne direkte Hytale-API-Imports zusammensetzen
-- Validierungsfehler früh sichtbar machen
-- Status-, Ausgaben- und Artikellisten anzeigen
-- Demo-Befehle in deutscher und englischer Form nutzen
+- Validierung über `python press.py pruefen`
+- Zentrales CLI `press.py` mit deutschen und englischen Befehlen
+
+### Java Core (athena-press-core)
+- Liest echte AthenaPress-JSON-Daten
+- Löst Ausgaben auf und zeigt sie an
+- Validiert Daten auf mehreren Ebenen
+- Zeigt Status-, Ausgaben- und Artikellisten
+- `DemoCommandService` – Argument-Parsing
+- `DemoTextService` – Textformatierung (getrennt refaktoriert)
+- `DemoCommand` und `DemoCommandType` als eigene Klassen
+
+### Java Integration (athena-press-integration)
+- Spielnahe Zeitungssessions pro Spieler
+- Visual-Layout-System mit Doppelseiten, Pagination, Designprofilen
+- **PNG-Preview funktionsfähig** – erzeugt echte Zeitungsseiten als Bilddateien
+- Artikel-Klassifizierung in Sektionen (Hauptartikel, Kurzmeldungen, Memorial, Anzeigen, Rückseite)
+- Preview-Pipeline mit Runtime-Cache
+- Hytale-Adapter-Schicht vorbereitet (API-neutral)
+- `HytaleNewspaperVisualRuntime` als Einstiegspunkt für spätere Verdrahtung
+- Input-System vorbereitet: Item, NPC, Chat-Befehl, Keybind, UI
+
+### Tests (letzter bekannter stabiler Stand)
+- Core: 103 Tests, 0 Failures, 0 Errors
+- Integration: 169 Tests, 0 Failures, 0 Errors
 
 ---
 
-## Python-Backend
+## PNG-Preview erzeugen
 
-Das Python-Backend ist weiterhin der praktische Werkzeugkasten für Dateiverwaltung und Redaktionsabläufe.
+```powershell
+cd java
+mvn exec:java -pl athena-press-integration -Dexec.mainClass=pro.jeti.athenapress.integration.AthenaPressVisualPngPreviewDemo -Dexec.args="issue_0003"
+```
 
-Wichtige Einstiegspunkte:
+Mit eigenem Ausgabeordner:
 
-    python press.py pruefen
-    python press.py artikel liste
-    python press.py ausgabe liste
-    python press.py abonnent liste
-    python press.py ausgabe lesen issue_0002 --voll
-
-Das zentrale CLI `press.py` bleibt der bevorzugte Einstieg.
-
-Die Einzeltools unter `tools/` bleiben als interne Bausteine erhalten.
+```powershell
+mvn exec:java -pl athena-press-integration -Dexec.mainClass=pro.jeti.athenapress.integration.AthenaPressVisualPngPreviewDemo "-Dexec.args=issue_0004 C:\Users\DEINNAME\Downloads\athena-press-preview"
+```
 
 ---
 
-## Java-Core
+## Verfügbare Ausgaben
 
-Der Java-Core unter `java/athena-press-core` ist aktuell ein lokales Admin-, Preview- und Debug-Werkzeug.
-
-Er kann echte AthenaPress-Daten lesen und daraus Konsolenausgaben erzeugen.
-
-Wichtige Demo-Befehle:
-
-    mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo"
-
-    mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--status"
-
-    mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--articles"
-
-    mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--validate issue_0002"
-
-Der Java-Core ist noch keine echte Hytale-Mod.
-
-Er bildet aber eine stabile Grundlage, um später eine spielnahe Anzeige- oder Server-Schicht daran anzuschließen.
+| ID | Titel | Thema |
+|---|---|---|
+| `issue_0002` | Athena Botenblatt – Die erste echte Testausgabe | Dating, Baumfarm |
+| `issue_0003` | Athena Botenblatt – Jubiläumsausgabe | Jubiläum, Rathaus, Wirtschaft, Kleinanzeigen |
+| `issue_0004` | Athena Botenblatt – Sonderausgabe Stadtentwicklung | Marktfest, Bibliothek, Gerüchte, Wollbert |
 
 ---
 
-## Java-Integration
+## Offene Hytale-Anbindung
 
-Das Integration-Modul unter `java/athena-press-integration` bereitet die spätere Mod-Schicht vor.
+Folgende Adapter-Klassen sind vorbereitet aber noch nicht mit echter Hytale-API verdrahtet:
 
-Aktuell vorhanden:
+| Klasse | Was fehlt |
+|---|---|
+| `HytalePlayerContextResolver<TPlayer>` | Hytale-Spieler → HytalePlayerContext |
+| `HytaleNewspaperVisualUiBridge` | NoesisGUI-Fenster öffnen/schließen/aktualisieren |
+| `HytaleNewspaperVisualInputAdapter` | Chat-Befehl `/ap`, Item-Use, NPC-Klick → Input-Event |
 
-- spielnahe Player-Zeitungssessions
-- Text-UI-Port und View-Modelle
-- Visual-UI-Port und View-Modelle
-- Visual-Layout-, Pagination- und Doppelseiten-Komposition
-- Preview-Pipeline für echte veröffentlichte Ausgaben
-- Visual-Runtime-Cache
-- Visual-Input-Pfad für Öffnen, Blättern, Aktualisieren und Schließen
-- Lifecycle-Cleanup für Disconnect und Timeout
-- Hytale-Adapter für Input, Lifecycle und Visual-UI
-- HytaleNewspaperVisualRuntime als Composition-Root
-
-Die Integration importiert weiterhin keine echte oder erfundene Hytale-API.
+Sobald die Hytale Plugin-API dokumentiert vorliegt, werden nur diese drei Stellen ausgefüllt.
 
 ---
 
-## Tests und Stabilität
+## Kamera-Item
 
-Der aktuelle bekannte stabile Teststand:
+Für die Integration von Ingame-Fotos in Artikel ist das Kamera-Item geplant.
 
-    mvn -B clean verify
-
-Erwarteter Stand:
-
-- alle Tests grün
-- keine Failures
-- keine Errors
-
-Der zuletzt bekannte Stand lag bei:
-
-- Core: 91 Tests
-- Integration: 169 Tests
-- 0 Failures
-- 0 Errors
-
-Bei Änderungen am Java-Code oder am Datenmodell sollte dieser Test erneut ausgeführt werden.
-
-Für größere Änderungspakete wird zusätzlich empfohlen:
-
-    mvn -B clean install
+Details: `docs/camera_workflow.md`
 
 ---
 
 ## Bewusst geparkt
 
-Folgende Dinge werden vorerst nicht weiter ausgebaut, solange sie nicht konkret für die Mod-/Ingame-Schicht benötigt werden:
-
-- weitere Konsolen-Aliase
-- zusätzliche Komfortbefehle ohne direkten Mod-Nutzen
-- reine Kosmetik an Konsolenausgaben
-- übermäßige Doku-Politur
-- neue Backend-Funktionen ohne klaren Spielbezug
-- echte Hytale-API-Anbindung
-- echte Ingame-Zustellung
-- echte Ingame-Items
-- Redaktions-UI
-- automatische Veröffentlichung im Spiel
-
-Diese Punkte können später ergänzt werden, wenn sie für ein konkretes Spiel- oder Admin-Szenario gebraucht werden.
-
----
-
-## Nächster Entwicklungsfokus
-
-Der nächste sinnvolle Fokus ist ein Mod-MVP.
-
-MVP bedeutet hier:
-
-Ein Spieler soll eine vorhandene AthenaPress-Ausgabe spielnah öffnen und Artikel lesen können.
-
-Minimaler Zielablauf:
-
-1. Eine veröffentlichte Ausgabe wird geladen.
-2. Die referenzierten Artikel werden geladen.
-3. Eine spielnahe Ansicht zeigt Titel, Untertitel und Artikelliste.
-4. Ein Artikel kann ausgewählt werden.
-5. Der Artikeltext wird angezeigt.
-
-Dieser Ablauf ist auf Java-/Integrations-Ebene vorbereitet.
-
-Der nächste sinnvolle Fokus nach dem aktuellen Visual-Ausbau ist:
-
-1. PR #2 sauber nach `main` übernehmen.
-2. Danach echte Hytale-Hook-Punkte gegen die vorhandenen Adapter prüfen, sobald verlässliche Hytale-API-Details lokal vorliegen.
-3. Vorher keine direkten Hytale-API-Imports erfinden.
-
----
-
-## Leitentscheidung
-
-Das Backend gilt ab diesem Stand als ausreichend stabil für den nächsten Entwicklungsschritt.
-
-Neue Backend-Funktionen sollen nur noch ergänzt werden, wenn sie direkt helfen, das spätere Ingame-Zeitungserlebnis umzusetzen.
-
-Kurzfassung:
-
-Erst Zeitung lesbar machen.
-Dann Zustellung.
-Dann Ingame-Komfort.
-Dann Konfetti.
+- Echte Hytale-API-Anbindung (wartet auf offizielle Dokumentation)
+- NoesisGUI-UI-Implementierung
+- Automatische Veröffentlichung im Spiel
+- Redaktions-UI für Spieler

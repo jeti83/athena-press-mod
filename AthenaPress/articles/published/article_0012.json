@@ -1,0 +1,24 @@
+{
+  "id": "article_0012",
+  "status": "published",
+  "categoryId": "headline",
+  "title": "Großes Marktfest zur Jubiläumswoche",
+  "subtitle": "Drei Tage Handel, Musik und mindestens ein Missverständnis",
+  "summary": "Zum Servergeburtstag plant die Athena-Gemeinschaft ein dreitägiges Marktfest mit Händlerständen, Wettbewerben und einem gemeinsamen Bauprojekt.",
+  "teaser": "Drei Tage Fest. Einer bringt Kuchen. Niemand weiß wer.",
+  "author": {
+    "playerName": "Jeti",
+    "playerUuid": "unknown"
+  },
+  "body": "Die Athena-Gemeinschaft plant anlässlich des ersten Servergeburtstags ein dreitägiges Marktfest. Vom ersten bis zum dritten Wochenende des Monats sollen am Hauptspawn Händlerstände aufgebaut, gemeinsame Bauprojekte gestartet und Wettbewerbe in verschiedenen Kategorien ausgetragen werden.\n\nDie Planungsgruppe, bestehend aus Jeti, Mira_Baut und drei weiteren Spielern, hat bereits eine Liste mit Aktivitäten zusammengestellt. Dazu gehören ein Bauwettbewerb mit dem Thema Brücken, ein Handelsturnier bei dem Rohstoffe gegen andere Rohstoffe getauscht werden dürfen, sowie ein abendliches Lagerfeuer mit offenem Geschichtenerzählen.\n\nBesonders erfreulich: Erstmals soll es eine offizielle Ausgabe des Athena Botenblatts geben, die eigens für das Fest produziert wird. Die Redaktion plant eine Sonderbeilage mit Berichten von allen drei Tagen, Fotos der Bauprojekte und einer Liste der Wettbewerbsgewinner.\n\nAnmeldungen für Händlerstände sind ab sofort möglich. Pro Spieler ist ein Stand erlaubt. Wer zwei Stände möchte, muss eine überzeugende Begründung einreichen. Die bisherigen Begründungen wurden als nicht überzeugend eingestuft, darunter der Versuch eines Spielers, seinen zweiten Stand als Lagerraum zu deklarieren.\n\nDas genaue Datum wird in der nächsten Ausgabe bekanntgegeben. Oder in der übernächsten. Die Planungsgruppe tagt noch.",
+  "image": {
+    "file": "placeholders/no_image.png",
+    "caption": "Der Marktplatz kurz vor der Festvorbereitung. Die Stände kommen noch.",
+    "credit": "Athena Botenblatt",
+    "sourceType": "placeholder"
+  },
+  "tags": ["marktfest", "jubiläum", "event", "community"],
+  "createdAt": "2026-05-15T20:00:00+02:00",
+  "updatedAt": "2026-05-15T20:00:00+02:00",
+  "publishedAt": "2026-05-15T20:00:00+02:00"
+}

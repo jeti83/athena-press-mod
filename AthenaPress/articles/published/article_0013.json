@@ -1,0 +1,31 @@
+{
+  "id": "article_0013",
+  "status": "published",
+  "categoryId": "build_projects",
+  "title": "Neue Bibliothek bekommt endlich Fenster",
+  "subtitle": "Bauprojekt nach vier Wochen kurz vor Abschluss",
+  "summary": "Die neue Athena-Bibliothek steht fast fertig am Stadtrand. Noch fehlen einige Fenster, ein Dach und die gesamte Inneneinrichtung.",
+  "teaser": "Fast fertig. Definition von fast wird noch diskutiert.",
+  "author": {
+    "playerName": "Mira_Baut",
+    "playerUuid": "unknown"
+  },
+  "body": "Die neue Athena-Bibliothek schreitet zügig voran. Nach vier Wochen Bauzeit steht der Rohbau vollständig, die Außenwände sind verputzt und die ersten Fenster wurden gestern eingesetzt. Laut Bauverantwortlicher Mira_Baut fehlen noch zwölf weitere Fenster, das gesamte Dach sowie die Inneneinrichtung einschließlich Regale, Tische, Stühle, Beleuchtung und ein Empfangstresen.\n\nDas Gebäude folgt einem klassischen Bibliotheksgrundriss mit zwei Stockwerken, einem zentralen Lesesaal im Erdgeschoss und einem Archivbereich im Obergeschoss. Der Keller ist für die Buchsammlung der Redaktion reserviert, sobald die Redaktion eine Buchsammlung hat.\n\nBesonderes Merkmal: Die Bibliothek soll als erstes Gebäude auf Athena über ein Schild-basiertes Katalogisierungssystem verfügen. Spieler können Bücher eintragen und ausleihen. Felix_Bauer hat bereits angefragt, ob auch Karotten eingetragen werden können. Die Antwort war nein.\n\nZur Dokumentation des Bauprojekts wurden erstmals Fotos mit dem Athena-Kamera-Item aufgenommen. Die Bilder zeigen den Rohbau aus verschiedenen Perspektiven und sind in der nächsten Ausgabe des Botenblatts als Bildstrecke geplant.",
+  "image": {
+    "file": "placeholders/no_image.png",
+    "caption": "Frontansicht der Bibliothek. Aufgenommen mit dem Athena-Kamera-Item.",
+    "credit": "Mira_Baut für Athena Botenblatt",
+    "sourceType": "camera_marker"
+  },
+  "location": {
+    "enabled": true,
+    "world": "Hauptwelt",
+    "x": -88.0,
+    "y": 66.0,
+    "z": 203.0
+  },
+  "tags": ["bibliothek", "bauprojekt", "stadtentwicklung"],
+  "createdAt": "2026-05-15T20:00:00+02:00",
+  "updatedAt": "2026-05-15T20:00:00+02:00",
+  "publishedAt": "2026-05-15T20:00:00+02:00"
+}

@@ -1,0 +1,24 @@
+{
+  "id": "article_0014",
+  "status": "published",
+  "categoryId": "server_news",
+  "title": "Gerüchteküche: Spawn wird umgebaut?",
+  "subtitle": "Offizielle Bestätigung steht aus, Brunnen laut Quellen betroffen",
+  "summary": "Unbestätigte Berichte deuten auf größere Umbaumaßnahmen am Hauptspawn hin. Der mysteriöse Brunnen soll angeblich versetzt werden.",
+  "teaser": "Niemand hat es offiziell bestätigt. Niemand hat es offiziell dementiert.",
+  "author": {
+    "playerName": "Athena Redaktion",
+    "playerUuid": "unknown"
+  },
+  "body": "Aus Kreisen der Serverleitung verlautet, dass der Hauptspawn in den kommenden Wochen umgestaltet werden soll. Offiziell bestätigt ist davon nichts. Die Redaktion hat mehrfach nachgefragt. Die Antworten waren freundlich, aber inhaltsleer.\n\nBesonders heiß diskutiert wird die Frage, ob der Brunnen am Spawn versetzt wird. Der Brunnen, dessen Ursprung seit Serverstart ungeklärt ist, gilt als inoffizielles Wahrzeichen der Gemeinschaft. Eine Verlegung würde nach Einschätzung der Redaktion erhebliche emotionale Reaktionen auslösen, darunter Petitionen, Gegenpetitionen und mindestens eine dramatische Rede am Lagerfeuer.\n\nEin namentlich nicht genannter Spieler bestätigte der Redaktion unter dem Siegel der Verschwiegenheit, dass Pläne existieren. Ein anderer namentlich nicht genannter Spieler bestritt, dass Pläne existieren. Beide waren zum Redaktionsschluss nicht erreichbar, um ihre Aussagen zu klären.\n\nDie Redaktion behält sich vor, weiter zu berichten, sobald irgendjemand irgendetwas offiziell sagt. Bis dahin gilt: Der Brunnen leuchtet weiterhin. Unverändert. Ohne Erklärung.",
+  "image": {
+    "file": "placeholders/no_image.png",
+    "caption": "Symbolbild: Der Brunnen. Unkommentiert.",
+    "credit": "Athena Botenblatt",
+    "sourceType": "placeholder"
+  },
+  "tags": ["gerücht", "spawn", "umbau", "brunnen"],
+  "createdAt": "2026-05-15T20:00:00+02:00",
+  "updatedAt": "2026-05-15T20:00:00+02:00",
+  "publishedAt": "2026-05-15T20:00:00+02:00"
+}
