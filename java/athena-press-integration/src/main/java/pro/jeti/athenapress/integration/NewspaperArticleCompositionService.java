@@ -345,23 +345,23 @@ public class NewspaperArticleCompositionService {
 
     private List<NewspaperVisualBlock> coverBlocksFor(GameIssueView issueView) {
         List<NewspaperVisualBlock> blocks = new ArrayList<>();
-        blocks.add(NewspaperVisualBlock.headline(issueTitle(issueView)));
+        blocks.add(NewspaperVisualBlock.coverHeadline(issueTitle(issueView)));
 
         if (hasText(issueView.subtitle())) {
-            blocks.add(NewspaperVisualBlock.subheadline(issueView.subtitle()));
+            blocks.add(NewspaperVisualBlock.coverSubheadline(issueView.subtitle()));
         }
 
         GameArticleView mainArticle = issueView.findArticleById(issueView.coverMainArticleId());
         if (mainArticle != null) {
-            blocks.add(NewspaperVisualBlock.subheadline(articleTitle(mainArticle)));
+            blocks.add(NewspaperVisualBlock.coverSubheadline(articleTitle(mainArticle)));
 
             if (hasText(mainArticle.summary())) {
-                blocks.add(NewspaperVisualBlock.notice(
+                blocks.add(NewspaperVisualBlock.coverNotice(
                         mainArticle.summary(),
                         defaultTemplate.columnsPerPage()
                 ));
             } else if (hasText(mainArticle.teaser())) {
-                blocks.add(NewspaperVisualBlock.notice(
+                blocks.add(NewspaperVisualBlock.coverNotice(
                         mainArticle.teaser(),
                         defaultTemplate.columnsPerPage()
                 ));
@@ -376,7 +376,7 @@ public class NewspaperArticleCompositionService {
                     defaultTemplate.columnsPerPage()
             ));
             if (hasText(caption)) {
-                blocks.add(NewspaperVisualBlock.caption(
+                blocks.add(NewspaperVisualBlock.coverCaption(
                         caption,
                         defaultTemplate.columnsPerPage()
                 ));
@@ -478,7 +478,7 @@ public class NewspaperArticleCompositionService {
             blocks.add(NewspaperVisualBlock.notice(article.summary()));
         }
 
-        blocks.add(NewspaperVisualBlock.divider());
+        blocks.add(NewspaperVisualBlock.coverDivider());
     }
 
     private String advertisementAssetPath(GameArticleView article) {

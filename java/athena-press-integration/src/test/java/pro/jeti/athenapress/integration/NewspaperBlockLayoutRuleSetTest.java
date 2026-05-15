@@ -76,4 +76,19 @@ class NewspaperBlockLayoutRuleSetTest {
         assertEquals(2, rules.columnSpanFor(featuredNotice, template));
         assertEquals(4, rules.rowSpanFor(featuredNotice, template));
     }
+
+    @Test
+    void compactsCoverBlocksToFitAStandaloneTitlePage() {
+        NewspaperBlockLayoutRuleSet rules = NewspaperBlockLayoutRuleSet.defaultRules();
+        NewspaperLayoutTemplate template = NewspaperLayoutTemplate.classicDoublePage();
+
+        assertEquals(4, rules.rowSpanFor(NewspaperVisualBlock.coverHeadline("Titel"), template));
+        assertEquals(2, rules.rowSpanFor(NewspaperVisualBlock.coverSubheadline("Untertitel"), template));
+        assertEquals(3, rules.rowSpanFor(NewspaperVisualBlock.coverNotice("Aufmacher", 2), template));
+        assertEquals(10, rules.rowSpanFor(
+                NewspaperVisualBlock.coverImage("cover.png", "Titel", 2),
+                template
+        ));
+        assertEquals(1, rules.rowSpanFor(NewspaperVisualBlock.coverCaption("Bildtext", 2), template));
+    }
 }

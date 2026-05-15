@@ -33,12 +33,14 @@ class NewspaperArticleCompositionServiceTest {
                         && "Artikel 1".equals(block.content())));
         assertTrue(visualIssue.pages().getFirst().blocks().stream()
                 .anyMatch(block -> block.type() == NewspaperVisualBlockType.SUBHEADLINE
-                        && "Artikel 1".equals(block.content())));
+                        && "Artikel 1".equals(block.content())
+                        && block.layoutIntent() == NewspaperBlockLayoutIntent.COVER));
         assertTrue(visualIssue.pages().getFirst().blocks().stream()
                 .anyMatch(block -> block.type() == NewspaperVisualBlockType.NOTICE
                         && "Zusammenfassung 1".equals(block.content())
                         && block.columnSpan() == NewspaperLayoutTemplate.classicDoublePage()
-                                .columnsPerPage()));
+                                .columnsPerPage()
+                        && block.layoutIntent() == NewspaperBlockLayoutIntent.COVER));
         assertTrue(visualIssue.pages().getFirst().blocks().stream()
                 .noneMatch(block -> block.type() == NewspaperVisualBlockType.QUOTE));
         assertTrue(visualIssue.pages().stream()

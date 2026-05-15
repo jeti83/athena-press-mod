@@ -99,6 +99,10 @@ public class NewspaperBlockLayoutRuleSet {
             NewspaperVisualBlock block,
             NewspaperLayoutTemplate template
     ) {
+        if (block != null && block.layoutIntent() == NewspaperBlockLayoutIntent.COVER) {
+            return coverRowSpanFor(block);
+        }
+
         return ruleFor(block).rowSpanFor(block, template);
     }
 
@@ -122,5 +126,16 @@ public class NewspaperBlockLayoutRuleSet {
         }
 
         return rules.getOrDefault(block.type(), fallbackRule);
+    }
+
+    private int coverRowSpanFor(NewspaperVisualBlock block) {
+        return switch (block.type()) {
+            case HEADLINE -> 4;
+            case SUBHEADLINE -> 2;
+            case NOTICE -> 3;
+            case IMAGE -> 10;
+            case CAPTION, DIVIDER -> 1;
+            default -> ruleFor(block).defaultRowSpan();
+        };
     }
 }
