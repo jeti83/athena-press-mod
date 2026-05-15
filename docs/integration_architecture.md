@@ -421,6 +421,9 @@ Alle weiteren Bereiche entstehen nur, wenn sie Inhalt haben.
 Dadurch können Anzeigen-, Kurzmeldungs-, Beileids- oder Rückseitenbereiche komplett wegfallen, wenn die Ausgabe sie nicht braucht.
 Wenn optionale Bereiche tatsächlich vorhanden sind, erhalten sie in der visuellen
 Komposition sichtbare Rubriküberschriften.
+Kurzmeldungen und Memorial-Inhalte tragen zusätzlich eigene Layout-Intents,
+damit Preview-Renderer und spätere native UI sie unterschiedlich behandeln
+können, ohne dafür neue Blocktypen zu erfinden.
 
 Hinweis zur Benennung:
 Im Java-Code wird der englische Begriff `Section` verwendet, weil die technische API bereits englisch benannt ist.
@@ -475,6 +478,9 @@ Navigationsbuttons
 Spreads mit einer Rückseite werden im dezenten Seitenmenü bewusst als
 `Rückseite` bezeichnet; als Hinweistext wird dann der Inhalt der Rückseite
 bevorzugt, nicht die linke Innenseite daneben.
+Wenn eine Doppelseite eine redaktionell markante Rubrik wie `Kurzmeldungen`
+oder `Verschollen und unvergessen` enthält, wird diese Rubrik als
+Navigationshinweis gegenüber zufälligen Artikelüberschriften bevorzugt.
 
 NewspaperPreviewPage
 
