@@ -48,6 +48,16 @@ class PlayerNewspaperVisualInputMapperTest {
     }
 
     @Test
+    void mapsSpreadSelectionAliasesToVisualCommand() {
+        PlayerNewspaperUiCommand command = mapper.toUiCommand(
+                PlayerNewspaperInputEvent.uiButton("player-1", "doppelseite", "2")
+        );
+
+        assertEquals(NewspaperVisualUiCommands.SELECT_SPREAD, command.uiCommand());
+        assertEquals("2", command.value());
+    }
+
+    @Test
     void mapsCloseCommand() {
         PlayerNewspaperUiCommand command = mapper.toUiCommand(
                 PlayerNewspaperInputEvent.uiButton("player-1", "schließen", null)

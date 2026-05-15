@@ -70,6 +70,23 @@ class PlayerNewspaperVisualUiControllerTest {
     }
 
     @Test
+    void handlesVisualSelectCommand() throws IOException {
+        CapturingVisualUiPort uiPort = new CapturingVisualUiPort();
+        PlayerNewspaperVisualUiController controller = createController(
+                new StubVisualPlugin(),
+                uiPort
+        );
+
+        controller.handleCommand(
+                "player-1",
+                NewspaperVisualUiCommands.selectSpread(1)
+        );
+
+        assertNotNull(uiPort.lastView);
+        assertEquals(1, uiPort.lastView.spreadIndex());
+    }
+
+    @Test
     void closesVisualIssueAndPort() throws IOException {
         createVisualDataSet();
         CapturingVisualUiPort uiPort = new CapturingVisualUiPort();
@@ -197,6 +214,14 @@ class PlayerNewspaperVisualUiControllerTest {
                 String playerId
         ) {
             return response(playerId, "issue_visual", 1, 2);
+        }
+
+        @Override
+        public PlayerNewspaperVisualResponse onPlayerRequestVisualSpread(
+                String playerId,
+                int spreadIndex
+        ) {
+            return response(playerId, "issue_visual", spreadIndex, 2);
         }
 
         private PlayerNewspaperVisualResponse response(

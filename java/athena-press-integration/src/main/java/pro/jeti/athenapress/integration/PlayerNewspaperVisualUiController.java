@@ -53,6 +53,10 @@ public class PlayerNewspaperVisualUiController {
         show(playerId, () -> plugin.onPlayerRequestPreviousVisualSpread(playerId));
     }
 
+    public void showSpread(String playerId, int spreadIndex) {
+        show(playerId, () -> plugin.onPlayerRequestVisualSpread(playerId, spreadIndex));
+    }
+
     public void closeIssue(String playerId) {
         plugin.onPlayerCloseVisualNewspaper(playerId);
         uiPort.close(playerId);
@@ -68,7 +72,7 @@ public class PlayerNewspaperVisualUiController {
         }
 
         if (command.hasUiCommand()) {
-            handleVisualCommand(playerId, command.uiCommand());
+            handleVisualCommand(playerId, command.uiCommand(), command.value());
             return;
         }
 
@@ -90,7 +94,11 @@ public class PlayerNewspaperVisualUiController {
         showCurrentSpread(playerId);
     }
 
-    private void handleVisualCommand(String playerId, String uiCommand) {
+    private void handleVisualCommand(
+            String playerId,
+            String uiCommand,
+            String value
+    ) {
         String normalizedCommand = normalize(uiCommand);
 
         if (NewspaperVisualUiCommands.PREVIOUS_SPREAD.equals(normalizedCommand)) {
@@ -106,6 +114,14 @@ public class PlayerNewspaperVisualUiController {
         if (NewspaperVisualUiCommands.CURRENT_SPREAD.equals(normalizedCommand)) {
             showCurrentSpread(playerId);
             return;
+        }
+
+        if (NewspaperVisualUiCommands.SELECT_SPREAD.equals(normalizedCommand)) {
+            Integer spreadIndex = parseSpreadIndex(value);
+            if (spreadIndex != null) {
+                showSpread(playerId, spreadIndex);
+                return;
+            }
         }
 
         showCurrentSpread(playerId);
@@ -128,6 +144,18 @@ public class PlayerNewspaperVisualUiController {
 
     private String normalize(String value) {
         return value == null ? "" : value.trim().toLowerCase();
+    }
+
+    private Integer parseSpreadIndex(String value) {
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+
+        try {
+            return Math.max(0, Integer.parseInt(value.trim()));
+        } catch (NumberFormatException exception) {
+            return null;
+        }
     }
 
     @FunctionalInterface

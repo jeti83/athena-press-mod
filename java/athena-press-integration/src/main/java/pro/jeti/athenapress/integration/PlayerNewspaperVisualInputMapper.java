@@ -25,6 +25,10 @@ public class PlayerNewspaperVisualInputMapper {
                     "prev", "back", "zurueck", "zurück" ->
                     NewspaperVisualUiCommands.previousSpread(event.value());
 
+            case "visual_select_spread", "select_spread", "spread",
+                    "seite", "doppelseite" ->
+                    NewspaperVisualUiCommands.selectSpread(event.value());
+
             case "close", "close_issue", "close_visual_issue",
                     "schliessen", "schließen" ->
                     PlayerNewspaperUiCommand.closeIssue();

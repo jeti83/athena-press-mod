@@ -95,6 +95,32 @@ public class PlayerNewspaperVisualNavigationService {
         return responseFor(playerId, previousSession, previewIssue);
     }
 
+    public PlayerNewspaperVisualResponse showSpread(
+            String playerId,
+            int spreadIndex
+    ) throws IOException {
+        PlayerNewspaperVisualSession session = sessionFor(playerId);
+        if (session == null) {
+            return PlayerNewspaperVisualResponse.missing(playerId, MISSING_ISSUE_TEXT);
+        }
+
+        NewspaperPreviewIssue previewIssue =
+                previewPipelineService.createPreview(session.issueId());
+        if (previewIssue == null || !previewIssue.hasSpreads()) {
+            closeIssue(playerId);
+            return PlayerNewspaperVisualResponse.missing(playerId, MISSING_ISSUE_TEXT);
+        }
+
+        int safeSpreadIndex = Math.min(
+                Math.max(0, spreadIndex),
+                previewIssue.spreads().size() - 1
+        );
+        PlayerNewspaperVisualSession selectedSession = session.atSpread(safeSpreadIndex);
+        sessionsByPlayerId.put(playerId, selectedSession);
+
+        return responseFor(playerId, selectedSession, previewIssue);
+    }
+
     public void closeIssue(String playerId) {
         if (!hasText(playerId)) {
             return;

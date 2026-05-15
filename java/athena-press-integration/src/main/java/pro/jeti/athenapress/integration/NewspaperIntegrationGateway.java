@@ -145,6 +145,13 @@ public class NewspaperIntegrationGateway {
         return visualNavigationService.showPreviousSpread(playerId);
     }
 
+    public PlayerNewspaperVisualResponse showVisualSpreadForPlayer(
+            String playerId,
+            int spreadIndex
+    ) throws IOException {
+        return visualNavigationService.showSpread(playerId, spreadIndex);
+    }
+
     public void closeVisualIssueForPlayer(String playerId) {
         visualNavigationService.closeIssue(playerId);
     }

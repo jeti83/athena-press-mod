@@ -26,4 +26,12 @@ class NewspaperVisualUiCommandsTest {
 
         assertEquals(NewspaperVisualUiCommands.PREVIOUS_SPREAD, command.uiCommand());
     }
+
+    @Test
+    void createsSelectSpreadCommand() {
+        PlayerNewspaperUiCommand command = NewspaperVisualUiCommands.selectSpread(2);
+
+        assertEquals(NewspaperVisualUiCommands.SELECT_SPREAD, command.uiCommand());
+        assertEquals("2", command.value());
+    }
 }

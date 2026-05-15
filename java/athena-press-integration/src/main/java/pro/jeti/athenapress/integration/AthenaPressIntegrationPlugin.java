@@ -89,6 +89,13 @@ public class AthenaPressIntegrationPlugin {
         return gateway.showPreviousVisualSpreadForPlayer(playerId);
     }
 
+    public PlayerNewspaperVisualResponse onPlayerRequestVisualSpread(
+            String playerId,
+            int spreadIndex
+    ) throws IOException {
+        return gateway.showVisualSpreadForPlayer(playerId, spreadIndex);
+    }
+
     public void onPlayerCloseVisualNewspaper(String playerId) {
         gateway.closeVisualIssueForPlayer(playerId);
     }

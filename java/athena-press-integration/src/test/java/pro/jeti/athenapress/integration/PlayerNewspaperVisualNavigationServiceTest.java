@@ -66,6 +66,19 @@ class PlayerNewspaperVisualNavigationServiceTest {
     }
 
     @Test
+    void selectsSpreadWithinBounds() throws IOException {
+        PlayerNewspaperVisualNavigationService service = createService(3);
+
+        service.openIssue("player-1", "issue_visual");
+        PlayerNewspaperVisualResponse selected = service.showSpread("player-1", 2);
+        PlayerNewspaperVisualResponse clamped = service.showSpread("player-1", 9);
+
+        assertEquals(2, selected.spreadIndex());
+        assertEquals(2, clamped.spreadIndex());
+        assertFalse(clamped.hasNextSpread());
+    }
+
+    @Test
     void keepsPlayerVisualSessionsSeparate() throws IOException {
         PlayerNewspaperVisualNavigationService service = createService(3);
 
