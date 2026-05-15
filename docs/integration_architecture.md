@@ -126,6 +126,68 @@ SHOW_OVERVIEW
 SELECT_ARTICLE_BY_NUMBER
 SELECT_ARTICLE_BY_ID
 CLOSE_ISSUE
+
+PlayerNewspaperVisualNavigationService
+
+Verwaltet die spätere visuelle Zeitungsnavigation pro Spieler.
+
+Pro Spieler wird nur gehalten:
+
+offene Ausgaben-ID
+aktueller Doppelseiten-Index
+
+Die vorbereiteten Doppelseiten selbst kommen aus der Preview-Pipeline und dem Visual-Runtime-Cache.
+
+Dadurch muss der spätere Livepfad nicht pro Klick und pro Spieler neu komponieren, sondern nur den aktuellen Spread auswählen.
+
+Unterstützt:
+
+visuelle Ausgabe öffnen
+aktuelle Doppelseite anzeigen
+weiterblättern
+zurückblättern
+visuelle Session schließen
+
+PlayerNewspaperVisualView
+
+Adapter-neutrale visuelle UI-Ansicht für eine geöffnete Doppelseite.
+
+Enthält:
+
+Spieler-ID
+Ausgaben-ID
+Titel
+Doppelseiten-Index
+linke Seite
+rechte Seite
+Navigationszustand
+Buttons
+
+PlayerNewspaperVisualViewFactory
+
+Erzeugt aus einer PlayerNewspaperVisualResponse eine UI-nahe Visual-View.
+
+Der spätere Hytale-Adapter muss dadurch nicht direkt Session-Responses interpretieren, sondern bekommt bereits eine klare Ansicht mit Seiten und Buttons.
+
+PlayerNewspaperVisualUiController
+
+Steuert den visuellen UI-Fluss.
+
+Verantwortlich für:
+
+visuelle Ausgabe öffnen
+aktuelle Doppelseite anzeigen
+Weiter-/Zurückblättern aus UI-Commands verarbeiten
+visuelle Ausgabe schließen
+Fehler in Message-Views übersetzen
+
+PlayerNewspaperVisualUiPort
+
+Port für spätere native Visual-UI-Ausgabe.
+
+ConsoleNewspaperVisualUiPort
+
+Einfache Debug-Ausgabe für Visual-Views ohne Browser, HTML oder WebView.
 4. UI-State-/View-Modell
 NewspaperUiView
 
@@ -285,9 +347,11 @@ klassisches Zeitungsgefühl
 leichte asymmetrische Community-Zeitung
 optional dokumentartige Artikelseiten
 dezente obere Seitenecken
+kurze nach hinten hängende obere Seitenecken als aktuelle AthenaPress-Zieloptik
 Anzeigen- und Dokumentblöcke als Stilmittel
 maximal lesbarer Seitenkörper
 keine starre Pflicht zu vier Spalten
+leichte deterministische Asymmetrie, wenn mehrere Spalten gleich gut passen
 einzelne Titelseite vor den Artikeln
 Artikel möglichst geschlossen lesbar
 Umbruch auf Folgeseiten, wenn Lesbarkeit es erfordert
@@ -355,6 +419,11 @@ Nur die Titelseite ist standardmäßig verpflichtend.
 Alle weiteren Bereiche entstehen nur, wenn sie Inhalt haben.
 
 Dadurch können Anzeigen-, Kurzmeldungs-, Beileids- oder Rückseitenbereiche komplett wegfallen, wenn die Ausgabe sie nicht braucht.
+Wenn optionale Bereiche tatsächlich vorhanden sind, erhalten sie in der visuellen
+Komposition sichtbare Rubriküberschriften.
+Kurzmeldungen und Memorial-Inhalte tragen zusätzlich eigene Layout-Intents,
+damit Preview-Renderer und spätere native UI sie unterschiedlich behandeln
+können, ohne dafür neue Blocktypen zu erfinden.
 
 Hinweis zur Benennung:
 Im Java-Code wird der englische Begriff `Section` verwendet, weil die technische API bereits englisch benannt ist.
@@ -383,6 +452,104 @@ Hauptartikel-Markierung
 Kurzmeldungs-Markierung
 Sonderton-Markierung
 
+NewspaperPreviewIssue
+
+Adapter-neutrale Vorschau einer visuellen Ausgabe.
+
+Enthält:
+
+Ausgaben-ID
+Titel
+Theme
+Designprofil
+Doppelseiten-Preview
+
+NewspaperPreviewSpread
+
+Vorschau einer Doppelseite.
+
+Enthält:
+
+Spread-Index
+linke Seite
+rechte Seite
+Navigationsbuttons
+
+Spreads mit einer Rückseite werden im dezenten Seitenmenü bewusst als
+`Rückseite` bezeichnet; als Hinweistext wird dann der Inhalt der Rückseite
+bevorzugt, nicht die linke Innenseite daneben.
+Wenn eine Doppelseite eine redaktionell markante Rubrik wie `Kurzmeldungen`
+oder `Verschollen und unvergessen` enthält, wird diese Rubrik als
+Navigationshinweis gegenüber zufälligen Artikelüberschriften bevorzugt.
+
+NewspaperPreviewPage
+
+Vorschau einer einzelnen Zeitungsseite.
+
+Enthält:
+
+Seitennummer
+Titel
+Seitenrolle
+Designprofil
+Blockvorschau
+
+NewspaperPreviewBlock
+
+Vorschau eines platzierten Blocks.
+
+Enthält:
+
+Blocktyp
+Text
+Asset-Pfad
+Spaltenposition
+Zeilenposition
+Spaltenbreite
+Zeilenhöhe
+
+NewspaperPreviewService
+
+Erzeugt aus einer visuellen Ausgabe eine strukturierte Vorschau.
+
+NewspaperPreviewTextRenderer
+
+Erzeugt eine lesbare Textvorschau für Debugging, Admin-Werkzeuge oder Tests.
+
+Wichtig:
+Die Preview-Schicht ist keine Browser-, HTML- oder finale Hytale-UI.
+Sie dient nur dazu, das visuelle Zeitungsmodell vor einer echten UI-Anbindung prüfen zu können.
+
+NewspaperPreviewPipelineService
+
+Verbindet echte veröffentlichte Ausgaben mit der Preview-Schicht.
+
+Fluss:
+
+GameViewService
+→ NewspaperArticleCompositionService
+→ NewspaperVisualRuntimeCache
+→ NewspaperPreviewService
+→ NewspaperPreviewTextRenderer
+
+Damit kann eine reale Ausgabe bereits als adapter-neutrale Doppelseiten-Vorschau geprüft werden, ohne dass eine native Hytale-UI fertig sein muss.
+
+NewspaperIntegrationGateway und AthenaPressIntegrationPlugin stellen dafür schlanke Preview-Methoden bereit.
+
+NewspaperVisualRuntimeCache
+
+Hält vorbereitete Visual-Previews für veröffentlichte Ausgaben im Speicher.
+
+Ziel:
+
+Ausgaben werden nicht pro Spieler oder pro Klick neu komponiert.
+Der spätere Livepfad soll nur leichte Spieler-Sessions und Navigation halten.
+Die teurere Komposition von Artikeln, Blöcken, Seiten und Doppelseiten kann wiederverwendet werden.
+
+Fehlende oder leere Ausgaben werden nicht gecacht, damit spätere Veröffentlichungen nicht durch einen alten Fehlzustand blockiert werden.
+
+Der Cache kann pro Ausgabe invalidiert oder vollständig geleert werden, zum Beispiel nach Veröffentlichung, Archivierung oder Server-Reload.
+
 NewspaperArticleCompositionService
 
 Erzeugt aus einer spielnahen Ausgabe eine visuelle Zeitung.
@@ -392,16 +559,46 @@ Verantwortlich für:
 Titelblock
 Coverbild
 Artikelblöcke
+Artikelbilder
+Bildunterschriften
 Zusammenfassungen
 Seitenaufbau
+
+Wenn eine Rückseite nur eine einzelne Anzeige enthält, darf diese im aktuellen
+Layoutprofil großzügiger über die Seite laufen. Mehrere Anzeigen bleiben dagegen
+kompakter, damit echte Kleinanzeigenseiten dichter komponiert werden können.
+
+NewspaperArticleTextFlowService
+
+Zerlegt Artikeltext vor der visuellen Komposition in lesbare Textsegmente.
+
+Grundregel:
+
+Absätze bleiben als natürliche Einheiten erhalten.
+Zu lange Absätze werden bevorzugt an Satzgrenzen und nur im Notfall an
+Wortgrenzen weitergeteilt.
+
+Dadurch kann die spätere Seitenlogik echte Textmenge berücksichtigen, ohne
+dass ein einzelner `BODY_TEXT`-Block beliebig viel Inhalt versteckt.
 
 NewspaperVisualPaginationService
 
 Verteilt Visual-Blöcke auf mehrere Seiten.
 
+Bei `KEEP_ARTICLES_TOGETHER_WHEN_READABLE` behandelt die Pagination lesbare
+Artikelblöcke als Gruppen: Passt ein Artikel vollständig auf eine Seite, wird
+er nicht auf einer fast vollen Vorgängerseite angerissen, sondern geschlossen
+auf die nächste Seite verschoben. Nur zu große Artikel dürfen weiter natürlich
+überlaufen. Wenn ein Artikel tatsächlich auf einer Folgeseite weiterläuft,
+erhält diese eine dezente `Fortsetzung:`-Markierung mit Artikeltitel.
+
 NewspaperVisualRenderer
 
 Erzeugt aus visuellen Seiten adapter-neutrale Layoutplatzierungen.
+
+Bei lockeren Layoutprofilen kann der Renderer gleich gute Spaltenstarts
+deterministisch leicht variieren, damit Seiten weniger rasterstarr wirken,
+ohne Lesbarkeit oder stabile Pagination zu opfern.
 
 NewspaperPageRole
 
@@ -434,6 +631,7 @@ Erzeugt aus visuellen Seiten bewusste Doppelseiten.
 Verantwortlich für:
 
 Cover-Erkennung
+einzeln stehende Titelseite vor dem ersten echten Aufschlagen
 Innenseiten-Paare
 Rückseitenrolle
 einzelne letzte Seite
@@ -496,6 +694,25 @@ PlayerNewspaperInputDispatcher
 
 Verteilt Eingaben an UI-Controller.
 
+PlayerNewspaperVisualInputMapper
+
+Übersetzt Overlay-Eingaben zu Visual-UI-Commands.
+
+Unterstützt unter anderem:
+
+/ap
+öffnen
+weiter
+zurück
+schließen
+
+PlayerNewspaperVisualInputDispatcher
+
+Verteilt Visual-Eingaben an den PlayerNewspaperVisualUiController.
+
+Der Text-Dispatcher bleibt davon getrennt, damit klassische Text-/Debug-Ausgabe
+und native Visual-Zeitung nicht versehentlich dieselben Zustände vermischen.
+
 8. Session-/Lifecycle-Management
 PlayerNewspaperLifecycleEvent
 
@@ -512,6 +729,23 @@ Verantwortlich für:
 Sessioncleanup
 Zeitung schließen
 Timeoutverarbeitung
+Visual-Overlay-Cleanup
+
+Aktuelle Cleanup-Regel:
+
+disconnect
+→ Text-Zeitung schließen
+→ Visual-Zeitung schließen
+→ registrierten Visual-Spielerkontext freigeben
+
+timeout
+→ Text-Zeitung schließen
+→ Visual-Zeitung schließen
+→ Spieler-Kontext behalten
+
+Server-Shutdown räumt inzwischen globale Text- und Visual-Sessions über
+`closeAllNewspapers()` und `closeAllVisualNewspapers()` ab.
+
 9. Hytale-API-Adapter
 
 Das ist die wichtigste neue Ebene.
@@ -545,6 +779,25 @@ Adapter:
 AthenaPress-UI
 → Hytale-UI
 
+HytaleNewspaperVisualUiBridge
+
+Abstrakte native Visual-UI-Brücke.
+
+Später zuständig für:
+
+Doppelseiten-Overlay öffnen
+Doppelseiten-Overlay aktualisieren
+Visual-UI schließen
+
+HytaleNewspaperVisualUiPort
+
+Adapter:
+
+AthenaPress Visual-View
+→ native Hytale-Zeitungs-UI
+
+Er hält nur registrierte Spieler-Kontexte und reicht fertige PlayerNewspaperVisualViews an die Bridge weiter.
+
 HytaleNewspaperInputAdapter
 
 Übersetzt echte Hytale-Ereignisse:
@@ -556,6 +809,18 @@ Keybind
 
 in AthenaPress-InputEvents.
 
+HytaleNewspaperVisualInputAdapter
+
+Übersetzt echte Hytale-Ereignisse in den Visual-Input-Pfad.
+
+Damit können spätere native Overlay-Buttons oder Keybinds direkt steuern:
+
+öffnen
+aktualisieren
+weiterblättern
+zurückblättern
+schließen
+
 HytaleNewspaperLifecycleAdapter
 
 Verbindet:
@@ -566,6 +831,38 @@ Timeout
 Shutdown
 
 mit AthenaPress-Lifecycle.
+
+Der Adapter ist generisch über TPlayer und nutzt ausschließlich einen
+HytalePlayerContextResolver<TPlayer>. Dadurch bleibt AthenaPress frei von
+erfundenen direkten Hytale-API-Imports.
+
+Bei Join kann der Adapter den Spieler im HytaleNewspaperVisualUiPort
+registrieren.
+
+Bei Disconnect wird nur ein Lifecycle-Event ausgelöst; das eigentliche
+Schließen und Freigeben des Visual-Kontexts übernimmt der
+PlayerNewspaperLifecycleHandler.
+
+HytaleNewspaperVisualRuntime<TPlayer>
+
+Composition-Root für den nativen Visual-Pfad.
+
+Sie bündelt:
+
+AthenaPressIntegrationPlugin
+HytaleNewspaperVisualUiPort
+PlayerNewspaperVisualUiController
+PlayerNewspaperVisualInputDispatcher
+HytaleNewspaperVisualInputAdapter
+PlayerNewspaperLifecycleHandler
+HytaleNewspaperLifecycleAdapter<TPlayer>
+
+Spätere Hytale-Hooks müssen dadurch nicht jeden Baustein einzeln
+zusammensetzen, sondern können die Runtime erzeugen und direkt ihre
+Convenience-Methoden verwenden.
+
+Für echte Hytale-Playerobjekte bietet die Runtime `onPlayer...`-Methoden,
+die TPlayer über den HytalePlayerContextResolver auflösen.
 
 10. Architekturfluss
 Zeitung öffnen
@@ -651,6 +948,8 @@ Navigationsstil
 optionale Sections
 Section-Erzeugungsregeln
 Artikel-Klassifizierung
+Preview-Struktur
+Text-Preview
 Spaltenmodell
 Content-Platzierungen
 Bild-Platzierungen

@@ -204,6 +204,41 @@ Nur Entwürfe können gelöscht werden:
 
 ---
 
+## Native Visual-Runtime für Hytale
+
+Der aktuelle Java-Integrationsstand bereitet eine native Zeitungs-UI vor,
+ohne echte Hytale-API-Klassen zu importieren.
+
+Zentraler Einstiegspunkt:
+
+    HytaleNewspaperVisualRuntime<TPlayer>
+
+Diese Runtime bündelt:
+
+- Visual-UI-Port
+- Visual-UI-Controller
+- Visual-Input-Adapter
+- Lifecycle-Adapter
+- Player-Kontext-Registrierung
+
+Spätere Hytale-Hooks sollen ungefähr so angebunden werden:
+
+| Hytale-Hook | AthenaPress-Ziel |
+|---|---|
+| Player Join | runtime.onPlayerConnected(player) |
+| Player Leave | runtime.onPlayerDisconnected(player) |
+| Session Timeout | runtime.onSessionTimeout(player) |
+| Server Shutdown | runtime.onServerShutdown() |
+| UI Button | runtime.onPlayerUiButton(player, command, value) |
+| Keybind | runtime.onPlayerKeyBind(player, command, value) |
+| /ap | runtime.onPlayerChatCommand(player, "/ap", issueId) |
+
+Wichtig:
+Der Visual-Pfad bleibt getrennt vom Text-/Debug-Pfad.
+Die Runtime ist nur Verdrahtung, keine zusätzliche Spiellogik.
+
+---
+
 ## Java-Core-Demo und Prüfworkflow
 
 Der Java-Core unter `java/athena-press-core` dient aktuell als Admin-, Debug- und Preview-Werkzeug für echte AthenaPress-Daten.

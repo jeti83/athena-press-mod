@@ -13,7 +13,11 @@ public class NewspaperArticleClassifier {
             "advertisement",
             "anzeige",
             "anzeigen",
-            "werbung"
+            "werbung",
+            "classified",
+            "classifieds",
+            "kleinanzeige",
+            "kleinanzeigen"
     );
     private static final Set<String> SHORT_NOTICE_CATEGORY_MARKERS = Set.of(
             "short",

@@ -329,6 +329,81 @@ Aus dem Maven-Modulordner:
 mvn -B clean verify
  
 Dieser Befehl baut den Java-Core und führt alle Tests aus.
+
+---
+## 5a. Java-Integration Visual-Preview
+Das Integration-Modul enthält eine adapter-neutrale Visual-Preview für echte veröffentlichte Ausgaben.
+
+Sie wird aus dem Integration-Modulordner gestartet:
+
+cd java/athena-press-integration
+
+Standardausgabe:
+
+mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.integration.AthenaPressVisualPreviewDemo"
+
+Bestimmte Ausgabe:
+
+mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.integration.AthenaPressVisualPreviewDemo" "-Dexec.args=issue_0002"
+
+Expliziter Preview-Befehl:
+
+mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.integration.AthenaPressVisualPreviewDemo" "-Dexec.args=--visual-preview issue_0002"
+
+Deutscher Alias:
+
+mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.integration.AthenaPressVisualPreviewDemo" "-Dexec.args=--vorschau issue_0002"
+
+Die Ausgabe zeigt Doppelseiten, Seitenrollen, platzierte Blöcke, Spalten-/Zeilenpositionen und Bildpfade.
+
+Wichtig:
+Das ist keine HTML- oder Browser-Preview, sondern eine Textdarstellung der nativen Visual-Struktur.
+
+### PNG-Doppelseitenvorschau erzeugen
+
+Zusätzlich kann dieselbe native Visual-Struktur lokal als PNG gerendert werden:
+
+mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.integration.AthenaPressVisualPngPreviewDemo" "-Dexec.args=issue_0002"
+
+Standardzielordner:
+
+java/athena-press-integration/target/visual-preview-png/
+
+Optional kann als zweites Argument ein anderer Ausgabeordner übergeben werden:
+
+mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.integration.AthenaPressVisualPngPreviewDemo" "-Dexec.args=issue_0002 target/custom-preview"
+
+Auch das ist keine HTML-, Browser- oder WebView-Lösung, sondern eine lokale Bildprüfung für das spätere native Overlay.
+
+### Native Visual-Runtime vorbereiten
+
+Für spätere echte Hytale-Hooks gibt es im Integration-Modul:
+
+HytaleNewspaperVisualRuntime<TPlayer>
+
+Sie bündelt den nativen Visual-Pfad:
+
+HytaleNewspaperVisualUiPort
+PlayerNewspaperVisualUiController
+HytaleNewspaperVisualInputAdapter
+HytaleNewspaperLifecycleAdapter
+
+Geplante spätere Zuordnung:
+
+/ap
+→ runtime.onPlayerChatCommand(...)
+
+Overlay-Button "Weiter"
+→ runtime.onPlayerUiButton(..., "visual_next_spread", ...)
+
+Overlay-Button "Zurück"
+→ runtime.onPlayerUiButton(..., "visual_previous_spread", ...)
+
+Spieler verlässt den Server
+→ runtime.onPlayerDisconnected(...)
+
+Das ist weiterhin keine HTML-, Browser- oder WebView-Lösung.
+
 ---
 ## 6. Git-Komfortbefehl
 Wenn die-Funktion `g_sacp` geladen ist, kann ein Änderungspaket so gespeichert werden:

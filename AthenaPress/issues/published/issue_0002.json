@@ -11,10 +11,14 @@
   },
   "articles": [
     "article_0001",
-    "article_0002"
+    "article_0002",
+    "article_0006",
+    "article_0007",
+    "article_0004",
+    "article_0005"
   ],
   "createdAt": "2026-05-10T14:20:06+02:00",
-  "updatedAt": "2026-05-10T14:56:47+02:00",
+  "updatedAt": "2026-05-15T18:35:00+02:00",
   "publishedAt": "2026-05-10T14:38:20+02:00",
   "deliveredToSubscribers": true,
   "lastDeliveredAt": "2026-05-10T14:56:47+02:00"

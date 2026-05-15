@@ -32,6 +32,7 @@ class NewspaperBlockLayoutRuleSetTest {
         assertEquals(8, rules.rowSpanFor(inlineImage, template));
         assertEquals(12, rules.rowSpanFor(featuredImage, template));
         assertEquals(24, rules.weightFor(featuredImage, template));
+        assertEquals(NewspaperImageRole.ARTICLE, inlineImage.imageRole());
     }
 
     @Test
@@ -46,5 +47,71 @@ class NewspaperBlockLayoutRuleSetTest {
 
         assertEquals(2, rules.columnSpanFor(featuredBody, template));
         assertEquals(8, rules.rowSpanFor(featuredBody, template));
+    }
+
+    @Test
+    void keepsCaptionAlignedWithRequestedImageWidth() {
+        NewspaperBlockLayoutRuleSet rules = NewspaperBlockLayoutRuleSet.defaultRules();
+        NewspaperLayoutTemplate template = NewspaperLayoutTemplate.classicDoublePage();
+
+        NewspaperVisualBlock featuredCaption = NewspaperVisualBlock.caption(
+                "Bildunterschrift",
+                template.columnsPerPage()
+        );
+
+        assertEquals(2, rules.columnSpanFor(featuredCaption, template));
+        assertEquals(1, rules.rowSpanFor(featuredCaption, template));
+    }
+
+    @Test
+    void respectsRequestedNoticeColumnSpan() {
+        NewspaperBlockLayoutRuleSet rules = NewspaperBlockLayoutRuleSet.defaultRules();
+        NewspaperLayoutTemplate template = NewspaperLayoutTemplate.classicDoublePage();
+
+        NewspaperVisualBlock featuredNotice = NewspaperVisualBlock.notice(
+                "Aufmacher",
+                template.columnsPerPage()
+        );
+
+        assertEquals(2, rules.columnSpanFor(featuredNotice, template));
+        assertEquals(4, rules.rowSpanFor(featuredNotice, template));
+    }
+
+    @Test
+    void compactsCoverBlocksToFitAStandaloneTitlePage() {
+        NewspaperBlockLayoutRuleSet rules = NewspaperBlockLayoutRuleSet.defaultRules();
+        NewspaperLayoutTemplate template = NewspaperLayoutTemplate.classicDoublePage();
+
+        assertEquals(4, rules.rowSpanFor(NewspaperVisualBlock.coverHeadline("Titel"), template));
+        assertEquals(2, rules.rowSpanFor(NewspaperVisualBlock.coverSubheadline("Untertitel"), template));
+        assertEquals(3, rules.rowSpanFor(NewspaperVisualBlock.coverNotice("Aufmacher", 2), template));
+        assertEquals(10, rules.rowSpanFor(
+                NewspaperVisualBlock.coverImage("cover.png", "Titel", 2),
+                template
+        ));
+        assertEquals(1, rules.rowSpanFor(NewspaperVisualBlock.coverCaption("Bildtext", 2), template));
+    }
+
+    @Test
+    void expandsBackPageAdvertisementsWithoutChangingRegularAds() {
+        NewspaperBlockLayoutRuleSet rules = NewspaperBlockLayoutRuleSet.defaultRules();
+        NewspaperLayoutTemplate template = NewspaperLayoutTemplate.classicDoublePage();
+
+        assertEquals(6, rules.rowSpanFor(
+                NewspaperVisualBlock.advertisement("Standard", "ad.png"),
+                template
+        ));
+        assertEquals(8, rules.rowSpanFor(
+                NewspaperVisualBlock.backPageAdvertisement("Rückseite", "ad.png"),
+                template
+        ));
+        assertEquals(2, rules.rowSpanFor(
+                NewspaperVisualBlock.backPageNotice("Breiter Hinweis", 2),
+                template
+        ));
+        assertEquals(3, rules.rowSpanFor(
+                NewspaperVisualBlock.backPageNotice("Kompakter Hinweis"),
+                template
+        ));
     }
 }

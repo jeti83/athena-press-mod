@@ -12,6 +12,8 @@ public class NewspaperIntegrationGateway {
     private static final String MISSING_ARTICLE_TEXT = "Dieser Artikel ist in der Ausgabe nicht vorhanden.\n";
 
     private final AthenaPressCore core;
+    private final NewspaperPreviewPipelineService previewPipelineService;
+    private final PlayerNewspaperVisualNavigationService visualNavigationService;
     private final Map<String, GameNewspaperSessionService> sessionsByPlayerId = new HashMap<>();
 
     public NewspaperIntegrationGateway(AthenaPressCore core) {
@@ -20,6 +22,9 @@ public class NewspaperIntegrationGateway {
         }
 
         this.core = core;
+        this.previewPipelineService = new NewspaperPreviewPipelineService(core.getGameViewService());
+        this.visualNavigationService =
+                new PlayerNewspaperVisualNavigationService(previewPipelineService);
     }
 
     public String openIssueForPlayer(String playerId, String issueId) throws IOException {
@@ -88,6 +93,11 @@ public class NewspaperIntegrationGateway {
         }
     }
 
+    public void closeAllIssues() {
+        sessionsByPlayerId.values().forEach(GameNewspaperSessionService::closeIssue);
+        sessionsByPlayerId.clear();
+    }
+
     public boolean hasOpenIssueForPlayer(String playerId) {
         if (!hasText(playerId)) {
             return false;
@@ -113,6 +123,74 @@ public class NewspaperIntegrationGateway {
 
     public int getOpenSessionCount() {
         return sessionsByPlayerId.size();
+    }
+
+    public PlayerNewspaperVisualResponse openVisualIssueForPlayer(
+            String playerId,
+            String issueId
+    ) throws IOException {
+        return visualNavigationService.openIssue(playerId, issueId);
+    }
+
+    public PlayerNewspaperVisualResponse showCurrentVisualSpreadForPlayer(
+            String playerId
+    ) throws IOException {
+        return visualNavigationService.showCurrentSpread(playerId);
+    }
+
+    public PlayerNewspaperVisualResponse showNextVisualSpreadForPlayer(
+            String playerId
+    ) throws IOException {
+        return visualNavigationService.showNextSpread(playerId);
+    }
+
+    public PlayerNewspaperVisualResponse showPreviousVisualSpreadForPlayer(
+            String playerId
+    ) throws IOException {
+        return visualNavigationService.showPreviousSpread(playerId);
+    }
+
+    public PlayerNewspaperVisualResponse showVisualSpreadForPlayer(
+            String playerId,
+            int spreadIndex
+    ) throws IOException {
+        return visualNavigationService.showSpread(playerId, spreadIndex);
+    }
+
+    public void closeVisualIssueForPlayer(String playerId) {
+        visualNavigationService.closeIssue(playerId);
+    }
+
+    public void closeAllVisualIssues() {
+        visualNavigationService.closeAllIssues();
+    }
+
+    public boolean hasOpenVisualIssueForPlayer(String playerId) {
+        return visualNavigationService.hasOpenIssue(playerId);
+    }
+
+    public int getOpenVisualSessionCount() {
+        return visualNavigationService.getOpenSessionCount();
+    }
+
+    public NewspaperPreviewIssue createPreviewForIssue(String issueId) throws IOException {
+        return previewPipelineService.createPreview(issueId);
+    }
+
+    public String renderPreviewForIssue(String issueId) throws IOException {
+        return previewPipelineService.renderPreviewText(issueId);
+    }
+
+    public void invalidatePreviewForIssue(String issueId) {
+        previewPipelineService.invalidatePreview(issueId);
+    }
+
+    public void clearPreviewCache() {
+        previewPipelineService.clearPreviewCache();
+    }
+
+    public int getCachedPreviewCount() {
+        return previewPipelineService.cachedPreviewCount();
     }
 
     private GameNewspaperSessionService getOrCreateSession(String playerId) {

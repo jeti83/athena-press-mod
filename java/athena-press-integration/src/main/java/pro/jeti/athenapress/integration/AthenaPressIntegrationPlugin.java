@@ -56,11 +56,83 @@ public class AthenaPressIntegrationPlugin {
         gateway.closeIssueForPlayer(playerId);
     }
 
+    public void closeAllNewspapers() {
+        gateway.closeAllIssues();
+    }
+
     public boolean hasOpenNewspaper(String playerId) {
         return gateway.hasOpenIssueForPlayer(playerId);
     }
 
     public String getOpenIssueId(String playerId) {
         return gateway.getOpenIssueIdForPlayer(playerId);
+    }
+
+    public PlayerNewspaperVisualResponse onPlayerOpenVisualNewspaper(
+            String playerId,
+            String issueId
+    ) throws IOException {
+        return gateway.openVisualIssueForPlayer(playerId, issueId);
+    }
+
+    public PlayerNewspaperVisualResponse onPlayerRequestCurrentVisualSpread(
+            String playerId
+    ) throws IOException {
+        return gateway.showCurrentVisualSpreadForPlayer(playerId);
+    }
+
+    public PlayerNewspaperVisualResponse onPlayerRequestNextVisualSpread(
+            String playerId
+    ) throws IOException {
+        return gateway.showNextVisualSpreadForPlayer(playerId);
+    }
+
+    public PlayerNewspaperVisualResponse onPlayerRequestPreviousVisualSpread(
+            String playerId
+    ) throws IOException {
+        return gateway.showPreviousVisualSpreadForPlayer(playerId);
+    }
+
+    public PlayerNewspaperVisualResponse onPlayerRequestVisualSpread(
+            String playerId,
+            int spreadIndex
+    ) throws IOException {
+        return gateway.showVisualSpreadForPlayer(playerId, spreadIndex);
+    }
+
+    public void onPlayerCloseVisualNewspaper(String playerId) {
+        gateway.closeVisualIssueForPlayer(playerId);
+    }
+
+    public void closeAllVisualNewspapers() {
+        gateway.closeAllVisualIssues();
+    }
+
+    public boolean hasOpenVisualNewspaper(String playerId) {
+        return gateway.hasOpenVisualIssueForPlayer(playerId);
+    }
+
+    public int getOpenVisualSessionCount() {
+        return gateway.getOpenVisualSessionCount();
+    }
+
+    public NewspaperPreviewIssue createPreview(String issueId) throws IOException {
+        return gateway.createPreviewForIssue(issueId);
+    }
+
+    public String renderPreview(String issueId) throws IOException {
+        return gateway.renderPreviewForIssue(issueId);
+    }
+
+    public void invalidatePreview(String issueId) {
+        gateway.invalidatePreviewForIssue(issueId);
+    }
+
+    public void clearPreviewCache() {
+        gateway.clearPreviewCache();
+    }
+
+    public int getCachedPreviewCount() {
+        return gateway.getCachedPreviewCount();
     }
 }

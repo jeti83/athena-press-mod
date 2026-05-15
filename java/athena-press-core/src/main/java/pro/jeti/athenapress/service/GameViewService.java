@@ -55,7 +55,8 @@ public class GameViewService {
                 article.subtitle(),
                 article.teaser(),
                 article.summary(),
-                article.body()
+                article.body(),
+                article.image()
         );
     }
 

@@ -99,6 +99,14 @@ public class NewspaperBlockLayoutRuleSet {
             NewspaperVisualBlock block,
             NewspaperLayoutTemplate template
     ) {
+        if (block != null && block.layoutIntent() == NewspaperBlockLayoutIntent.COVER) {
+            return coverRowSpanFor(block);
+        }
+
+        if (block != null && block.layoutIntent() == NewspaperBlockLayoutIntent.BACK_PAGE) {
+            return backPageRowSpanFor(block);
+        }
+
         return ruleFor(block).rowSpanFor(block, template);
     }
 
@@ -122,5 +130,25 @@ public class NewspaperBlockLayoutRuleSet {
         }
 
         return rules.getOrDefault(block.type(), fallbackRule);
+    }
+
+    private int coverRowSpanFor(NewspaperVisualBlock block) {
+        return switch (block.type()) {
+            case HEADLINE -> 4;
+            case SUBHEADLINE -> 2;
+            case NOTICE -> 3;
+            case IMAGE -> 10;
+            case CAPTION, DIVIDER -> 1;
+            default -> ruleFor(block).defaultRowSpan();
+        };
+    }
+
+    private int backPageRowSpanFor(NewspaperVisualBlock block) {
+        return switch (block.type()) {
+            case ADVERTISEMENT -> 8;
+            case NOTICE -> block.columnSpan() > 1 ? 2 : 3;
+            case DIVIDER -> 1;
+            default -> ruleFor(block).defaultRowSpan();
+        };
     }
 }

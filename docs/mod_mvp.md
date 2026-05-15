@@ -23,6 +23,22 @@ MVP 1 konzentriert sich auf genau diesen Spielerfluss:
 
 Damit ist MVP 1 auf Java-Core-Ebene erreicht.
 
+## MVP 2: Native Visual-Zeitung vorbereiten
+
+MVP 2 konzentriert sich darauf, eine veröffentlichte Ausgabe als immersive, native Zeitungsansicht vorzubereiten.
+
+Zielbild:
+
+1. Ein Spieler öffnet eine veröffentlichte Ausgabe, später vermutlich über `/ap`.
+2. Die Ausgabe wird als Visual-Preview geladen.
+3. Artikel werden klassifiziert und in Zeitungsbereiche einsortiert.
+4. Inhalte werden auf Seiten und Doppelseiten verteilt.
+5. Eine UI-nahe Visual-View wird erzeugt.
+6. Spätere native Hytale-Overlay-Buttons können weiterblättern, zurückblättern und schließen.
+7. Disconnect und Timeout räumen Visual-Sessions sauber auf.
+
+Damit ist MVP 2 adapterseitig vorbereitet, aber noch nicht an echte Hytale-API gebunden.
+
 ## Aktuell erfüllte MVP-1-Bausteine
 
 ### Veröffentlichung laden
@@ -99,3 +115,73 @@ GameTextRendererService
 GameNewspaperSessionService
    ↓
 spätere Hytale-Mod / UI / Item-Interaktion
+```
+
+## Aktuell erfüllte MVP-2-Bausteine
+
+### Visual-Preview-Pipeline
+
+Zuständige Bausteine:
+
+- NewspaperPreviewPipelineService
+- NewspaperVisualRuntimeCache
+- NewspaperArticleCompositionService
+- NewspaperVisualPaginationService
+- NewspaperDoublePageCompositionService
+
+Aufgabe:
+
+- echte veröffentlichte Ausgaben laden
+- Artikel in Visual-Blöcke überführen
+- optionale Sektionen auslassen, wenn sie nicht benötigt werden
+- Inhalte auf Seiten und Doppelseiten verteilen
+- vorbereitete Previews zwischenspeichern
+
+### Visual-UI-Schicht
+
+Zuständige Bausteine:
+
+- PlayerNewspaperVisualView
+- PlayerNewspaperVisualViewFactory
+- PlayerNewspaperVisualUiController
+- PlayerNewspaperVisualUiPort
+
+Aufgabe:
+
+- Visual-Responses in UI-nahe Views umwandeln
+- aktuelle Doppelseite anzeigen
+- weiterblättern
+- zurückblättern
+- Zeitung schließen
+
+### Hytale-Adapter-Vorbereitung
+
+Zuständige Bausteine:
+
+- HytalePlayerContext
+- HytalePlayerContextResolver
+- HytaleNewspaperVisualUiBridge
+- HytaleNewspaperVisualUiPort
+- HytaleNewspaperVisualInputAdapter
+- HytaleNewspaperLifecycleAdapter
+- HytaleNewspaperVisualRuntime
+
+Aufgabe:
+
+- spätere echte Hytale-Spielerobjekte in neutrale Kontexte übersetzen
+- native Visual-Views an eine spätere Hytale-UI-Brücke weiterreichen
+- Overlay-Eingaben adapter-neutral verarbeiten
+- Join, Disconnect, Timeout und Shutdown vorbereiten
+- Runtime-Bausteine zentral zusammensetzen
+
+## Aktuelle Grenze
+
+Noch nicht Teil des MVP:
+
+- echte Hytale-API-Imports
+- echte native Overlay-Implementierung
+- echte Server-Hooks
+- echte Zustellung im Spiel
+- Redaktions-UI im Spiel
+
+Diese Punkte sollen erst ergänzt werden, wenn konkrete und verlässliche Hytale-API-Anbindungen vorliegen.

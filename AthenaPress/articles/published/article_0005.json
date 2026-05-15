@@ -1,0 +1,35 @@
+{
+  "id": "article_0005",
+  "status": "published",
+  "categoryId": "classifieds",
+  "title": "Leiter verschwunden",
+  "subtitle": "Finderlohn in Form von ehrlichem Dank",
+  "summary": "Gesucht wird eine Leiter, zuletzt gesehen an einer Hauswand und seitdem offenbar auf eigenen Wegen.",
+  "teaser": "Sie war lang, nützlich und plötzlich weg.",
+  "author": {
+    "playerName": "Athena Redaktion",
+    "playerUuid": "unknown"
+  },
+  "body": "Vermisst wird eine einfache Leiter aus hellem Holz. Hinweise bitte an die Redaktion oder direkt an alle, die verdächtig schnell Dächer erreichen.",
+  "image": {
+    "file": "placeholders/no_image.png",
+    "caption": "Symbolbild: Die Leiter war zum Redaktionsschluss weiterhin nicht auffindbar.",
+    "credit": "Athena Botenblatt",
+    "sourceType": "placeholder"
+  },
+  "location": {
+    "enabled": false,
+    "world": "",
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "tags": [
+    "kleinanzeige",
+    "fundbuero",
+    "leiter"
+  ],
+  "createdAt": "2026-05-15T18:16:00+02:00",
+  "updatedAt": "2026-05-15T18:16:00+02:00",
+  "publishedAt": "2026-05-15T18:16:00+02:00"
+}

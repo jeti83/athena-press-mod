@@ -1,6 +1,6 @@
 # AthenaPress Backend-Status
 
-Stand: AthenaPress Backend v0.3
+Stand: AthenaPress Backend/Integration v0.4
 
 Dieses Dokument beschreibt den aktuellen Abschlussstand des AthenaPress-Backends.
 
@@ -14,7 +14,7 @@ AthenaPress soll am Ende ein Zeitungssystem für den Athena-Hytale-Server werden
 
 Das Backend dient aktuell dazu, echte Zeitungsdaten strukturiert zu speichern, zu prüfen und für spätere Ingame-Anzeigen vorzubereiten.
 
-Der nächste größere Entwicklungsfokus ist daher nicht mehr der Ausbau weiterer Konsolenbefehle, sondern der Übergang zu einer spielnahen Mod-/Preview-Schicht.
+Der aktuelle Entwicklungsfokus liegt auf der spielnahen Mod-/Preview-Schicht und einer adapter-neutralen Vorbereitung für native Hytale-UI.
 
 ---
 
@@ -36,6 +36,20 @@ Das Backend kann derzeit:
 - Cover-Daten für Ausgaben speichern und prüfen
 - Daten über Python-Werkzeuge bearbeiten
 - Daten über den Java-Core lesen und anzeigen
+- Daten über das Java-Integration-Modul spielnah darstellen
+- Visual-Doppelseiten und Blocklayouts vorbereiten
+- leichte Layout-Asymmetrie für lockerere Zeitungsseiten steuern
+- lesbare Artikelgruppen beim Seitenumbruch geschlossen halten
+- lange Artikeltexte absatzorientiert in Seitenfluss-Blöcke zerlegen
+- fortlaufende Artikel auf Folgeseiten kenntlich machen
+- optionale Rubriken sichtbar als Zeitungsbereiche ausgeben
+- optionale Anzeigen als eigene Rückseiten ausgeben
+- einzelne Rückseitenanzeigen bei wenig Inhalt großzügiger setzen
+- vorhandene Artikelbilder in die visuelle Komposition übernehmen
+- Bildunterschriften als eigene visuelle Blöcke ausgeben
+- Visual-Previews zwischenspeichern
+- Visual-Input und Lifecycle-Ereignisse adapter-neutral verarbeiten
+- eine native Hytale-Visual-Runtime ohne direkte Hytale-API-Imports zusammensetzen
 - Validierungsfehler früh sichtbar machen
 - Status-, Ausgaben- und Artikellisten anzeigen
 - Demo-Befehle in deutscher und englischer Form nutzen
@@ -82,6 +96,27 @@ Er bildet aber eine stabile Grundlage, um später eine spielnahe Anzeige- oder S
 
 ---
 
+## Java-Integration
+
+Das Integration-Modul unter `java/athena-press-integration` bereitet die spätere Mod-Schicht vor.
+
+Aktuell vorhanden:
+
+- spielnahe Player-Zeitungssessions
+- Text-UI-Port und View-Modelle
+- Visual-UI-Port und View-Modelle
+- Visual-Layout-, Pagination- und Doppelseiten-Komposition
+- Preview-Pipeline für echte veröffentlichte Ausgaben
+- Visual-Runtime-Cache
+- Visual-Input-Pfad für Öffnen, Blättern, Aktualisieren und Schließen
+- Lifecycle-Cleanup für Disconnect und Timeout
+- Hytale-Adapter für Input, Lifecycle und Visual-UI
+- HytaleNewspaperVisualRuntime als Composition-Root
+
+Die Integration importiert weiterhin keine echte oder erfundene Hytale-API.
+
+---
+
 ## Tests und Stabilität
 
 Der aktuelle bekannte stabile Teststand:
@@ -96,11 +131,16 @@ Erwarteter Stand:
 
 Der zuletzt bekannte Stand lag bei:
 
-- 70 Tests
+- Core: 91 Tests
+- Integration: 169 Tests
 - 0 Failures
 - 0 Errors
 
-Bei Änderungen am Java-Core oder am Datenmodell sollte dieser Test erneut ausgeführt werden.
+Bei Änderungen am Java-Code oder am Datenmodell sollte dieser Test erneut ausgeführt werden.
+
+Für größere Änderungspakete wird zusätzlich empfohlen:
+
+    mvn -B clean install
 
 ---
 
@@ -139,7 +179,13 @@ Minimaler Zielablauf:
 4. Ein Artikel kann ausgewählt werden.
 5. Der Artikeltext wird angezeigt.
 
-Dieser Ablauf kann zunächst als Java-nahe Preview oder simulierte Mod-Schicht entstehen, bevor echte Hytale-APIs angebunden werden.
+Dieser Ablauf ist auf Java-/Integrations-Ebene vorbereitet.
+
+Der nächste sinnvolle Fokus nach dem aktuellen Visual-Ausbau ist:
+
+1. PR #2 sauber nach `main` übernehmen.
+2. Danach echte Hytale-Hook-Punkte gegen die vorhandenen Adapter prüfen, sobald verlässliche Hytale-API-Details lokal vorliegen.
+3. Vorher keine direkten Hytale-API-Imports erfinden.
 
 ---
 

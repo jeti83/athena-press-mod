@@ -43,7 +43,7 @@ public record NewspaperVisualDesignProfile(
         return new NewspaperVisualDesignProfile(
                 "athena_readable_newspaper",
                 NewspaperLayoutMood.LOOSE_COMMUNITY_SHEET,
-                NewspaperPageCornerStyle.SUBTLE_TOP_FOLDS,
+                NewspaperPageCornerStyle.HANGING_TOP_CORNERS,
                 3,
                 4,
                 25,
