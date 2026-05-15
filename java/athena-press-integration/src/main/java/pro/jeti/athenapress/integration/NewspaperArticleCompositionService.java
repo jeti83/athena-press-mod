@@ -336,9 +336,6 @@ public class NewspaperArticleCompositionService {
         return blocks;
     }
 
-    private List<NewspaperVisualBlock> backPageBlocksFor(GameIssueView issueView) {
-        return blocksForGroups(backPageBlockGroupsFor(issueView));
-    }
 
     private void appendBackPages(
             List<NewspaperVisualPage> pages,
