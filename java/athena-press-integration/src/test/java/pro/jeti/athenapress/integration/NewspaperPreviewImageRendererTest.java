@@ -103,6 +103,16 @@ class NewspaperPreviewImageRendererTest {
         assertTrue(containsRedPixel);
     }
 
+    @Test
+    void rendersConfiguredCornerStyles() throws IOException {
+        BufferedImage plainPage = renderSinglePageWithCornerStyle(NewspaperPageCornerStyle.NONE);
+        BufferedImage hangingCorners = renderSinglePageWithCornerStyle(
+                NewspaperPageCornerStyle.HANGING_TOP_CORNERS
+        );
+
+        assertTrue(plainPage.getRGB(56, 56) != hangingCorners.getRGB(56, 56));
+    }
+
     private NewspaperPreviewPage page(int pageNumber, NewspaperPageRole role) {
         return new NewspaperPreviewPage(
                 pageNumber,
@@ -130,5 +140,49 @@ class NewspaperPreviewImageRendererTest {
                         )
                 )
         );
+    }
+
+    private BufferedImage renderSinglePageWithCornerStyle(
+            NewspaperPageCornerStyle cornerStyle
+    ) throws IOException {
+        NewspaperVisualDesignProfile profile = new NewspaperVisualDesignProfile(
+                "corner_test",
+                NewspaperLayoutMood.LOOSE_COMMUNITY_SHEET,
+                cornerStyle,
+                2,
+                4,
+                25,
+                NewspaperCoverPolicy.STANDALONE_TITLE_PAGE,
+                NewspaperArticleFlowPolicy.KEEP_ARTICLES_TOGETHER_WHEN_READABLE,
+                NewspaperNavigationStyle.PAGE_TURNING_WITH_SUBTLE_MENU,
+                true,
+                true,
+                true
+        );
+        NewspaperPreviewIssue issue = new NewspaperPreviewIssue(
+                "issue_corner_" + cornerStyle,
+                "Athena Eckenblatt",
+                NewspaperVisualTheme.defaultTheme(),
+                profile,
+                List.of(new NewspaperPreviewSpread(
+                        0,
+                        new NewspaperPreviewPage(
+                                1,
+                                "Titelseite",
+                                NewspaperPageRole.FRONT_COVER,
+                                profile,
+                                List.of()
+                        ),
+                        null,
+                        List.of()
+                ))
+        );
+
+        NewspaperPreviewImageRenderResult result = new NewspaperPreviewImageRenderer().render(
+                issue,
+                tempDir.resolve("images"),
+                tempDir.resolve("out-" + cornerStyle)
+        );
+        return ImageIO.read(result.spreadImages().getFirst().toFile());
     }
 }

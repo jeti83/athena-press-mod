@@ -102,7 +102,7 @@ public class NewspaperPreviewImageRenderer {
         graphics.setColor(PAPER_EDGE);
         graphics.setStroke(new BasicStroke(2f));
         graphics.drawRect(x, y, PAGE_WIDTH, PAGE_HEIGHT);
-        drawTopFolds(graphics, x, y);
+        drawPageCorners(graphics, page, x, y);
 
         int contentX = x + PAGE_PADDING;
         int contentY = y + PAGE_PADDING;
@@ -360,12 +360,59 @@ public class NewspaperPreviewImageRenderer {
         return lines;
     }
 
-    private void drawTopFolds(Graphics2D graphics, int x, int y) {
+    private void drawPageCorners(
+            Graphics2D graphics,
+            NewspaperPreviewPage page,
+            int x,
+            int y
+    ) {
+        NewspaperPageCornerStyle cornerStyle = page == null
+                ? NewspaperPageCornerStyle.NONE
+                : page.designProfile().cornerStyle();
+
+        switch (cornerStyle) {
+            case NONE -> {
+                return;
+            }
+            case SUBTLE_TOP_FOLDS -> drawSubtleTopFolds(graphics, x, y);
+            case HANGING_TOP_CORNERS -> drawHangingTopCorners(graphics, x, y);
+        }
+    }
+
+    private void drawSubtleTopFolds(Graphics2D graphics, int x, int y) {
         graphics.setColor(new Color(225, 215, 198));
         Shape leftFold = fold(x, y, x + 42, y, x, y + 42);
         Shape rightFold = fold(x + PAGE_WIDTH, y, x + PAGE_WIDTH - 42, y, x + PAGE_WIDTH, y + 42);
         graphics.fill(leftFold);
         graphics.fill(rightFold);
+    }
+
+    private void drawHangingTopCorners(Graphics2D graphics, int x, int y) {
+        graphics.setColor(new Color(207, 193, 168));
+        Shape leftBack = fold(x, y, x + 58, y, x + 18, y + 70);
+        Shape rightBack = fold(
+                x + PAGE_WIDTH,
+                y,
+                x + PAGE_WIDTH - 58,
+                y,
+                x + PAGE_WIDTH - 18,
+                y + 70
+        );
+        graphics.fill(leftBack);
+        graphics.fill(rightBack);
+
+        graphics.setColor(new Color(226, 216, 198));
+        Shape leftFront = fold(x, y, x + 44, y, x + 16, y + 52);
+        Shape rightFront = fold(
+                x + PAGE_WIDTH,
+                y,
+                x + PAGE_WIDTH - 44,
+                y,
+                x + PAGE_WIDTH - 16,
+                y + 52
+        );
+        graphics.fill(leftFront);
+        graphics.fill(rightFront);
     }
 
     private Shape fold(int x1, int y1, int x2, int y2, int x3, int y3) {

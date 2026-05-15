@@ -347,6 +347,7 @@ klassisches Zeitungsgefühl
 leichte asymmetrische Community-Zeitung
 optional dokumentartige Artikelseiten
 dezente obere Seitenecken
+kurze nach hinten hängende obere Seitenecken als aktuelle AthenaPress-Zieloptik
 Anzeigen- und Dokumentblöcke als Stilmittel
 maximal lesbarer Seitenkörper
 keine starre Pflicht zu vier Spalten

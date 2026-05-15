@@ -12,7 +12,7 @@ class NewspaperVisualDesignProfileTest {
                 NewspaperVisualDesignProfile.athenaReadableNewspaper();
 
         assertEquals(NewspaperLayoutMood.LOOSE_COMMUNITY_SHEET, profile.layoutMood());
-        assertEquals(NewspaperPageCornerStyle.SUBTLE_TOP_FOLDS, profile.cornerStyle());
+        assertEquals(NewspaperPageCornerStyle.HANGING_TOP_CORNERS, profile.cornerStyle());
         assertEquals(NewspaperCoverPolicy.STANDALONE_TITLE_PAGE, profile.coverPolicy());
         assertEquals(
                 NewspaperArticleFlowPolicy.KEEP_ARTICLES_TOGETHER_WHEN_READABLE,
