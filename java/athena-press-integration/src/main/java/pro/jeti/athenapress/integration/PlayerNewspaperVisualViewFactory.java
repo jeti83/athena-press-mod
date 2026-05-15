@@ -32,6 +32,7 @@ public class PlayerNewspaperVisualViewFactory {
                 response.hasNextSpread(),
                 "",
                 response.spreadSignatures(),
+                spreadMenuItemsFor(response),
                 buttonsFor(response)
         );
     }
@@ -52,6 +53,7 @@ public class PlayerNewspaperVisualViewFactory {
                 false,
                 false,
                 hasText(message) ? message : "Diese Ausgabe ist nicht verfügbar.",
+                List.of(),
                 List.of(),
                 List.of(NewspaperUiButton.danger(
                         "Schließen",
@@ -87,6 +89,20 @@ public class PlayerNewspaperVisualViewFactory {
         ));
 
         return buttons;
+    }
+
+    private List<NewspaperSpreadMenuItem> spreadMenuItemsFor(
+            PlayerNewspaperVisualResponse response
+    ) {
+        return response.spreadSignatures().stream()
+                .map(signature -> new NewspaperSpreadMenuItem(
+                        signature.spreadIndex(),
+                        signature.label(),
+                        signature.hint(),
+                        signature.spreadIndex() == response.spreadIndex(),
+                        NewspaperVisualUiCommands.selectSpread(signature.spreadIndex())
+                ))
+                .toList();
     }
 
     private boolean hasText(String value) {

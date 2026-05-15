@@ -48,6 +48,10 @@ class PlayerNewspaperVisualViewFactoryTest {
         assertFalse(view.hasPreviousSpread());
         assertFalse(view.hasNextSpread());
         assertEquals("Titelseite", view.spreadSignatures().getFirst().label());
+        assertEquals("Titelseite", view.spreadMenuItems().getFirst().label());
+        assertTrue(view.spreadMenuItems().getFirst().current());
+        assertEquals(NewspaperVisualUiCommands.SELECT_SPREAD,
+                view.spreadMenuItems().getFirst().command().uiCommand());
         assertEquals(2, view.buttons().size());
         assertTrue(view.buttons().stream()
                 .anyMatch(button -> button.command().action() == PlayerNewspaperAction.SHOW_OVERVIEW));
@@ -55,7 +59,15 @@ class PlayerNewspaperVisualViewFactoryTest {
 
     @Test
     void createsNavigationButtonsForMiddleSpread() {
-        PlayerNewspaperVisualResponse response = responseWithSpread(1, 3);
+        PlayerNewspaperVisualResponse response = responseWithSpread(
+                1,
+                3,
+                List.of(
+                        new NewspaperSpreadSignature(0, "Titelseite", "Titel", 1, 0, true, false),
+                        new NewspaperSpreadSignature(1, "Seiten 2-3", "Stadt", 2, 3, false, false),
+                        new NewspaperSpreadSignature(2, "Seite 4", "Anzeigen", 4, 0, false, true)
+                )
+        );
 
         PlayerNewspaperVisualView view = viewFactory.fromResponse(response);
 
@@ -67,12 +79,23 @@ class PlayerNewspaperVisualViewFactoryTest {
         assertTrue(view.buttons().stream()
                 .anyMatch(button -> NewspaperVisualUiCommands.NEXT_SPREAD
                         .equals(button.command().uiCommand())));
+        assertEquals(3, view.spreadMenuItems().size());
+        assertTrue(view.spreadMenuItems().get(1).current());
+        assertEquals("Anzeigen", view.spreadMenuItems().get(2).hint());
         assertEquals(4, view.buttons().size());
     }
 
     private PlayerNewspaperVisualResponse responseWithSpread(
             int spreadIndex,
             int totalSpreadCount
+    ) {
+        return responseWithSpread(spreadIndex, totalSpreadCount, null);
+    }
+
+    private PlayerNewspaperVisualResponse responseWithSpread(
+            int spreadIndex,
+            int totalSpreadCount,
+            List<NewspaperSpreadSignature> signatures
     ) {
         NewspaperPreviewSpread spread = new NewspaperPreviewSpread(
                 spreadIndex,
@@ -102,7 +125,7 @@ class PlayerNewspaperVisualViewFactoryTest {
                 spreadIndex,
                 totalSpreadCount,
                 spread,
-                List.of(spread.signature()),
+                signatures == null ? List.of(spread.signature()) : signatures,
                 true,
                 ""
         );
