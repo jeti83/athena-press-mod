@@ -72,6 +72,76 @@ public class NewspaperVisualPaginationService {
         return pages;
     }
 
+    public List<NewspaperVisualPage> paginateGrouped(
+            String baseTitle,
+            List<List<NewspaperVisualBlock>> blockGroups,
+            NewspaperLayoutTemplate template,
+            int firstPageNumber
+    ) {
+        if (blockGroups == null || blockGroups.isEmpty()) {
+            return List.of();
+        }
+
+        NewspaperLayoutTemplate safeTemplate = template == null
+                ? NewspaperLayoutTemplate.classicDoublePage()
+                : template;
+        int pageCapacity = safeTemplate.columnsPerPage() * safeTemplate.rowsPerPage();
+        List<NewspaperVisualPage> pages = new ArrayList<>();
+        List<NewspaperVisualBlock> currentBlocks = new ArrayList<>();
+        int currentWeight = 0;
+
+        for (List<NewspaperVisualBlock> group : blockGroups) {
+            if (group == null || group.isEmpty()) {
+                continue;
+            }
+
+            int groupWeight = group.stream()
+                    .mapToInt(block -> layoutRules.weightFor(block, safeTemplate))
+                    .sum();
+
+            if (groupWeight <= pageCapacity
+                    && !currentBlocks.isEmpty()
+                    && currentWeight + groupWeight > pageCapacity) {
+                pages.add(pageFor(
+                        baseTitle,
+                        firstPageNumber + pages.size(),
+                        firstPageNumber,
+                        currentBlocks
+                ));
+                currentBlocks = new ArrayList<>();
+                currentWeight = 0;
+            }
+
+            for (NewspaperVisualBlock block : group) {
+                int blockWeight = layoutRules.weightFor(block, safeTemplate);
+                if (!currentBlocks.isEmpty() && currentWeight + blockWeight > pageCapacity) {
+                    pages.add(pageFor(
+                            baseTitle,
+                            firstPageNumber + pages.size(),
+                            firstPageNumber,
+                            currentBlocks
+                    ));
+                    currentBlocks = new ArrayList<>();
+                    currentWeight = 0;
+                }
+
+                currentBlocks.add(block);
+                currentWeight += blockWeight;
+            }
+        }
+
+        if (!currentBlocks.isEmpty()) {
+            pages.add(pageFor(
+                    baseTitle,
+                    firstPageNumber + pages.size(),
+                    firstPageNumber,
+                    currentBlocks
+            ));
+        }
+
+        return pages;
+    }
+
     private NewspaperVisualPage pageFor(
             String baseTitle,
             int pageNumber,

@@ -128,12 +128,22 @@ public class NewspaperArticleCompositionService {
                         section.title(),
                         section.blocks()
                 )));
-        pages.addAll(paginationService.paginate(
-                issueTitle(issueView),
-                blocksForSections(articleSectionsFor(issueView)),
-                defaultTemplate,
-                pages.size() + 1
-        ));
+        if (designProfile.articleFlowPolicy()
+                == NewspaperArticleFlowPolicy.KEEP_ARTICLES_TOGETHER_WHEN_READABLE) {
+            pages.addAll(paginationService.paginateGrouped(
+                    issueTitle(issueView),
+                    articleBlockGroupsFor(issueView),
+                    defaultTemplate,
+                    pages.size() + 1
+            ));
+        } else {
+            pages.addAll(paginationService.paginate(
+                    issueTitle(issueView),
+                    blocksForSections(articleSectionsFor(issueView)),
+                    defaultTemplate,
+                    pages.size() + 1
+            ));
+        }
 
         return pages;
     }
@@ -188,6 +198,47 @@ public class NewspaperArticleCompositionService {
         ));
 
         return sectionPolicy.filter(sections);
+    }
+
+    private List<List<NewspaperVisualBlock>> articleBlockGroupsFor(GameIssueView issueView) {
+        List<List<NewspaperVisualBlock>> groups = new ArrayList<>();
+
+        List<NewspaperVisualBlock> mainArticleBlocks = mainArticleBlocksFor(issueView);
+        if (!mainArticleBlocks.isEmpty()) {
+            groups.add(mainArticleBlocks);
+        }
+
+        GameArticleView mainArticle = issueView.findArticleById(issueView.coverMainArticleId());
+        for (NewspaperPageSectionType sectionType : List.of(
+                NewspaperPageSectionType.MIXED_ARTICLES,
+                NewspaperPageSectionType.SHORT_NOTICES,
+                NewspaperPageSectionType.MEMORIAL,
+                NewspaperPageSectionType.ADVERTISEMENTS
+        )) {
+            for (GameArticleView article : issueView.articles()) {
+                if (mainArticle != null && mainArticle.id().equals(article.id())) {
+                    continue;
+                }
+
+                NewspaperArticleClassification classification = articleClassifier.classify(
+                        article,
+                        false
+                );
+                if (classification.sectionType() != sectionType) {
+                    continue;
+                }
+
+                List<NewspaperVisualBlock> blocks = classifiedArticleBlocksFor(
+                        article,
+                        classification
+                );
+                if (!blocks.isEmpty()) {
+                    groups.add(blocks);
+                }
+            }
+        }
+
+        return groups;
     }
 
     private List<NewspaperVisualBlock> blocksForSections(List<NewspaperPageSection> sections) {
@@ -283,6 +334,15 @@ public class NewspaperArticleCompositionService {
         }
 
         addArticleBlocks(blocks, article);
+    }
+
+    private List<NewspaperVisualBlock> classifiedArticleBlocksFor(
+            GameArticleView article,
+            NewspaperArticleClassification classification
+    ) {
+        List<NewspaperVisualBlock> blocks = new ArrayList<>();
+        addClassifiedArticleBlocks(blocks, article, classification);
+        return blocks;
     }
 
     private void addAdvertisementBlocks(

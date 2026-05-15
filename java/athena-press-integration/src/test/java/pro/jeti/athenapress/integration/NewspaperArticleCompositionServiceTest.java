@@ -62,6 +62,33 @@ class NewspaperArticleCompositionServiceTest {
     }
 
     @Test
+    void keepsReadableArticlesTogetherWhenTheyWouldOtherwiseSplit() {
+        NewspaperArticleCompositionService service = new NewspaperArticleCompositionService(
+                new NewspaperVisualPaginationService(),
+                new NewspaperLayoutTemplate(
+                        "compact_test",
+                        "Kompakter Test",
+                        100,
+                        140,
+                        6,
+                        4,
+                        2,
+                        9
+                )
+        );
+        GameIssueView issueView = issueViewWithoutMainArticle(2);
+
+        NewspaperVisualIssue visualIssue = service.compose(issueView);
+
+        assertTrue(visualIssue.pages().get(1).blocks().stream()
+                .anyMatch(block -> "Artikel 1".equals(block.content())));
+        assertTrue(visualIssue.pages().get(1).blocks().stream()
+                .noneMatch(block -> "Artikel 2".equals(block.content())));
+        assertTrue(visualIssue.pages().get(2).blocks().stream()
+                .anyMatch(block -> "Artikel 2".equals(block.content())));
+    }
+
+    @Test
     void rendersVisualPagesIntoAdapterNeutralLayout() {
         GameIssueView issueView = issueViewWithArticles(1);
         NewspaperVisualIssue visualIssue = new NewspaperArticleCompositionService()
@@ -99,6 +126,30 @@ class NewspaperArticleCompositionServiceTest {
                 "Athena Morgenblatt",
                 "Aus der Stadt, fuer die Stadt",
                 "article_1",
+                "placeholders/front.png",
+                articles
+        );
+    }
+
+    private GameIssueView issueViewWithoutMainArticle(int articleCount) {
+        List<GameArticleView> articles = java.util.stream.IntStream.rangeClosed(1, articleCount)
+                .mapToObj(index -> new GameArticleView(
+                        "article_" + index,
+                        "server_news",
+                        "Artikel " + index,
+                        "Untertitel " + index,
+                        "Teaser " + index,
+                        "Zusammenfassung " + index,
+                        "Dies ist ein langer lesbarer Artikeltext fuer Layouttests."
+                ))
+                .toList();
+
+        return new GameIssueView(
+                "issue_test",
+                7,
+                "Athena Morgenblatt",
+                "Aus der Stadt, fuer die Stadt",
+                "missing_article",
                 "placeholders/front.png",
                 articles
         );

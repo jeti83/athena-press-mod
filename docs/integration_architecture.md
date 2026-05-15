@@ -552,6 +552,12 @@ NewspaperVisualPaginationService
 
 Verteilt Visual-Blöcke auf mehrere Seiten.
 
+Bei `KEEP_ARTICLES_TOGETHER_WHEN_READABLE` behandelt die Pagination lesbare
+Artikelblöcke als Gruppen: Passt ein Artikel vollständig auf eine Seite, wird
+er nicht auf einer fast vollen Vorgängerseite angerissen, sondern geschlossen
+auf die nächste Seite verschoben. Nur zu große Artikel dürfen weiter natürlich
+überlaufen.
+
 NewspaperVisualRenderer
 
 Erzeugt aus visuellen Seiten adapter-neutrale Layoutplatzierungen.
