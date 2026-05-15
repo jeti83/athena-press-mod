@@ -21,15 +21,4 @@ public record NewspaperVisualIssue(
         return !pages.isEmpty();
     }
 
-    public NewspaperVisualDoublePage doublePageAt(int pageIndex) {
-        if (pages.isEmpty()) {
-            return new NewspaperVisualDoublePage(null, null);
-        }
-
-        int safeIndex = Math.max(0, pageIndex);
-        NewspaperVisualPage leftPage = safeIndex < pages.size() ? pages.get(safeIndex) : null;
-        NewspaperVisualPage rightPage = safeIndex + 1 < pages.size() ? pages.get(safeIndex + 1) : null;
-
-        return new NewspaperVisualDoublePage(leftPage, rightPage);
-    }
 }
