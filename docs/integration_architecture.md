@@ -611,6 +611,7 @@ Erzeugt aus visuellen Seiten bewusste Doppelseiten.
 Verantwortlich für:
 
 Cover-Erkennung
+einzeln stehende Titelseite vor dem ersten echten Aufschlagen
 Innenseiten-Paare
 Rückseitenrolle
 einzelne letzte Seite

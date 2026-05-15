@@ -43,23 +43,32 @@ public class NewspaperDoublePageCompositionService {
         }
 
         List<NewspaperDoublePageLayout> spreads = new ArrayList<>();
+        NewspaperPageLayout frontCover = pageLayouts.getFirst();
+        spreads.add(new NewspaperDoublePageLayout(
+                0,
+                frontCover,
+                null,
+                roleFor(frontCover, true, pageLayouts.size()),
+                NewspaperPageRole.SINGLE_PAGE,
+                List.of()
+        ));
 
-        for (int index = 0; index < pageLayouts.size(); index += 2) {
+        for (int index = 1; index < pageLayouts.size(); index += 2) {
             NewspaperPageLayout leftPage = pageLayouts.get(index);
             NewspaperPageLayout rightPage = index + 1 < pageLayouts.size()
                     ? pageLayouts.get(index + 1)
                     : null;
             spreads.add(new NewspaperDoublePageLayout(
-                    index / 2,
+                    spreads.size(),
                     leftPage,
                     rightPage,
                     roleFor(leftPage, true, pageLayouts.size()),
                     roleFor(rightPage, false, pageLayouts.size()),
-                    navigationFor(index / 2, pageLayouts.size())
+                    List.of()
             ));
         }
 
-        return spreads;
+        return withNavigation(spreads);
     }
 
     private NewspaperPageRole roleFor(
@@ -82,9 +91,28 @@ public class NewspaperDoublePageCompositionService {
         return left ? NewspaperPageRole.LEFT_INNER : NewspaperPageRole.RIGHT_INNER;
     }
 
+    private List<NewspaperDoublePageLayout> withNavigation(
+            List<NewspaperDoublePageLayout> spreads
+    ) {
+        List<NewspaperDoublePageLayout> navigableSpreads = new ArrayList<>();
+
+        for (NewspaperDoublePageLayout spread : spreads) {
+            navigableSpreads.add(new NewspaperDoublePageLayout(
+                    spread.spreadIndex(),
+                    spread.leftPage(),
+                    spread.rightPage(),
+                    spread.leftRole(),
+                    spread.rightRole(),
+                    navigationFor(spread.spreadIndex(), spreads.size())
+            ));
+        }
+
+        return navigableSpreads;
+    }
+
     private List<NewspaperUiButton> navigationFor(
             int spreadIndex,
-            int pageCount
+            int spreadCount
     ) {
         List<NewspaperUiButton> buttons = new ArrayList<>();
 
@@ -95,7 +123,7 @@ public class NewspaperDoublePageCompositionService {
             ));
         }
 
-        if ((spreadIndex + 1) * 2 < pageCount) {
+        if (spreadIndex + 1 < spreadCount) {
             buttons.add(NewspaperUiButton.primary(
                     "Weiterblättern",
                     NewspaperVisualUiCommands.nextSpread()

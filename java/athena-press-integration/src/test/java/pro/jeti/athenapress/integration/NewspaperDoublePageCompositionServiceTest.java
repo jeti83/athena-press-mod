@@ -16,11 +16,12 @@ class NewspaperDoublePageCompositionServiceTest {
         List<NewspaperDoublePageLayout> spreads =
                 new NewspaperDoublePageCompositionService().compose(issue);
 
-        assertEquals(2, spreads.size());
+        assertEquals(3, spreads.size());
         assertEquals(NewspaperPageRole.FRONT_COVER, spreads.getFirst().leftRole());
-        assertEquals(NewspaperPageRole.RIGHT_INNER, spreads.getFirst().rightRole());
+        assertFalse(spreads.getFirst().hasRightPage());
         assertEquals(NewspaperPageRole.LEFT_INNER, spreads.get(1).leftRole());
-        assertEquals(NewspaperPageRole.BACK_COVER, spreads.get(1).rightRole());
+        assertEquals(NewspaperPageRole.RIGHT_INNER, spreads.get(1).rightRole());
+        assertEquals(NewspaperPageRole.BACK_COVER, spreads.get(2).leftRole());
     }
 
     @Test
@@ -32,7 +33,7 @@ class NewspaperDoublePageCompositionServiceTest {
 
         NewspaperDoublePageLayout middleSpread = spreads.get(1);
 
-        assertEquals(3, spreads.size());
+        assertEquals(4, spreads.size());
         assertFalse(middleSpread.navigationButtons().isEmpty());
         assertTrue(middleSpread.navigationButtons().stream()
                 .anyMatch(button -> button.command().uiCommand()
@@ -51,8 +52,8 @@ class NewspaperDoublePageCompositionServiceTest {
 
         assertEquals(2, spreads.size());
         assertTrue(spreads.get(1).hasLeftPage());
-        assertFalse(spreads.get(1).hasRightPage());
-        assertEquals(NewspaperPageRole.BACK_COVER, spreads.get(1).leftRole());
+        assertTrue(spreads.get(1).hasRightPage());
+        assertEquals(NewspaperPageRole.BACK_COVER, spreads.get(1).rightRole());
     }
 
     private NewspaperVisualIssue visualIssueWithPages(int pageCount) {
