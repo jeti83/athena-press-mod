@@ -1,0 +1,22 @@
+{
+  "id": "issue_0003",
+  "status": "published",
+  "issueNumber": 3,
+  "title": "Athena Botenblatt",
+  "subtitle": "Jubiläumsausgabe",
+  "editionName": "Ein Jahr Athena",
+  "cover": {
+    "mainArticleId": "article_0008",
+    "image": "placeholders/no_image.png"
+  },
+  "articles": [
+    "article_0008",
+    "article_0009",
+    "article_0010",
+    "article_0011"
+  ],
+  "createdAt": "2026-05-15T19:00:00+02:00",
+  "updatedAt": "2026-05-15T19:00:00+02:00",
+  "publishedAt": "2026-05-15T19:30:00+02:00",
+  "deliveredToSubscribers": false
+}

@@ -254,12 +254,20 @@ Diese Ausgabe ist nur ein Debug-/Admin-Einstieg für die native Visual-Struktur,
 Bildvorschau als echte PNG-Doppelseiten:
 
 powershell
-mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.integration.AthenaPressVisualPngPreviewDemo" "-Dexec.args=issue_0002"
+cd java
+mvn exec:java -pl athena-press-integration "-Dexec.mainClass=pro.jeti.athenapress.integration.AthenaPressVisualPngPreviewDemo" "-Dexec.args=issue_0003"
 
-Die PNG-Dateien werden unter folgendem Ordner erzeugt:
+Die PNG-Dateien werden standardmäßig unter folgendem Ordner erzeugt:
 
 text
-java/athena-press-integration/target/visual-preview-png/
+java/target/visual-preview-png/
+
+Ausgabe in einen eigenen Ordner:
+
+powershell
+mvn exec:java -pl athena-press-integration "-Dexec.mainClass=pro.jeti.athenapress.integration.AthenaPressVisualPngPreviewDemo" "-Dexec.args=issue_0003 C:\Users\DEINNAME\Downloads\athena-press-preview"
+
+Ergebnis: Eine vollständige Zeitungsvorschau als Doppelseiten-PNGs mit Titelseite, Artikelseiten und Rückseite.
 
 Auch diese Vorschau bleibt adapter-neutral. Sie rendert dieselbe native Visual-Struktur lediglich als lokale Bilddatei, damit Layoutentscheidungen früh sichtbar geprüft werden können.
 

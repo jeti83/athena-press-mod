@@ -1,0 +1,31 @@
+{
+  "id": "article_0009",
+  "status": "published",
+  "categoryId": "build_projects",
+  "title": "Neues Rathaus entsteht am Marktplatz",
+  "subtitle": "Baubeginn nach sieben Monaten Planungsdiskussion",
+  "summary": "Nach ausgiebiger Debatte über Dachform, Fenstergröße und die Frage ob Birke oder Eiche nun endlich Baubeginn für das lang geplante Athena-Rathaus.",
+  "teaser": "Sieben Monate Planung, drei Entwürfe und ein Kompromiss, den alle halb gut finden.",
+  "author": {
+    "playerName": "Athena Redaktion",
+    "playerUuid": "unknown"
+  },
+  "body": "Das neue Athena-Rathaus nimmt Gestalt an. Auf dem lang reservierten Grundstück am Nordende des Marktplatzes haben die Bauarbeiten offiziell begonnen, nachdem die letzte große Streitfrage, nämlich ob das Dach spitz oder flach sein soll, durch geheime Abstimmung mit einem Verhältnis von sieben zu sechs zugunsten von spitz entschieden wurde.\n\nDer Entwurf stammt von Spielerin Mira_Baut, die nach eigenen Angaben drei Nächte an den Plänen gearbeitet hat und das Ergebnis als solide bezeichnet. Kritiker bemängeln die Fensteraufteilung im zweiten Stockwerk. Mira_Baut hat auf diese Kritik bislang nicht geantwortet, aber im Chat ein Fragezeichen hinterlassen, das als Reaktion interpretiert werden kann.\n\nDas Gebäude soll als zentraler Treffpunkt, Archiv und Abstimmungsort dienen. Ein separater Raum ist für Beschwerden über den Brunnen am Spawn vorgesehen. Die zuständige Schriftführerin hat diesen Raum bereits als zu klein bezeichnet.\n\nDer Rohbau soll in zwei Wochen stehen. Wer beim Bauen helfen möchte, kann sich bei Jeti melden. Werkzeug wird gestellt, Geduld muss selbst mitgebracht werden.",
+  "image": {
+    "file": "placeholders/no_image.png",
+    "caption": "Grundriss des neuen Rathauses. Das spitze Dach ist bereits eingezeichnet.",
+    "credit": "Athena Botenblatt",
+    "sourceType": "placeholder"
+  },
+  "location": {
+    "enabled": true,
+    "world": "Hauptwelt",
+    "x": 42.0,
+    "y": 64.0,
+    "z": -18.0
+  },
+  "tags": ["rathaus", "bauprojekt", "marktplatz", "community"],
+  "createdAt": "2026-05-15T19:00:00+02:00",
+  "updatedAt": "2026-05-15T19:00:00+02:00",
+  "publishedAt": "2026-05-15T19:00:00+02:00"
+}

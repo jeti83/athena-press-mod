@@ -1,0 +1,31 @@
+{
+  "id": "article_0010",
+  "status": "published",
+  "categoryId": "economy",
+  "title": "Eisenmarkt erholt sich nach Knappheitskrise",
+  "subtitle": "Preise stabilisieren sich, Karottenfraktion uneinsichtig",
+  "summary": "Nach wochenlanger Eisenknappheit normalisieren sich die Preise am Athena-Marktplatz. Händler zeigen sich vorsichtig optimistisch.",
+  "teaser": "Eisen kostet wieder vernünftig. Karotten kosten immer noch zu viel.",
+  "author": {
+    "playerName": "Athena Redaktion",
+    "playerUuid": "unknown"
+  },
+  "body": "Der Eisenmarkt auf Athena hat sich nach einer turbulenten Phase erholt. Vor drei Wochen hatten Engpässe in der Farmwelt und zwei gleichzeitige Großbauprojekte die Preise auf das Dreifache des üblichen Niveaus getrieben. Einzelne Händler verlangten kurzzeitig vier Diamanten pro Stapel Eisenbarren, was die Redaktion als frech bezeichnete und was die betroffenen Händler als marktwirtschaftlich korrekt bezeichneten.\n\nDie Entspannung kam durch eine koordinierte Aktion mehrerer Spieler, die gemeinsam eine neue Eisenmine in der Farmwelt erschlossen. Innerhalb von zwei Tagen normalisierte sich das Angebot. Die Preise liegen jetzt bei rund eineinhalb Diamanten pro Stapel, was als fair gilt.\n\nWeniger erfreulich ist die Lage bei Karotten. Spieler Felix_Bauer hält seit Wochen an einem Preis von einem Diamanten pro Karotte fest und begründet dies mit dem Aufwand der Ernte. Die Redaktion hat nachgerechnet und kommt zu einem anderen Ergebnis. Felix_Bauer hat unsere Anfrage nicht beantwortet, aber beim nächsten Markttag freundlich gewunken.\n\nFür die kommenden Wochen erwartet der Marktrat stabile Preise bei den meisten Rohstoffen. Ausnahmen seien Glasscheiben, Endstein und Schriftrollen, deren Preise nach wie vor von Spieler Torben_Handelt kontrolliert werden, der darüber keine Auskunft geben möchte.",
+  "image": {
+    "file": "placeholders/no_image.png",
+    "caption": "Der Marktplatz am frühen Morgen. Noch leer, aber voller Potenzial.",
+    "credit": "Athena Botenblatt",
+    "sourceType": "placeholder"
+  },
+  "location": {
+    "enabled": false,
+    "world": "",
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "tags": ["wirtschaft", "markt", "eisen", "preise"],
+  "createdAt": "2026-05-15T19:00:00+02:00",
+  "updatedAt": "2026-05-15T19:00:00+02:00",
+  "publishedAt": "2026-05-15T19:00:00+02:00"
+}

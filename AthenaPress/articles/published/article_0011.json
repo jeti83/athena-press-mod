@@ -1,0 +1,31 @@
+{
+  "id": "article_0011",
+  "status": "published",
+  "categoryId": "classifieds",
+  "title": "BIETE: Zwei Karotten, SUCHE: Würde",
+  "subtitle": "Sowie: Schaf abzugeben, Drachen nicht mehr verfügbar",
+  "summary": "Die Kleinanzeigen dieser Ausgabe bieten erneut einen tiefen Einblick in die Bedürfnisse und Prioritäten der Athena-Gemeinschaft.",
+  "teaser": "Alles muss raus. Außer dem Schaf. Das Schaf bleibt.",
+  "author": {
+    "playerName": "Athena Redaktion",
+    "playerUuid": "unknown"
+  },
+  "body": "BIETE zwei frische Karotten, gut gelagert, leicht angebissen. SUCHE im Tausch dafür etwas Würde oder alternativ Eisenbarren. Zuschriften an Spieler Felix_Bauer, Marktstand 7.\n\nVERMISST: Eine hölzerne Truhe mit persönlichem Inhalt, zuletzt gesehen im Keller von Haus 14. Wer die Truhe findet, bitte erst öffnen und dann melden. Dankeschön.\n\nZU VERSCHENKEN: Ein weißes Schaf, hört auf den Namen Wollbert, frisst alles, kennt keine Grenzen. Abzuholen am Spawn, bitte vorher ankündigen. Das Schaf hat Charakter.\n\nGESUCHT: Jemand der weiß, warum der Brunnen am Spawn leuchtet. Sachliche Antworten bevorzugt. Mystische Theorien werden zur Not auch akzeptiert.\n\nBIETE Planungshilfe für Bauprojekte, spezialisiert auf Spitzdächer. Erfahrungen mit Flachdächern vorhanden, aber ungern.",
+  "image": {
+    "file": "placeholders/dating.png",
+    "caption": "Symbolbild: Wollbert kurz vor seiner letzten bekannten Sichtung.",
+    "credit": "Athena Botenblatt",
+    "sourceType": "placeholder"
+  },
+  "location": {
+    "enabled": false,
+    "world": "",
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "tags": ["kleinanzeigen", "humor", "markt", "schaf"],
+  "createdAt": "2026-05-15T19:00:00+02:00",
+  "updatedAt": "2026-05-15T19:00:00+02:00",
+  "publishedAt": "2026-05-15T19:00:00+02:00"
+}

@@ -1,0 +1,31 @@
+{
+  "id": "article_0008",
+  "status": "published",
+  "categoryId": "headline",
+  "title": "Athena feiert erstes Serverjubiläum",
+  "subtitle": "Gemeinschaft wächst, Lagerplatz leider nicht",
+  "summary": "Ein Jahr Athena-Server: Rückblick auf Bauprojekte, Dramen und mindestens drei Brunnen, die niemand beantragt hat.",
+  "teaser": "Ein Jahr gemeinsam bauen, streiten und wieder versöhnen. Das Botenblatt blickt zurück.",
+  "author": {
+    "playerName": "Jeti",
+    "playerUuid": "unknown"
+  },
+  "body": "Vor genau einem Jahr öffnete der Athena-Server seine Tore. Was damals mit einem kleinen Spawn, zwei Holzhäusern und der stillen Hoffnung auf geregelte Schlafzeiten begann, ist heute eine der lebendigsten Spielergemeinschaften der Region.\n\nDie Zahlen sprechen für sich: Über vierzig registrierte Spieler, drei vollständig gebaute Dörfer, ein halbfertiges Rathaus und ein Brunnen, dessen Entstehungsgeschichte bis heute rechtlich ungeklärt ist. Die Redaktion hat mehrfach nachgefragt. Die zuständigen Spieler waren zum Redaktionsschluss nicht erreichbar.\n\nBesonders bemerkenswert ist die wirtschaftliche Entwicklung. Der Marktplatz am Spawn hat sich von einem leeren Platz mit drei Schildern zu einem gut frequentierten Handelszentrum entwickelt. Eisenbarren gelten inzwischen als Leitwährung, obwohl mindestens zwei Spieler hartnäckig auf Karotten bestehen.\n\nFür das zweite Jahr kündigt die Serverleitung mehrere Projekte an: eine neue Farmwelt, ein überarbeitetes Regelsystem und möglicherweise Straßenbeleuchtung. Letzteres wurde bereits dreimal abgestimmt. Das Ergebnis war jedes Mal knapp. Der Brunnen am Spawn leuchtet übrigens schon. Niemand weiß warum.",
+  "image": {
+    "file": "placeholders/no_image.png",
+    "caption": "Der Spawn am ersten Jubiläumstag. Der Brunnen war, wie immer, einfach da.",
+    "credit": "Athena Botenblatt",
+    "sourceType": "placeholder"
+  },
+  "location": {
+    "enabled": false,
+    "world": "",
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "tags": ["jubiläum", "community", "server", "rückblick"],
+  "createdAt": "2026-05-15T19:00:00+02:00",
+  "updatedAt": "2026-05-15T19:00:00+02:00",
+  "publishedAt": "2026-05-15T19:00:00+02:00"
+}
