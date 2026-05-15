@@ -240,6 +240,31 @@ class NewspaperArticleCompositionServiceTest {
     }
 
     @Test
+    void expandsSingleBackPageAdvertisementAcrossThePage() {
+        GameIssueView issueView = issueViewWithImageAdvertisement();
+
+        NewspaperVisualIssue visualIssue = new NewspaperArticleCompositionService()
+                .compose(issueView);
+
+        assertTrue(visualIssue.pages().getLast().blocks().stream()
+                .anyMatch(block -> "Anzeige 1".equals(block.content())
+                        && block.columnSpan() == NewspaperLayoutTemplate.classicDoublePage()
+                                .columnsPerPage()));
+    }
+
+    @Test
+    void keepsMultipleBackPageAdvertisementsCompact() {
+        GameIssueView issueView = issueViewWithMultipleAdvertisements();
+
+        NewspaperVisualIssue visualIssue = new NewspaperArticleCompositionService()
+                .compose(issueView);
+
+        assertTrue(visualIssue.pages().getLast().blocks().stream()
+                .filter(block -> block.type() == NewspaperVisualBlockType.ADVERTISEMENT)
+                .allMatch(block -> block.columnSpan() == 1));
+    }
+
+    @Test
     void addsArticleImagesToVisualComposition() {
         GameIssueView issueView = issueViewWithArticleImage();
 
@@ -408,6 +433,37 @@ class NewspaperArticleCompositionServiceTest {
                                 "local"
                         )
                 ))
+        );
+    }
+
+    private GameIssueView issueViewWithMultipleAdvertisements() {
+        return new GameIssueView(
+                "issue_test",
+                7,
+                "Athena Morgenblatt",
+                "Aus der Stadt, fuer die Stadt",
+                "missing_article",
+                "placeholders/front.png",
+                List.of(
+                        new GameArticleView(
+                                "ad_1",
+                                "anzeigen",
+                                "Anzeige 1",
+                                null,
+                                "Schaut vorbei.",
+                                "Heute frisch.",
+                                "Die Anzeige darf ein Signet tragen."
+                        ),
+                        new GameArticleView(
+                                "ad_2",
+                                "classifieds",
+                                "Anzeige 2",
+                                null,
+                                "Auch heute.",
+                                "Noch frisch.",
+                                "Die zweite Anzeige bleibt kompakt."
+                        )
+                )
         );
     }
 

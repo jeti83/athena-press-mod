@@ -44,6 +44,7 @@ Das Backend kann derzeit:
 - fortlaufende Artikel auf Folgeseiten kenntlich machen
 - optionale Rubriken sichtbar als Zeitungsbereiche ausgeben
 - optionale Anzeigen als eigene Rückseiten ausgeben
+- einzelne Rückseitenanzeigen bei wenig Inhalt großzügiger setzen
 - vorhandene Artikelbilder in die visuelle Komposition übernehmen
 - Bildunterschriften als eigene visuelle Blöcke ausgeben
 - Visual-Previews zwischenspeichern
@@ -131,7 +132,7 @@ Erwarteter Stand:
 Der zuletzt bekannte Stand lag bei:
 
 - Core: 91 Tests
-- Integration: 163 Tests
+- Integration: 165 Tests
 - 0 Failures
 - 0 Errors
 

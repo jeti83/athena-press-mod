@@ -554,6 +554,10 @@ Bildunterschriften
 Zusammenfassungen
 Seitenaufbau
 
+Wenn eine Rückseite nur eine einzelne Anzeige enthält, darf diese im aktuellen
+Layoutprofil großzügiger über die Seite laufen. Mehrere Anzeigen bleiben dagegen
+kompakter, damit echte Kleinanzeigenseiten dichter komponiert werden können.
+
 NewspaperArticleTextFlowService
 
 Zerlegt Artikeltext vor der visuellen Komposition in lesbare Textsegmente.

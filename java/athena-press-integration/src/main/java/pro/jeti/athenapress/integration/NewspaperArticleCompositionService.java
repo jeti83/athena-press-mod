@@ -365,6 +365,13 @@ public class NewspaperArticleCompositionService {
         List<List<NewspaperVisualBlock>> groups = new ArrayList<>();
 
         GameArticleView mainArticle = issueView.findArticleById(issueView.coverMainArticleId());
+        List<GameArticleView> advertisementArticles = issueView.articles().stream()
+                .filter(article -> mainArticle == null || !mainArticle.id().equals(article.id()))
+                .filter(article -> articleClassifier.classify(article, false).sectionType()
+                        == NewspaperPageSectionType.ADVERTISEMENTS)
+                .toList();
+        boolean featureSingleAdvertisement = advertisementArticles.size() == 1;
+
         for (GameArticleView article : issueView.articles()) {
             if (mainArticle != null && mainArticle.id().equals(article.id())) {
                 continue;
@@ -378,7 +385,10 @@ public class NewspaperArticleCompositionService {
                 continue;
             }
 
-            List<NewspaperVisualBlock> blocks = classifiedArticleBlocksFor(article, classification);
+            List<NewspaperVisualBlock> blocks = advertisementBlocksFor(
+                    article,
+                    featureSingleAdvertisement
+            );
             if (!blocks.isEmpty()) {
                 groups.add(blocks);
             }
@@ -495,7 +505,7 @@ public class NewspaperArticleCompositionService {
         }
 
         if (classification.sectionType() == NewspaperPageSectionType.ADVERTISEMENTS) {
-            addAdvertisementBlocks(blocks, article);
+            addAdvertisementBlocks(blocks, article, false);
             return;
         }
 
@@ -521,21 +531,33 @@ public class NewspaperArticleCompositionService {
         return blocks;
     }
 
+    private List<NewspaperVisualBlock> advertisementBlocksFor(
+            GameArticleView article,
+            boolean featured
+    ) {
+        List<NewspaperVisualBlock> blocks = new ArrayList<>();
+        addAdvertisementBlocks(blocks, article, featured);
+        return blocks;
+    }
+
     private void addAdvertisementBlocks(
             List<NewspaperVisualBlock> blocks,
-            GameArticleView article
+            GameArticleView article,
+            boolean featured
     ) {
         if (article == null) {
             return;
         }
 
+        int columnSpan = featured ? defaultTemplate.columnsPerPage() : 1;
         blocks.add(NewspaperVisualBlock.backPageAdvertisement(
                 articleTitle(article),
-                advertisementAssetPath(article)
+                advertisementAssetPath(article),
+                columnSpan
         ));
 
         if (hasText(article.summary())) {
-            blocks.add(NewspaperVisualBlock.backPageNotice(article.summary()));
+            blocks.add(NewspaperVisualBlock.backPageNotice(article.summary(), columnSpan));
         }
 
         blocks.add(NewspaperVisualBlock.backPageDivider());

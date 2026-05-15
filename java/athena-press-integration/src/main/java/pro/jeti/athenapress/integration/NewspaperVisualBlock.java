@@ -136,11 +136,19 @@ public record NewspaperVisualBlock(
     }
 
     public static NewspaperVisualBlock backPageAdvertisement(String content, String assetPath) {
+        return backPageAdvertisement(content, assetPath, 1);
+    }
+
+    public static NewspaperVisualBlock backPageAdvertisement(
+            String content,
+            String assetPath,
+            int columnSpan
+    ) {
         return backPageBlock(
                 NewspaperVisualBlockType.ADVERTISEMENT,
                 content,
                 assetPath,
-                1,
+                columnSpan,
                 NewspaperImageRole.ADVERTISEMENT
         );
     }
@@ -154,7 +162,11 @@ public record NewspaperVisualBlock(
     }
 
     public static NewspaperVisualBlock backPageNotice(String content) {
-        return backPageBlock(NewspaperVisualBlockType.NOTICE, content, null, 1, null);
+        return backPageNotice(content, 1);
+    }
+
+    public static NewspaperVisualBlock backPageNotice(String content, int columnSpan) {
+        return backPageBlock(NewspaperVisualBlockType.NOTICE, content, null, columnSpan, null);
     }
 
     public static NewspaperVisualBlock backPageDivider() {
