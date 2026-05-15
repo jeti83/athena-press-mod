@@ -200,11 +200,15 @@ public class NewspaperPreviewImageRenderer {
             }
             case IMAGE -> drawImageBlock(graphics, block, x, y, width, height, imagesRoot);
             case CAPTION -> drawTextBlock(graphics, block.content(), x, y, width, height, 13, Font.ITALIC, MUTED_INK);
-            case ADVERTISEMENT -> {
-                graphics.setColor(new Color(62, 55, 49));
-                graphics.fillRect(x, y, width, height);
-                drawTextBlock(graphics, block.content(), x + 12, y + 12, width - 24, height - 24, 18, Font.BOLD, PAPER);
-            }
+            case ADVERTISEMENT -> drawAdvertisementBlock(
+                    graphics,
+                    block,
+                    x,
+                    y,
+                    width,
+                    height,
+                    imagesRoot
+            );
             case DIVIDER -> {
                 graphics.setColor(PAPER_EDGE);
                 graphics.setStroke(new BasicStroke(2f));
@@ -238,6 +242,52 @@ public class NewspaperPreviewImageRenderer {
             graphics.drawRect(x, y, width, height);
             drawTextBlock(graphics, "Bild", x + 12, y + 12, width - 24, height - 24, 18, Font.BOLD, MUTED_INK);
         }
+    }
+
+    private void drawAdvertisementBlock(
+            Graphics2D graphics,
+            NewspaperPreviewBlock block,
+            int x,
+            int y,
+            int width,
+            int height,
+            Path imagesRoot
+    ) {
+        graphics.setColor(new Color(62, 55, 49));
+        graphics.fillRect(x, y, width, height);
+
+        BufferedImage asset = loadAsset(imagesRoot, block.assetPath());
+        if (asset != null) {
+            int inset = 12;
+            int titleBandHeight = Math.min(42, Math.max(28, height / 4));
+            graphics.setColor(PAPER);
+            graphics.fillRect(x + inset, y + inset, width - inset * 2, height - inset * 2);
+
+            double scale = Math.min(
+                    (double) (width - inset * 4) / asset.getWidth(),
+                    (double) (height - titleBandHeight - inset * 4) / asset.getHeight()
+            );
+            int imageWidth = Math.max(1, (int) Math.round(asset.getWidth() * scale));
+            int imageHeight = Math.max(1, (int) Math.round(asset.getHeight() * scale));
+            int imageX = x + (width - imageWidth) / 2;
+            int imageY = y + inset * 2 + titleBandHeight;
+            graphics.drawImage(asset, imageX, imageY, imageWidth, imageHeight, null);
+
+            drawTextBlock(
+                    graphics,
+                    block.content(),
+                    x + inset * 2,
+                    y + inset * 2,
+                    width - inset * 4,
+                    titleBandHeight,
+                    17,
+                    Font.BOLD,
+                    INK
+            );
+            return;
+        }
+
+        drawTextBlock(graphics, block.content(), x + 12, y + 12, width - 24, height - 24, 18, Font.BOLD, PAPER);
     }
 
     private BufferedImage loadAsset(Path imagesRoot, String assetPath) {
