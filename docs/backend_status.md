@@ -132,7 +132,7 @@ Erwarteter Stand:
 Der zuletzt bekannte Stand lag bei:
 
 - Core: 91 Tests
-- Integration: 168 Tests
+- Integration: 169 Tests
 - 0 Failures
 - 0 Errors
 

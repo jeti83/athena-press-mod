@@ -179,7 +179,7 @@ Letzter bekannter stabiler Teststand:
 
 text
 Core: 91 Tests
-Integration: 168 Tests
+Integration: 169 Tests
 Failures: 0
 Errors: 0
 

@@ -222,6 +222,10 @@ class NewspaperArticleCompositionServiceTest {
                         && block.layoutIntent() == NewspaperBlockLayoutIntent.SHORT_NOTICE));
         assertTrue(visualIssue.pages().stream()
                 .flatMap(page -> page.blocks().stream())
+                .anyMatch(block -> "Kurzmeldungen".equals(block.content())
+                        && block.layoutIntent() == NewspaperBlockLayoutIntent.SHORT_NOTICE));
+        assertTrue(visualIssue.pages().stream()
+                .flatMap(page -> page.blocks().stream())
                 .anyMatch(block -> "Verschollen im Nebel".equals(block.content())
                         && block.layoutIntent() == NewspaperBlockLayoutIntent.MEMORIAL));
         assertTrue(visualIssue.pages().stream()

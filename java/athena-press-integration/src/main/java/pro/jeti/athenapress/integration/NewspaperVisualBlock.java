@@ -51,6 +51,10 @@ public record NewspaperVisualBlock(
         return memorialBlock(NewspaperVisualBlockType.SUBHEADLINE, content, null, 2, null);
     }
 
+    public static NewspaperVisualBlock shortNoticeSubheadline(String content) {
+        return shortNoticeBlock(NewspaperVisualBlockType.SUBHEADLINE, content, null, 2, null);
+    }
+
     public static NewspaperVisualBlock coverSubheadline(String content) {
         return coverBlock(NewspaperVisualBlockType.SUBHEADLINE, content, null, 2, null);
     }

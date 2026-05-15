@@ -58,6 +58,11 @@ public record NewspaperPreviewSpread(
     }
 
     private String hintFor() {
+        String editorialSectionHint = editorialSectionHint();
+        if (!editorialSectionHint.isBlank()) {
+            return editorialSectionHint;
+        }
+
         NewspaperPreviewPage page = pageForHint();
         if (page == null) {
             return "";
@@ -70,6 +75,28 @@ public record NewspaperPreviewSpread(
 
         String headline = firstContentFor(page, NewspaperVisualBlockType.HEADLINE);
         return headline.isBlank() ? page.title() : headline;
+    }
+
+    private String editorialSectionHint() {
+        for (NewspaperPreviewPage page : new NewspaperPreviewPage[] {leftPage, rightPage}) {
+            if (page == null) {
+                continue;
+            }
+
+            String hint = page.blocks().stream()
+                    .filter(block -> block.type() == NewspaperVisualBlockType.SUBHEADLINE)
+                    .filter(block -> block.layoutIntent() == NewspaperBlockLayoutIntent.SHORT_NOTICE
+                            || block.layoutIntent() == NewspaperBlockLayoutIntent.MEMORIAL)
+                    .map(NewspaperPreviewBlock::content)
+                    .filter(content -> content != null && !content.isBlank())
+                    .findFirst()
+                    .orElse("");
+            if (!hint.isBlank()) {
+                return hint;
+            }
+        }
+
+        return "";
     }
 
     private NewspaperPreviewPage pageForHint() {

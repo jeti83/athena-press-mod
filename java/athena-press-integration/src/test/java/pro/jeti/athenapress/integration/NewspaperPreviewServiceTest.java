@@ -131,6 +131,59 @@ class NewspaperPreviewServiceTest {
         assertEquals("Kleinanzeigen", signature.hint());
     }
 
+    @Test
+    void prefersEditorialSectionHintsForSpreadMenus() {
+        NewspaperPreviewSpread spread = new NewspaperPreviewSpread(
+                1,
+                new NewspaperPreviewPage(
+                        4,
+                        "Innenseite",
+                        NewspaperPageRole.LEFT_INNER,
+                        NewspaperVisualDesignProfile.athenaReadableNewspaper(),
+                        List.of(
+                                new NewspaperPreviewBlock(
+                                        NewspaperVisualBlockType.SUBHEADLINE,
+                                        "Neue Baumfarm eröffnet",
+                                        null,
+                                        0,
+                                        0,
+                                        2,
+                                        2
+                                ),
+                                new NewspaperPreviewBlock(
+                                        NewspaperVisualBlockType.SUBHEADLINE,
+                                        "Kurzmeldungen",
+                                        null,
+                                        0,
+                                        3,
+                                        2,
+                                        2,
+                                        NewspaperBlockLayoutIntent.SHORT_NOTICE
+                                )
+                        )
+                ),
+                new NewspaperPreviewPage(
+                        5,
+                        "Innenseite",
+                        NewspaperPageRole.RIGHT_INNER,
+                        NewspaperVisualDesignProfile.athenaReadableNewspaper(),
+                        List.of(new NewspaperPreviewBlock(
+                                NewspaperVisualBlockType.SUBHEADLINE,
+                                "Verschollen und unvergessen",
+                                null,
+                                0,
+                                0,
+                                2,
+                                2,
+                                NewspaperBlockLayoutIntent.MEMORIAL
+                        ))
+                ),
+                List.of()
+        );
+
+        assertEquals("Kurzmeldungen", spread.signature().hint());
+    }
+
     private NewspaperVisualIssue visualIssue() {
         return new NewspaperVisualIssue(
                 "issue_preview",

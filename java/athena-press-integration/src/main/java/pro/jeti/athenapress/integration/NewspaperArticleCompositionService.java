@@ -407,9 +407,15 @@ public class NewspaperArticleCompositionService {
             return List.of();
         }
 
-        NewspaperVisualBlock heading = sectionType == NewspaperPageSectionType.MEMORIAL
-                ? NewspaperVisualBlock.memorialSubheadline(sectionTitleFor(sectionType))
-                : NewspaperVisualBlock.subheadline(sectionTitleFor(sectionType));
+        NewspaperVisualBlock heading = switch (sectionType) {
+            case SHORT_NOTICES -> NewspaperVisualBlock.shortNoticeSubheadline(
+                    sectionTitleFor(sectionType)
+            );
+            case MEMORIAL -> NewspaperVisualBlock.memorialSubheadline(
+                    sectionTitleFor(sectionType)
+            );
+            default -> NewspaperVisualBlock.subheadline(sectionTitleFor(sectionType));
+        };
 
         return List.of(heading, NewspaperVisualBlock.divider());
     }
