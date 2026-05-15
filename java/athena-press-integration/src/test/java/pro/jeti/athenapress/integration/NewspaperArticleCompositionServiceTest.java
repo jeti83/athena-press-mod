@@ -196,6 +196,9 @@ class NewspaperArticleCompositionServiceTest {
                 .anyMatch(block -> "placeholders/article.png".equals(block.assetPath())));
         assertTrue(visualIssue.pages().stream()
                 .flatMap(page -> page.blocks().stream())
+                .anyMatch(block -> block.imageRole() == NewspaperImageRole.ARTICLE));
+        assertTrue(visualIssue.pages().stream()
+                .flatMap(page -> page.blocks().stream())
                 .anyMatch(block -> block.type() == NewspaperVisualBlockType.CAPTION
                         && "Bildunterschrift".equals(block.content())));
     }
@@ -216,6 +219,7 @@ class NewspaperArticleCompositionServiceTest {
         assertEquals(NewspaperVisualBlockType.HEADLINE, firstLayout.placements().getFirst().blockType());
         assertEquals(2, firstLayout.placements().getFirst().columnSpan());
         assertEquals("placeholders/front.png", firstLayout.imagePlacements().getFirst().assetPath());
+        assertEquals(NewspaperImageRole.COVER, firstLayout.imagePlacements().getFirst().role());
         assertEquals(2, firstLayout.imagePlacements().getFirst().columnSpan());
     }
 

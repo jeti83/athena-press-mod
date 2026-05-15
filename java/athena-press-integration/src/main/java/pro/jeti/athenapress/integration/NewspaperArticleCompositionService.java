@@ -353,7 +353,7 @@ public class NewspaperArticleCompositionService {
 
         if (hasText(issueView.coverImage())) {
             String caption = coverCaption(issueView);
-            blocks.add(NewspaperVisualBlock.image(
+            blocks.add(NewspaperVisualBlock.coverImage(
                     issueView.coverImage(),
                     caption,
                     defaultTemplate.columnsPerPage()

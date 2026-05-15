@@ -82,6 +82,7 @@ public class NewspaperVisualRenderer {
                 imagePlacements.add(new NewspaperImagePlacement(
                         block.assetPath(),
                         block.content(),
+                        block.imageRole(),
                         page.pageNumber(),
                         columnIndex,
                         rowStart,

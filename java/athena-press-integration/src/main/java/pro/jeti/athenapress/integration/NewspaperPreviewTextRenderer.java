@@ -77,6 +77,8 @@ public class NewspaperPreviewTextRenderer {
                     .append(imagePlacement.rowSpan())
                     .append(" span ")
                     .append(imagePlacement.columnSpan())
+                    .append(" role=")
+                    .append(imagePlacement.role())
                     .append(" asset=")
                     .append(imagePlacement.assetPath());
 

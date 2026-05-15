@@ -4,11 +4,21 @@ public record NewspaperVisualBlock(
         NewspaperVisualBlockType type,
         String content,
         String assetPath,
-        int columnSpan
+        int columnSpan,
+        NewspaperImageRole imageRole
 ) {
 
     public NewspaperVisualBlock {
         columnSpan = columnSpan <= 0 ? 1 : columnSpan;
+    }
+
+    public NewspaperVisualBlock(
+            NewspaperVisualBlockType type,
+            String content,
+            String assetPath,
+            int columnSpan
+    ) {
+        this(type, content, assetPath, columnSpan, null);
     }
 
     public static NewspaperVisualBlock headline(String content) {
@@ -52,7 +62,8 @@ public record NewspaperVisualBlock(
                 NewspaperVisualBlockType.IMAGE,
                 caption,
                 assetPath,
-                1
+                1,
+                NewspaperImageRole.ARTICLE
         );
     }
 
@@ -65,7 +76,22 @@ public record NewspaperVisualBlock(
                 NewspaperVisualBlockType.IMAGE,
                 caption,
                 assetPath,
-                columnSpan
+                columnSpan,
+                NewspaperImageRole.ARTICLE
+        );
+    }
+
+    public static NewspaperVisualBlock coverImage(
+            String assetPath,
+            String caption,
+            int columnSpan
+    ) {
+        return new NewspaperVisualBlock(
+                NewspaperVisualBlockType.IMAGE,
+                caption,
+                assetPath,
+                columnSpan,
+                NewspaperImageRole.COVER
         );
     }
 
@@ -110,7 +136,8 @@ public record NewspaperVisualBlock(
                 NewspaperVisualBlockType.ADVERTISEMENT,
                 content,
                 assetPath,
-                1
+                1,
+                NewspaperImageRole.ADVERTISEMENT
         );
     }
 

@@ -32,6 +32,7 @@ class NewspaperBlockLayoutRuleSetTest {
         assertEquals(8, rules.rowSpanFor(inlineImage, template));
         assertEquals(12, rules.rowSpanFor(featuredImage, template));
         assertEquals(24, rules.weightFor(featuredImage, template));
+        assertEquals(NewspaperImageRole.ARTICLE, inlineImage.imageRole());
     }
 
     @Test

@@ -72,6 +72,7 @@ class NewspaperPreviewPipelineServiceTest {
         assertTrue(pages.stream()
                 .flatMap(page -> page.imagePlacements().stream())
                 .anyMatch(image -> "placeholders/article_market.png".equals(image.assetPath())
+                        && image.role() == NewspaperImageRole.ARTICLE
                         && "Der Marktstand blockiert den Ratssaal".equals(image.caption())));
     }
 
@@ -89,6 +90,7 @@ class NewspaperPreviewPipelineServiceTest {
         assertTrue(text.contains("SUBHEADLINE"));
         assertTrue(text.contains("Der Marktstand blockiert"));
         assertTrue(text.contains("IMAGE_PLACEMENT"));
+        assertTrue(text.contains("role=ARTICLE"));
         assertTrue(text.contains("placeholders/article_market.png"));
     }
 
