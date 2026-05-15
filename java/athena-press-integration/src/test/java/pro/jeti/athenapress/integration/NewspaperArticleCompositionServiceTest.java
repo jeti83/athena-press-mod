@@ -116,6 +116,21 @@ class NewspaperArticleCompositionServiceTest {
     }
 
     @Test
+    void carriesAdvertisementImagesAsAdvertisementPlacements() {
+        GameIssueView issueView = issueViewWithImageAdvertisement();
+
+        NewspaperVisualIssue visualIssue = new NewspaperArticleCompositionService()
+                .compose(issueView);
+        List<NewspaperPageLayout> layouts = new NewspaperVisualRenderer()
+                .render(visualIssue, NewspaperLayoutTemplate.classicDoublePage());
+
+        assertTrue(layouts.stream()
+                .flatMap(layout -> layout.imagePlacements().stream())
+                .anyMatch(image -> image.role() == NewspaperImageRole.ADVERTISEMENT
+                        && "placeholders/ad.png".equals(image.assetPath())));
+    }
+
+    @Test
     void splitsLongArticleBodyIntoMultipleBodyTextBlocks() {
         NewspaperArticleCompositionService service = new NewspaperArticleCompositionService(
                 new NewspaperVisualPaginationService(),
@@ -287,6 +302,32 @@ class NewspaperArticleCompositionServiceTest {
                         "Schaut vorbei.",
                         "Heute frisch.",
                         "Die Anzeige darf verschwinden."
+                ))
+        );
+    }
+
+    private GameIssueView issueViewWithImageAdvertisement() {
+        return new GameIssueView(
+                "issue_test",
+                7,
+                "Athena Morgenblatt",
+                "Aus der Stadt, fuer die Stadt",
+                "missing_article",
+                "placeholders/front.png",
+                List.of(new GameArticleView(
+                        "ad_1",
+                        "anzeigen",
+                        "Anzeige 1",
+                        null,
+                        "Schaut vorbei.",
+                        "Heute frisch.",
+                        "Die Anzeige darf ein Signet tragen.",
+                        new ImageInfo(
+                                "placeholders/ad.png",
+                                "Signet",
+                                null,
+                                "local"
+                        )
                 ))
         );
     }

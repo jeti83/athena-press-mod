@@ -454,7 +454,7 @@ public class NewspaperArticleCompositionService {
 
         blocks.add(NewspaperVisualBlock.advertisement(
                 articleTitle(article),
-                null
+                advertisementAssetPath(article)
         ));
 
         if (hasText(article.summary())) {
@@ -462,6 +462,11 @@ public class NewspaperArticleCompositionService {
         }
 
         blocks.add(NewspaperVisualBlock.divider());
+    }
+
+    private String advertisementAssetPath(GameArticleView article) {
+        ImageInfo image = article == null ? null : article.image();
+        return image == null || !hasText(image.file()) ? null : image.file();
     }
 
     private void addShortNoticeBlocks(
