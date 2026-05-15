@@ -233,6 +233,38 @@ class HytaleNewspaperVisualRuntimeTest {
         assertTrue(runtime.visualUiPort().hasRegisteredPlayer("player-1"));
     }
 
+    @Test
+    void runtimeNavigatesRealVisualIssueThroughPlayerUiButtons() throws IOException {
+        createMultiSpreadVisualDataSet();
+        CapturingVisualBridge bridge = new CapturingVisualBridge();
+        HytaleNewspaperVisualRuntime<String> runtime =
+                new HytaleNewspaperVisualRuntime<>(
+                        new AthenaPressIntegrationPlugin(tempDir),
+                        new NoopTextUiPort(),
+                        bridge,
+                        new StubResolver()
+                );
+
+        runtime.onPlayerConnected("player-1");
+        runtime.onPlayerChatCommand("player-1", "/ap", "issue_visual_multi");
+        assertEquals(0, bridge.lastView.spreadIndex());
+        assertTrue(bridge.lastView.totalSpreadCount() > 1);
+
+        runtime.onPlayerUiButton(
+                "player-1",
+                NewspaperVisualUiCommands.NEXT_SPREAD,
+                null
+        );
+        assertEquals(1, bridge.lastView.spreadIndex());
+
+        runtime.onPlayerUiButton(
+                "player-1",
+                NewspaperVisualUiCommands.PREVIOUS_SPREAD,
+                null
+        );
+        assertEquals(0, bridge.lastView.spreadIndex());
+    }
+
     private static class StubResolver implements HytalePlayerContextResolver<String> {
         @Override
         public HytalePlayerContext resolve(String player) {
@@ -349,6 +381,55 @@ class HytaleNewspaperVisualRuntimeTest {
                   "subtitle": "Frisch geblättert",
                   "articles": [
                     "article_visual"
+                  ],
+                  "cover": {
+                    "mainArticleId": "article_visual",
+                    "image": "placeholders/lantern.png"
+                  }
+                }
+                """
+        );
+    }
+
+    private void createMultiSpreadVisualDataSet() throws IOException {
+        createVisualDataSet();
+
+        for (int index = 1; index <= 5; index++) {
+            Files.writeString(
+                    tempDir.resolve("articles").resolve("published")
+                            .resolve("article_visual_" + index + ".json"),
+                    """
+                    {
+                      "id": "article_visual_%1$d",
+                      "status": "published",
+                      "categoryId": "stadtklatsch",
+                      "title": "Lange Meldung %1$d",
+                      "subtitle": "Noch eine ernste Fussnote",
+                      "teaser": "Die Lage blieb bemerkenswert.",
+                      "summary": "Athena nahm die Nachricht mit gefasster Neugier auf.",
+                      "body": "Dies ist absichtlich ein langer Mischartikel, damit er nicht als Kurzmeldung einsortiert wird und zusammen mit den anderen Meldungen eine weitere Doppelseite fuellt. Er berichtet ausfuehrlich ueber den Platz, die Fenster, die Laternen und ueber Menschen, die sich sehr sicher waren, nichts Besonderes gesehen zu haben."
+                    }
+                    """.formatted(index)
+            );
+        }
+
+        Files.writeString(
+                tempDir.resolve("issues").resolve("published")
+                        .resolve("issue_visual_multi.json"),
+                """
+                {
+                  "id": "issue_visual_multi",
+                  "status": "published",
+                  "issueNumber": 8,
+                  "title": "Athena Sichtblatt",
+                  "subtitle": "Frisch geblättert",
+                  "articles": [
+                    "article_visual",
+                    "article_visual_1",
+                    "article_visual_2",
+                    "article_visual_3",
+                    "article_visual_4",
+                    "article_visual_5"
                   ],
                   "cover": {
                     "mainArticleId": "article_visual",
