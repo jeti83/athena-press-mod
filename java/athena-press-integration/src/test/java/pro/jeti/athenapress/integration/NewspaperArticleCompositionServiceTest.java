@@ -226,6 +226,10 @@ class NewspaperArticleCompositionServiceTest {
                         && block.layoutIntent() == NewspaperBlockLayoutIntent.MEMORIAL));
         assertTrue(visualIssue.pages().stream()
                 .flatMap(page -> page.blocks().stream())
+                .anyMatch(block -> "Verschollen und unvergessen".equals(block.content())
+                        && block.layoutIntent() == NewspaperBlockLayoutIntent.MEMORIAL));
+        assertTrue(visualIssue.pages().stream()
+                .flatMap(page -> page.blocks().stream())
                 .anyMatch(block -> "Ein stiller Moment.".equals(block.content())
                         && block.layoutIntent() == NewspaperBlockLayoutIntent.MEMORIAL));
     }

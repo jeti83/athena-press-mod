@@ -48,6 +48,8 @@ public class NewspaperPreviewTextRenderer {
         for (NewspaperPreviewBlock block : page.blocks()) {
             text.append("  - ")
                     .append(block.type())
+                    .append(" intent=")
+                    .append(block.layoutIntent())
                     .append(" c")
                     .append(block.columnIndex())
                     .append(" r")

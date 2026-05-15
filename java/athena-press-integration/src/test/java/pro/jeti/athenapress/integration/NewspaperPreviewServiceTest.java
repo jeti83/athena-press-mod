@@ -76,6 +76,7 @@ class NewspaperPreviewServiceTest {
         assertTrue(text.contains("Doppelseite 1"));
         assertTrue(text.contains("FRONT_COVER"));
         assertTrue(text.contains("HEADLINE"));
+        assertTrue(text.contains("intent=STANDARD"));
     }
 
     @Test

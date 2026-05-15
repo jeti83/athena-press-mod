@@ -407,10 +407,11 @@ public class NewspaperArticleCompositionService {
             return List.of();
         }
 
-        return List.of(
-                NewspaperVisualBlock.subheadline(sectionTitleFor(sectionType)),
-                NewspaperVisualBlock.divider()
-        );
+        NewspaperVisualBlock heading = sectionType == NewspaperPageSectionType.MEMORIAL
+                ? NewspaperVisualBlock.memorialSubheadline(sectionTitleFor(sectionType))
+                : NewspaperVisualBlock.subheadline(sectionTitleFor(sectionType));
+
+        return List.of(heading, NewspaperVisualBlock.divider());
     }
 
     private List<NewspaperVisualBlock> coverBlocksFor(GameIssueView issueView) {
