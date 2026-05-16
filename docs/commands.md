@@ -771,3 +771,50 @@ Implementiert in `ArticleEditorService`. Schritt-für-Schritt-Flow:
 Schritte: Titel → Kategorie → Text → Foto aus Album → Vorschau → Einreichen
 
 Einreichung erzeugt einen Draft in `AthenaPress/articles/draft/`.
+
+Eingaben während einer aktiven Session werden direkt mit `/ap <text>` übergeben:
+
+```
+/ap Mein Artikeltitel
+/ap nachrichten
+/ap Hier steht der Artikeltext.
+/ap weiter
+/ap einreichen
+/ap abbrechen
+```
+
+---
+## 14. Ingame-Befehl: Ausgabe zusammenstellen (`/ap ausgabe`)
+
+Implementiert in `IssueEditorService`. Schritt-für-Schritt-Flow:
+
+```
+/ap ausgabe
+```
+
+Schritte:
+1. **Artikel auswählen** – Nummernliste kommasepariert, z. B. `1,3` oder `alle`
+2. **Titelartikel wählen** – Nummer oder `weiter` (erster Artikel)
+3. **Untertitel eingeben** – Freitext oder `weiter` (kein Untertitel)
+4. **Prüfen und einreichen** – `einreichen` speichert als Entwurf, `abbrechen` bricht ab
+
+Alle Eingaben über `/ap <text>`:
+
+```
+/ap ausgabe
+/ap 1,3
+/ap 1
+/ap Sonderausgabe Stadtentwicklung
+/ap einreichen
+```
+
+Einreichung erzeugt einen Entwurf in `AthenaPress/issues/draft/`. Ein Admin kann ihn anschließend mit `/ap veroeffentlichen issue_XXXX` veröffentlichen.
+
+---
+## 15. Berechtigungen
+
+| Permission | Bedeutung |
+|---|---|
+| `athenapress.admin` | Chef-Redakteur-Befehle (`publish`, `archive`, `deliver`, `delete`, `validate`, `status`, `list`) |
+
+Die Permission wird über das Hytale-Permissions-System dem Spieler zugewiesen.

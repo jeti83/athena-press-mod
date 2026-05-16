@@ -1,6 +1,6 @@
 # AthenaPress Backend-Status
 
-Stand: AthenaPress v0.4
+Stand: AthenaPress v0.4 (Mai 2026)
 
 ---
 
@@ -8,7 +8,7 @@ Stand: AthenaPress v0.4
 
 AthenaPress ist eine Zeitungs-Mod für den Athena-Hytale-Server.
 
-Das Backend ist stabil. Das Visual-Preview-System erzeugt echte PNG-Doppelseiten aus den Zeitungsdaten. Die nächste Entwicklungsphase ist die Anbindung an die Hytale Plugin-API.
+Das Backend ist stabil. Der Ausgaben-Editor ist verdrahtet und einsatzbereit. Das Plugin-Modul kompiliert gegen die echte HytaleServer.jar und nutzt die reale Permission- und Message-API. Die nächste Phase ist die Vervollständigung der drei Hytale-Adapter-Stubs, sobald die Hytale Plugin-API öffentlich verfügbar ist.
 
 ---
 
@@ -43,10 +43,21 @@ Das Backend ist stabil. Das Visual-Preview-System erzeugt echte PNG-Doppelseiten
 - Hytale-Adapter-Schicht vorbereitet (API-neutral)
 - `HytaleNewspaperVisualRuntime` als Einstiegspunkt für spätere Verdrahtung
 - Input-System vorbereitet: Item, NPC, Chat-Befehl, Keybind, UI
+- **`ArticleEditorService`** – Schritt-für-Schritt Artikel-Editor (vollständig)
+- **`IssueEditorService`** – Ausgaben-Editor verdrahtet: Gateway, Plugin, `ApCommand`
+- Pagination verbessert: keepTogether-Schwellwert 30 % → 50 % (weniger Leerraum)
 
-### Tests (letzter bekannter stabiler Stand)
+### Java Plugin (athena-press-plugin)
+- Kompiliert gegen echte `HytaleServer.jar`
+- Nutzt reale Hytale-API: `JavaPlugin`, `AbstractCommand`, `EventRegistry`, `Message.raw()`, `hasPermission()`
+- Stubs für noch nicht existente Player-Events (`PlayerConnectEvent` etc.) in `com.hypixel.hytale.event`
+- `AP_ADMIN_PERMISSION = "athenapress.admin"` – via Hytale Permissions-System zuzuweisen
+- Editor-Ausgaben via `ctx.sendMessage(Message.raw(text))` direkt an Spieler
+
+### Tests (aktueller stabiler Stand)
 - Core: 103 Tests, 0 Failures, 0 Errors
-- Integration: 169 Tests, 0 Failures, 0 Errors
+- Integration: 197 Tests, 0 Failures, 0 Errors
+- **Gesamt: 300 Tests**
 
 ---
 
@@ -81,11 +92,11 @@ Folgende Adapter-Klassen sind vorbereitet aber noch nicht mit echter Hytale-API 
 
 | Klasse | Was fehlt |
 |---|---|
-| `HytalePlayerContextResolver<TPlayer>` | Hytale-Spieler → HytalePlayerContext |
+| `HytalePlayerContextResolver<TPlayer>` | Hytale-Spieler → HytalePlayerContext (UUID, Name) |
 | `HytaleNewspaperVisualUiBridge` | NoesisGUI-Fenster öffnen/schließen/aktualisieren |
-| `HytaleNewspaperVisualInputAdapter` | Chat-Befehl `/ap`, Item-Use, NPC-Klick → Input-Event |
+| `HytaleCameraUiBridge` | HUD ausblenden, Screenshot auslösen |
 
-Sobald die Hytale Plugin-API dokumentiert vorliegt, werden nur diese drei Stellen ausgefüllt.
+Sobald die Hytale Plugin-API öffentlich verfügbar ist, werden nur diese drei Stellen ausgefüllt. Das übrige Plugin (`AthenaPressPlugin`, `ApCommand`, `PlayerContextResolver`, `NewspaperVisualBridge`, `CameraUiBridge`) ist bereits vollständig und wartet nur auf die echten Implementierungen der drei Adapter.
 
 ---
 
