@@ -137,75 +137,65 @@ Der Spieler gibt eine Nummer ein — das Foto wird als `camera_marker` automatis
 
 ---
 
-## Blockbench-Modell (Athena Presse-Kamera)
+## Kamera-Item: Modell und Trigger
 
-Das Kamera-Modell liegt als photogrammetrischer OBJ-Scan vor (`PresseKamera_OBJ.zip`).
-Der Scan hat **691.795 Vertices / 1.204.625 Faces** und ist für Hytale nicht direkt verwendbar.
-Er dient als visuelle Vorlage für das Nachbauen in **Blockbench**.
+### Aktueller Stand (geparkt)
 
-### OBJ-Quellmodell
+Das eigene Kamera-Modell ist vorerst zurückgestellt. Die Blockbench-Konvertierung
+(korrekte Face-Anzahl, UV-Textur, Hytale-Proportionen) erweist sich ohne Modellier-
+Erfahrung als zu aufwändig. Ein öffentliches Community-Modell für ein Kamera-Item
+existiert bislang nicht.
 
-Das fertige Quellmodell liegt unter:
+Das OBJ-Quellmodell bleibt als Referenz im Projekt:
 
 ```
 items/source/AP_PresseKamera.obj   (Geometrie)
 items/source/AP_PresseKamera.mtl   (Materialien)
 ```
 
-### Schritt-für-Schritt: OBJ → Blockbench → Hytale
+### Optionen für den Item-Trigger (sobald Hytale-API verfügbar)
 
-**Schritt 1 – OBJ importieren:**
-1. Blockbench öffnen → `Datei → Neu → Hytale Item` als Projekttyp wählen
-2. `Datei → Importieren → OBJ-Modell` → `items/source/AP_PresseKamera.obj` auswählen
-3. Modell prüfen: Falls zu viele Vertices (> 1.000), über `Polygone reduzieren` vereinfachen
+**Option A – Machinima-Filmkamera (bevorzugt, falls API es erlaubt)**
 
-**Schritt 2 – Textur anlegen:**
-1. Im Panel `Texturen` → `Neu` → Größe 16×16 oder 32×32 Pixel
-2. Farben manuell setzen (UV-Map in Blockbench zeichnen):
-   - Gehäuse: `#1A1A1A` (sehr dunkles Grau)
-   - Objektiv-Ring: `#C0C0C0` (Silber), Linse: fast-schwarz mit blauem Schimmer
-   - Griff: `#2A2A2A` (leicht texturiertes Dunkelgrau)
+Hytale enthält ein Machinima-Tool mit einer eingebauten Filmkamera. Falls die
+Hytale-API Zugriff auf diese Asset-ID gibt, kann die Filmkamera direkt als
+Modell für das AthenaPress-Kamera-Item genutzt werden – ohne eigenes Modell.
 
-**Geometrie (alle Maße in Blockbench-Units, 1 Unit = 1/16 Block):**
-
-```
-Hauptkörper (Kameragehäuse):
-  Größe:     14 × 10 × 6 Units
-  Position:  Mitte des Items
-  Textur:    dunkelgrau / schwarz
-
-Objektiv (vorne, mittig):
-  Form:      Zylinder oder abgestufter Quader (3 Stufen)
-  Größe:     4 × 4 × 5 Units (herausragend)
-  Position:  Vordermitte des Gehäuses
-  Textur:    dunkel mit hellem Glasring
-
-Sucher (oben links):
-  Größe:     3 × 2 × 2 Units
-  Position:  Oberkante, linke Seite
-  Textur:    schwarz
-
-Griff (rechte Seite, unten):
-  Größe:     3 × 6 × 5 Units
-  Position:  Rechts am Gehäuse, leicht abgesetzt
-  Textur:    leicht geriffelt / dunkelgrau
-
-Auslöser-Knopf (oben, Griff):
-  Größe:     2 × 1 × 2 Units
-  Textur:    metallisch silber
+```java
+// Voraussetzung: Hytale exposiert die Machinima-Kamera-Asset-ID
+"model": "hytale:machinima/filmkamera"   // hypothetisch
 ```
 
-**Textur-Workflow:**
-1. UV-Map in Blockbench erstellen (16×16 oder 32×32 Pixel reichen für ein Item)
-2. `image0.jpg` in einem Bildeditor als Farbvorlage öffnen
-3. Hauptfarbe: sehr dunkles Grau (#1A1A1A) für Gehäuse
-4. Objektiv-Ring: Silber (#C0C0C0), Linse: fast-schwarz mit blauem Schimmer
-5. Griff: leicht texturiertes Dunkelgrau
+**Option B – Bestehendes Hytale-Item verwenden**
 
-**Export:**
-- `Datei → Exportieren → Hytale Item (.bbmodel)`
-- Dateiname: `athena_kamera.bbmodel`
-- Ablage: `items/athena_kamera.bbmodel` im Hytale-Mod-Ordner
+Die Kamera-Funktion an ein anderes craftbares Item hängen (z.B. Fernglas,
+Buch, Linse). Das Modell ist dann Hytale-intern, kein eigenes `.bbmodel` nötig.
+`athena_kamera.json` muss dafür nur `"model"` auf das native Asset zeigen.
+
+**Option C – Kein Item, Befehl stattdessen**
+
+```
+/kamera
+```
+
+Löst `CameraScreenshotService.onCameraItemUse(playerId, playerName)` direkt aus.
+Modellunabhängig, sofort mit bestehendem Code umsetzbar. Kein Blockbench nötig.
+Sinnvoll als Übergangslösung bis ein passendes Modell vorliegt.
+
+### Machinima als zukünftige Erweiterung
+
+Das Hytale-Machinima-Tool ist komplex, bietet aber Funktionen die für AthenaPress
+langfristig interessant sein könnten: gesteuerte Kamerafahrten, definierte
+Bildausschnitte, Szenenregie. Eine tiefere Integration ist für eine spätere Phase
+denkbar, sobald die Hytale-API und das Machinima-API dokumentiert vorliegen.
+
+### Blockbench-Referenz (falls Modell später doch gebaut wird)
+
+Projekttyp: **Hytale Prop** (es gibt kein separates „Hytale Item" in Blockbench).
+OBJ öffnen über: `Datei → Modell öffnen → AP_PresseKamera.obj` (öffnet als
+Generic Model), dann `Datei → Projekt konvertieren → Hytale Prop`.
+
+Zieldatei: `items/athena_kamera.bbmodel`
 
 ---
 
@@ -255,7 +245,9 @@ AthenaPress/
 | CameraScreenshotService (HUD-Toggle → F12 → Album) | ✅ Fertig (API-neutral) |
 | ScreenshotFileWatcher (erkennt neue Dateien) | ✅ Fertig |
 | HytaleCameraUiBridge (Interface für Hytale API) | ✅ Fertig (Stub) |
-| OBJ-Quellmodell `items/source/AP_PresseKamera.obj` | ✅ Fertig |
-| Blockbench-Import und Export als `items/athena_kamera.bbmodel` | ⏳ Ausstehend (manuell in Blockbench) |
+| OBJ-Quellmodell `items/source/AP_PresseKamera.obj` | ✅ Fertig (Referenz) |
+| Blockbench-Export als `items/athena_kamera.bbmodel` | 🔲 Geparkt – siehe Optionen A/B/C |
 | Hytale Item-JSON `items/athena_kamera.json` | ✅ Angelegt (wartet auf Hytale API) |
+| Item-Trigger (Item-Klick oder `/kamera`-Befehl) | ⏳ Ausstehend (Hytale API) |
 | HytaleCameraUiBridge Implementierung | ⏳ Ausstehend (Hytale API) |
+| Machinima-Integration (Kamerafahrten, Szenenregie) | 🔭 Langfristig – nach Hytale-API-Doku |
