@@ -14,7 +14,7 @@
     "file": "ausgabe_0002/lobby_selfie.png",
     "caption": "HF_jeti83 weiht die neue AthenaPress-Kamera in der Lobby ein. Der Drache im Hintergrund war nicht für ein Interview verfügbar.",
     "credit": "Foto: HF_jeti83",
-    "sourceType": "ingame"
+    "sourceType": "uploaded"
   },
   "location": {
     "enabled": true,
@@ -28,3 +28,4 @@
   "updatedAt": "2026-05-17T10:00:00+02:00",
   "publishedAt": "2026-05-17T10:00:00+02:00"
 }
+

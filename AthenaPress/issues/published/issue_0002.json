@@ -3,23 +3,23 @@
   "status": "published",
   "issueNumber": 2,
   "title": "Athena Botenblatt",
-  "subtitle": "Kameras, Kolosseen und Koch Wario",
-  "editionName": "Erste Test-Ausgabe",
+  "subtitle": "Kleinanzeigen, Holz und Neuigkeiten vom Server",
+  "editionName": "Zweite Ausgabe",
   "cover": {
-    "mainArticleId": "article_0003",
-    "image": "ausgabe_0002/lobby_selfie.png"
+    "mainArticleId": "article_0001",
+    "image": "placeholders/dating.png"
   },
   "articles": [
-    "article_0003",
+    "article_0001",
+    "article_0002",
     "article_0004",
     "article_0005",
     "article_0006",
-    "article_0007",
-    "article_0008"
+    "article_0007"
   ],
-  "createdAt": "2026-05-17T10:30:00+02:00",
-  "updatedAt": "2026-05-17T10:30:00+02:00",
-  "publishedAt": "2026-05-17T10:30:00+02:00",
+  "createdAt": "2026-05-17T09:00:00+02:00",
+  "updatedAt": "2026-05-17T09:00:00+02:00",
+  "publishedAt": "2026-05-17T09:00:00+02:00",
   "deliveredToSubscribers": false,
   "archivedAt": null,
   "previousStatus": "draft"

@@ -11,7 +11,7 @@
     "file": "ausgabe_0002/spawn_imbiss.png",
     "caption": "Koch Wario hinter seinem Tresen am Spawn-Markt. Öffnungszeiten: wann immer er Lust hat.",
     "credit": "Foto: HF_jeti83",
-    "sourceType": "ingame"
+    "sourceType": "uploaded"
   },
   "location": { "enabled": true, "world": "Citybuild", "x": 0, "y": 64, "z": 0 },
   "tags": ["spawn", "markt", "handel", "imbiss", "wirtschaft"],
@@ -19,3 +19,4 @@
   "updatedAt": "2026-05-17T10:15:00+02:00",
   "publishedAt": "2026-05-17T10:15:00+02:00"
 }
+

@@ -11,7 +11,7 @@
     "file": "ausgabe_0002/kreaturenschau.png",
     "caption": "Vier Kreaturen, ein Innenhof, keine Beschilderung. Die Menagerie auf dem Citybuild-Plot.",
     "credit": "Foto: HF_jeti83",
-    "sourceType": "ingame"
+    "sourceType": "uploaded"
   },
   "location": { "enabled": true, "world": "Citybuild", "x": 0, "y": 64, "z": 0 },
   "tags": ["bauprojekt", "citybuild", "kreaturen", "plot", "ausstellung"],
@@ -19,3 +19,4 @@
   "updatedAt": "2026-05-17T10:20:00+02:00",
   "publishedAt": "2026-05-17T10:20:00+02:00"
 }
+

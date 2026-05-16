@@ -11,7 +11,7 @@
     "file": "ausgabe_0002/kolosseum_innen.png",
     "caption": "Sonnenlicht fällt durch die Bögen der überwachsenen Raid-Arena. Kampf optional.",
     "credit": "Foto: HF_jeti83",
-    "sourceType": "ingame"
+    "sourceType": "uploaded"
   },
   "location": { "enabled": true, "world": "Athena Raid Arenen", "x": 0, "y": 64, "z": 0 },
   "tags": ["raid", "arena", "bauprojekt", "natur"],
@@ -19,3 +19,4 @@
   "updatedAt": "2026-05-17T10:05:00+02:00",
   "publishedAt": "2026-05-17T10:05:00+02:00"
 }
+

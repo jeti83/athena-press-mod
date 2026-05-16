@@ -11,7 +11,7 @@
     "file": "ausgabe_0002/mondnacht_klippe.png",
     "caption": "Blick vom Klippenrand in die Survival-Nacht. Gleich dahinter fängt das Abenteuer wieder an.",
     "credit": "Foto: HF_jeti83",
-    "sourceType": "ingame"
+    "sourceType": "uploaded"
   },
   "location": { "enabled": true, "world": "Survival", "x": 0, "y": 128, "z": 0 },
   "tags": ["survival", "nacht", "natur", "stimmung"],
@@ -19,3 +19,4 @@
   "updatedAt": "2026-05-17T10:10:00+02:00",
   "publishedAt": "2026-05-17T10:10:00+02:00"
 }
+
