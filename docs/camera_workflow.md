@@ -143,11 +143,28 @@ Das Kamera-Modell liegt als photogrammetrischer OBJ-Scan vor (`PresseKamera_OBJ.
 Der Scan hat **691.795 Vertices / 1.204.625 Faces** und ist für Hytale nicht direkt verwendbar.
 Er dient als visuelle Vorlage für das Nachbauen in **Blockbench**.
 
-### Schritt-für-Schritt in Blockbench
+### OBJ-Quellmodell
 
-**Vorbereitung:**
-1. Blockbench öffnen → `Hytale Item` als Projekttyp wählen
-2. Importiere `image0.jpg` aus dem ZIP als Textur-Referenz (Anzeigebild, kein direktes Mapping)
+Das fertige Quellmodell liegt unter:
+
+```
+items/source/AP_PresseKamera.obj   (Geometrie)
+items/source/AP_PresseKamera.mtl   (Materialien)
+```
+
+### Schritt-für-Schritt: OBJ → Blockbench → Hytale
+
+**Schritt 1 – OBJ importieren:**
+1. Blockbench öffnen → `Datei → Neu → Hytale Item` als Projekttyp wählen
+2. `Datei → Importieren → OBJ-Modell` → `items/source/AP_PresseKamera.obj` auswählen
+3. Modell prüfen: Falls zu viele Vertices (> 1.000), über `Polygone reduzieren` vereinfachen
+
+**Schritt 2 – Textur anlegen:**
+1. Im Panel `Texturen` → `Neu` → Größe 16×16 oder 32×32 Pixel
+2. Farben manuell setzen (UV-Map in Blockbench zeichnen):
+   - Gehäuse: `#1A1A1A` (sehr dunkles Grau)
+   - Objektiv-Ring: `#C0C0C0` (Silber), Linse: fast-schwarz mit blauem Schimmer
+   - Griff: `#2A2A2A` (leicht texturiertes Dunkelgrau)
 
 **Geometrie (alle Maße in Blockbench-Units, 1 Unit = 1/16 Block):**
 
@@ -238,6 +255,7 @@ AthenaPress/
 | CameraScreenshotService (HUD-Toggle → F12 → Album) | ✅ Fertig (API-neutral) |
 | ScreenshotFileWatcher (erkennt neue Dateien) | ✅ Fertig |
 | HytaleCameraUiBridge (Interface für Hytale API) | ✅ Fertig (Stub) |
-| Blockbench-Modell athena_kamera.bbmodel | ⏳ Ausstehend (manuell) |
-| Hytale Item-JSON athena_kamera.json | ⏳ Ausstehend (Hytale API) |
+| OBJ-Quellmodell `items/source/AP_PresseKamera.obj` | ✅ Fertig |
+| Blockbench-Import und Export als `items/athena_kamera.bbmodel` | ⏳ Ausstehend (manuell in Blockbench) |
+| Hytale Item-JSON `items/athena_kamera.json` | ✅ Angelegt (wartet auf Hytale API) |
 | HytaleCameraUiBridge Implementierung | ⏳ Ausstehend (Hytale API) |

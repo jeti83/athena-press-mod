@@ -1,0 +1,12 @@
+{
+  "id": "athena_kamera",
+  "name": "Athena Presse-Kamera",
+  "description": "Drücke die linke Maustaste um ein Foto aufzunehmen.",
+  "model": "items/athena_kamera.bbmodel",
+  "stackable": false,
+  "maxCount": 1,
+  "onPrimaryUse": {
+    "plugin": "AthenaPress",
+    "action": "CAMERA_CAPTURE"
+  }
+}
