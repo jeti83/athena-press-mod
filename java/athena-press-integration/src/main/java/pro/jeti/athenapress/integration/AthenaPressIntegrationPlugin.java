@@ -136,6 +136,22 @@ public class AthenaPressIntegrationPlugin {
         return gateway.getCachedPreviewCount();
     }
 
+    public IssueEditorView startIssueEditor(String playerId, String playerName, boolean admin) throws IOException {
+        return gateway.startIssueEditor(playerId, playerName, admin);
+    }
+
+    public IssueEditorView handleIssueEditorInput(String playerId, String input) throws IOException {
+        return gateway.handleIssueEditorInput(playerId, input);
+    }
+
+    public boolean hasActiveIssueEditorSession(String playerId) {
+        return gateway.hasActiveIssueEditorSession(playerId);
+    }
+
+    public void cancelIssueEditorSession(String playerId) {
+        gateway.cancelIssueEditorSession(playerId);
+    }
+
     public ArticleEditorView startArticleEditor(String playerId, String playerName, boolean admin) {
         return gateway.startArticleEditor(playerId, playerName, admin);
     }

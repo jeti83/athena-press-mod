@@ -15,6 +15,7 @@ public class NewspaperIntegrationGateway {
     private final NewspaperPreviewPipelineService previewPipelineService;
     private final PlayerNewspaperVisualNavigationService visualNavigationService;
     private final ArticleEditorService articleEditorService;
+    private final IssueEditorService issueEditorService;
     private final AlbumCommandService albumCommandService;
     private final ChefRedakteurService chefRedakteurService;
     private final Map<String, GameNewspaperSessionService> sessionsByPlayerId = new HashMap<>();
@@ -32,6 +33,10 @@ public class NewspaperIntegrationGateway {
                 core.getArticleWriteService(),
                 core.getCategoryRepository(),
                 core.getPlayerAlbumService()
+        );
+        this.issueEditorService = new IssueEditorService(
+                core.getIssueWriteService(),
+                core.getArticleRepository()
         );
         this.albumCommandService = new AlbumCommandService(core.getPlayerAlbumService());
         this.chefRedakteurService = new ChefRedakteurService(
@@ -207,6 +212,22 @@ public class NewspaperIntegrationGateway {
 
     public int getCachedPreviewCount() {
         return previewPipelineService.cachedPreviewCount();
+    }
+
+    public IssueEditorView startIssueEditor(String playerId, String playerName, boolean admin) throws IOException {
+        return issueEditorService.startEditing(playerId, playerName, admin);
+    }
+
+    public IssueEditorView handleIssueEditorInput(String playerId, String input) throws IOException {
+        return issueEditorService.handleInput(playerId, input);
+    }
+
+    public boolean hasActiveIssueEditorSession(String playerId) {
+        return issueEditorService.hasActiveSession(playerId);
+    }
+
+    public void cancelIssueEditorSession(String playerId) {
+        issueEditorService.cancelSession(playerId);
     }
 
     public ArticleEditorView startArticleEditor(String playerId, String playerName, boolean admin) {

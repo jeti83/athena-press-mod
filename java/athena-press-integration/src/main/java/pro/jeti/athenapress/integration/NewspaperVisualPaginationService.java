@@ -104,8 +104,8 @@ public class NewspaperVisualPaginationService {
 
             // Only keep an article together on a fresh page if:
             // - the current page is not a continuation (continuation pages fill greedily), and
-            // - the current page is at least 30 % full (avoids near-empty pages before articles)
-            boolean currentPageTooEmpty = currentWeight < (int) (pageCapacity * 0.3);
+            // - the current page is at least 50 % full (avoids large empty gaps before articles)
+            boolean currentPageTooEmpty = currentWeight < (int) (pageCapacity * 0.5);
             boolean shouldKeepTogether = !currentPageHasContinuation
                     && !currentPageTooEmpty
                     && groupWeight <= pageCapacity
