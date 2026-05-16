@@ -1,5 +1,5 @@
 # AthenaPress Befehlsübersicht
-Stand: AthenaPress Backend v0.3 mit Java-Core-Demo
+Stand: AthenaPress v0.4
 Alle Befehle werden im Projektordner ausgeführt:
 
 cd C:\Users\jeti8\Projekte\Hytale-Mods\athena-press-mod
@@ -656,3 +656,118 @@ python press.py artikel liste
 python press.py ausgabe liste
 python press.py abonnent liste
  
+---
+## 11. Ingame-Befehle: Chef-Redakteur (`/ap`)
+
+Diese Befehle werden direkt im Spiel eingegeben. Sie sind in `ChefRedakteurService` und `ChefRedakteurCommandService` implementiert.
+
+Befehle ohne Hytale-API bereits vollständig testbar über `ChefRedakteurService.handle(args)`.
+
+### Zeitung öffnen (für alle Spieler)
+
+```
+/ap
+```
+
+Öffnet die aktuelle Ausgabe als Visual-Doppelseiten-Overlay.
+
+---
+### Veröffentlichen
+
+```
+/ap publish article_0001
+/ap veroeffentlichen article_0001
+
+/ap publish issue_0002
+/ap veroeffentlichen issue_0002
+```
+
+Veröffentlicht einen Artikel oder eine Ausgabe. Funktioniert für `article_*` und `issue_*`.
+
+---
+### Archivieren
+
+```
+/ap archive article_0001
+/ap archivieren article_0001
+
+/ap archive issue_0002
+/ap archivieren issue_0002
+```
+
+---
+### Zustellen
+
+```
+/ap deliver issue_0002
+/ap zustellen issue_0002
+```
+
+Nur für Ausgaben (`issue_*`).
+
+---
+### Entwurf löschen
+
+```
+/ap delete article_0016
+/ap loeschen article_0016
+
+/ap delete issue_0005
+/ap loeschen issue_0005
+```
+
+Nur Entwürfe (`draft`) können gelöscht werden.
+
+---
+### Ausgabe validieren
+
+```
+/ap validate issue_0003
+/ap pruefen issue_0003
+```
+
+---
+### Kurzübersicht
+
+```
+/ap status
+/ap uebersicht
+```
+
+Zeigt Anzahl Artikel und Ausgaben (veröffentlicht / Entwurf).
+
+---
+### Alle Inhalte auflisten
+
+```
+/ap list
+/ap liste
+```
+
+Listet alle Artikel und Ausgaben mit ID, Status und Titel.
+
+---
+## 12. Ingame-Befehle: Foto-Album (`/album`)
+
+Implementiert in `AlbumCommandService`.
+
+```
+/album                              → Album öffnen
+/album sortieren name|datum|favorit → Sortierung ändern
+/album favorit <id>                 → Favorit ein/aus (★)
+/album umbenennen <id> <name>       → Foto umbenennen
+/album loeschen <id>                → Foto löschen
+```
+
+---
+## 13. Ingame-Befehl: Artikel schreiben (`/ap redaktion`)
+
+Implementiert in `ArticleEditorService`. Schritt-für-Schritt-Flow:
+
+```
+/ap redaktion
+```
+
+Schritte: Titel → Kategorie → Text → Foto aus Album → Vorschau → Einreichen
+
+Einreichung erzeugt einen Draft in `AthenaPress/articles/draft/`.

@@ -93,6 +93,70 @@ public class IssueWriteService {
         return "Entwurf geloescht: " + issueId;
     }
 
+    public String createDraft(IssueDraftRequest request) throws IOException {
+        String id = generateNextId();
+        int issueNumber = extractNumber(id);
+        Path draftFolder = issuesRoot.resolve("draft");
+        Files.createDirectories(draftFolder);
+
+        ObjectNode root = objectMapper.createObjectNode();
+        root.put("id", id);
+        root.put("status", "draft");
+        root.put("issueNumber", issueNumber);
+        root.put("title", "Athena Botenblatt");
+        root.put("subtitle", request.subtitle() != null ? request.subtitle() : "");
+
+        ObjectNode cover = objectMapper.createObjectNode();
+        String mainId = request.mainArticleId() != null && !request.mainArticleId().isBlank()
+                ? request.mainArticleId()
+                : (request.articleIds() != null && !request.articleIds().isEmpty()
+                        ? request.articleIds().get(0)
+                        : null);
+        if (mainId != null) cover.put("mainArticleId", mainId);
+        cover.put("image", "placeholders/no_image.png");
+        root.set("cover", cover);
+
+        var articlesArray = objectMapper.createArrayNode();
+        if (request.articleIds() != null) request.articleIds().forEach(articlesArray::add);
+        root.set("articles", articlesArray);
+
+        root.putNull("publishedAt");
+        root.put("deliveredToSubscribers", false);
+        String ts = now();
+        root.put("createdAt", ts);
+        root.put("updatedAt", ts);
+
+        objectMapper.writeValue(draftFolder.resolve(id + ".json").toFile(), root);
+        return id;
+    }
+
+    private String generateNextId() throws IOException {
+        int maxNumber = 0;
+        for (String subfolder : new String[]{"draft", "published", "archived"}) {
+            Path folder = issuesRoot.resolve(subfolder);
+            if (!Files.isDirectory(folder)) continue;
+            try (var stream = Files.list(folder)) {
+                int folderMax = stream
+                        .map(p -> p.getFileName().toString())
+                        .filter(name -> name.startsWith("issue_") && name.endsWith(".json"))
+                        .mapToInt(this::extractNumber)
+                        .max()
+                        .orElse(0);
+                maxNumber = Math.max(maxNumber, folderMax);
+            }
+        }
+        return String.format("issue_%04d", maxNumber + 1);
+    }
+
+    private int extractNumber(String filename) {
+        try {
+            String digits = filename.substring("issue_".length(), filename.length() - ".json".length());
+            return Integer.parseInt(digits);
+        } catch (NumberFormatException | IndexOutOfBoundsException ignored) {
+            return 0;
+        }
+    }
+
     private Path findIssueFile(String issueId, String folder) {
         Path candidate = issuesRoot.resolve(folder).resolve(issueId + ".json");
         return Files.exists(candidate) ? candidate : null;

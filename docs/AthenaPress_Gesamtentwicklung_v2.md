@@ -325,9 +325,9 @@ HytaleNewspaperVisualRuntime<TPlayer> runtime = new HytaleNewspaperVisualRuntime
 
 | Modul | Tests | Failures | Errors |
 |---|---|---|---|
-| athena-press-core | 115 | 0 | 0 |
-| athena-press-integration | 177 | 0 | 0 |
-| **Gesamt** | **292** | **0** | **0** |
+| athena-press-core | 103 | 0 | 0 |
+| athena-press-integration | 197 | 0 | 0 |
+| **Gesamt** | **300** | **0** | **0** |
 
 **Testbefehl:**
 ```powershell

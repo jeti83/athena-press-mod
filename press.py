@@ -272,6 +272,23 @@ def build_parser():
     draft_delete.add_argument("--yes", "--ja", dest="yes", action="store_true")
     draft_delete.set_defaults(tool="delete_draft.py")
 
+    # docs / doku
+    docs_parser = subparsers.add_parser(
+        "docs",
+        aliases=["doku"],
+        help="Dokumentation exportieren."
+    )
+    docs_sub = docs_parser.add_subparsers(dest="action", required=True)
+
+    docs_export = docs_sub.add_parser(
+        "export",
+        aliases=["exportieren"],
+        help="Markdown-Datei als PDF exportieren."
+    )
+    docs_export.add_argument("input", metavar="EINGABE", help="Pfad zur Markdown-Datei")
+    docs_export.add_argument("output", metavar="AUSGABE", help="Pfad zur PDF-Ausgabe")
+    docs_export.set_defaults(tool="export_pdf.py")
+
     return parser
 
 
@@ -294,7 +311,7 @@ def namespace_to_tool_args(namespace: argparse.Namespace) -> tuple[str, list[str
 
     args = []
 
-    for key in ["article_id", "issue_id", "kind", "item_id"]:
+    for key in ["article_id", "issue_id", "kind", "item_id", "input", "output"]:
         value = data.pop(key, None)
         if value is not None:
             value = normalize_value_for_tool(key, value)

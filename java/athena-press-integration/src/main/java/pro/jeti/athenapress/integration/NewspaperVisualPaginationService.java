@@ -89,6 +89,7 @@ public class NewspaperVisualPaginationService {
         List<NewspaperVisualPage> pages = new ArrayList<>();
         List<NewspaperVisualBlock> currentBlocks = new ArrayList<>();
         int currentWeight = 0;
+        boolean currentPageHasContinuation = false;
 
         for (List<NewspaperVisualBlock> group : blockGroups) {
             if (group == null || group.isEmpty()) {
@@ -101,9 +102,17 @@ public class NewspaperVisualPaginationService {
                     .mapToInt(block -> layoutRules.weightFor(block, safeTemplate))
                     .sum();
 
-            if (groupWeight <= pageCapacity
+            // Only keep an article together on a fresh page if:
+            // - the current page is not a continuation (continuation pages fill greedily), and
+            // - the current page is at least 30 % full (avoids near-empty pages before articles)
+            boolean currentPageTooEmpty = currentWeight < (int) (pageCapacity * 0.3);
+            boolean shouldKeepTogether = !currentPageHasContinuation
+                    && !currentPageTooEmpty
+                    && groupWeight <= pageCapacity
                     && !currentBlocks.isEmpty()
-                    && currentWeight + groupWeight > pageCapacity) {
+                    && currentWeight + groupWeight > pageCapacity;
+
+            if (shouldKeepTogether) {
                 pages.add(pageFor(
                         baseTitle,
                         firstPageNumber + pages.size(),
@@ -112,6 +121,7 @@ public class NewspaperVisualPaginationService {
                 ));
                 currentBlocks = new ArrayList<>();
                 currentWeight = 0;
+                currentPageHasContinuation = false;
             }
 
             for (NewspaperVisualBlock block : group) {
@@ -125,6 +135,7 @@ public class NewspaperVisualPaginationService {
                     ));
                     currentBlocks = new ArrayList<>();
                     currentWeight = 0;
+                    currentPageHasContinuation = false;
                     groupContinues = true;
                 }
 
@@ -137,6 +148,7 @@ public class NewspaperVisualPaginationService {
                             );
                     currentBlocks.add(continuationBlock);
                     currentWeight += layoutRules.weightFor(continuationBlock, safeTemplate);
+                    currentPageHasContinuation = true;
                     groupContinues = false;
                 }
 
