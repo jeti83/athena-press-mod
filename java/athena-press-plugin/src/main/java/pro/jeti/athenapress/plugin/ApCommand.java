@@ -196,10 +196,14 @@ public class ApCommand extends AbstractCommand {
             return;
         }
         var playerRef = ctx.senderAsPlayerRef();
-        var hotbar = playerRef.getStore().getComponent(
-                playerRef, InventoryComponent.Hotbar.getComponentType());
-        var camera = new com.hypixel.hytale.server.core.inventory.ItemStack(CAMERA_ITEM_ID, 1);
-        hotbar.getInventory().addItemStack(camera);
+        var store     = playerRef.getStore();
+        // ECS-Zugriff erfordert den WorldThread – über World als Executor dispatchen
+        var world = store.getExternalData().getWorld();
+        world.execute(() -> {
+            var hotbar = store.getComponent(playerRef, InventoryComponent.Hotbar.getComponentType());
+            var camera = new com.hypixel.hytale.server.core.inventory.ItemStack(CAMERA_ITEM_ID, 1);
+            hotbar.getInventory().addItemStack(camera);
+        });
         sendEditorText(ctx, "Kamera erhalten.");
     }
 
