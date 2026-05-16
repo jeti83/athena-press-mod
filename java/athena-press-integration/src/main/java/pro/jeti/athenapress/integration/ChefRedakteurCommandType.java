@@ -8,5 +8,6 @@ public enum ChefRedakteurCommandType {
     VALIDATE,
     STATUS,
     LIST,
+    HELP,
     UNKNOWN
 }

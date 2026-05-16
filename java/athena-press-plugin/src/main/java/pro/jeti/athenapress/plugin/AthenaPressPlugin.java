@@ -120,7 +120,7 @@ public class AthenaPressPlugin extends JavaPlugin {
         var item = event.getItemInHand();
         if (item == null || item.isEmpty()) return;
 
-        if ("athena_kamera".equals(item.getItemId())) {
+        if (ApCommand.CAMERA_ITEM_ID.equals(item.getItemId())) {
             String playerId   = extractPlayerId(event);
             String playerName = contextResolver.resolve(playerId).playerName();
 

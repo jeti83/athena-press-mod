@@ -11,6 +11,7 @@ public class ChefRedakteurCommandService {
     private static final List<String> VALIDATE_ARGS = List.of("validate", "pruefen");
     private static final List<String> STATUS_ARGS   = List.of("status", "uebersicht");
     private static final List<String> LIST_ARGS     = List.of("list", "liste");
+    private static final List<String> HELP_ARGS     = List.of("hilfe", "help", "?");
 
     public ChefRedakteurCommand parse(String[] args) {
         if (args == null || args.length == 0) {
@@ -27,6 +28,7 @@ public class ChefRedakteurCommandService {
         if (matches(verb, VALIDATE_ARGS)) return new ChefRedakteurCommand(ChefRedakteurCommandType.VALIDATE,  id);
         if (matches(verb, STATUS_ARGS))   return new ChefRedakteurCommand(ChefRedakteurCommandType.STATUS,    null);
         if (matches(verb, LIST_ARGS))     return new ChefRedakteurCommand(ChefRedakteurCommandType.LIST,      null);
+        if (matches(verb, HELP_ARGS))     return new ChefRedakteurCommand(ChefRedakteurCommandType.HELP,      null);
 
         return new ChefRedakteurCommand(ChefRedakteurCommandType.UNKNOWN, args[0]);
     }
@@ -35,16 +37,15 @@ public class ChefRedakteurCommandService {
         return """
 
                 AthenaPress – Chef-Redakteur-Befehle
-                -------------------------------------
-                /ap publish <id>        / veroeffentlichen   Artikel oder Ausgabe veroeffentlichen
-                /ap archive <id>        / archivieren        Artikel oder Ausgabe archivieren
-                /ap deliver <id>        / zustellen          Ausgabe an Abonnenten zustellen
-                /ap delete <id>         / loeschen           Entwurf loeschen (nur drafts)
-                /ap validate <id>       / pruefen            Ausgabe validieren
-                /ap status              / uebersicht         Kurzuebersicht
-                /ap list                / liste              Alle Inhalte auflisten
-
-                ID-Format: article_0001 fuer Artikel, issue_0002 fuer Ausgaben
+                /ap publish, veroeffentlichen <id>  Artikel/Ausgabe veroeffentlichen
+                /ap archive, archivieren <id>       Artikel/Ausgabe archivieren
+                /ap deliver, zustellen <id>         Ausgabe an Abonnenten zustellen
+                /ap delete, loeschen <id>           Entwurf loeschen (nur Entw.)
+                /ap validate, pruefen <id>          Ausgabe vor Lieferung pruefen
+                /ap status, uebersicht              Kurzuebersicht
+                /ap list, liste                     Alle Inhalte auflisten
+                /ap hilfe, ?                        Diese Hilfe anzeigen
+                ID-Format: article_0001, issue_0002
                 """;
     }
 

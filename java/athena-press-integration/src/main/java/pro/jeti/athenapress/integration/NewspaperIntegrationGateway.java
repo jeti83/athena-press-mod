@@ -48,6 +48,15 @@ public class NewspaperIntegrationGateway {
         );
     }
 
+    public String openLatestIssueForPlayer(String playerId) throws IOException {
+        var issues = core.getPressService().findPublishedIssues();
+        if (issues.isEmpty()) {
+            return "Noch keine veröffentlichte Ausgabe vorhanden.\n";
+        }
+        String latestId = issues.get(issues.size() - 1).id();
+        return openIssueForPlayer(playerId, latestId);
+    }
+
     public String openIssueForPlayer(String playerId, String issueId) throws IOException {
         if (!hasText(playerId)) {
             return MISSING_ISSUE_TEXT;

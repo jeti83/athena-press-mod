@@ -45,6 +45,7 @@ public class ChefRedakteurService {
             case VALIDATE -> handleValidate(command);
             case STATUS   -> handleStatus();
             case LIST     -> handleList();
+            case HELP     -> commandService.helpText();
             case UNKNOWN  -> "Unbekannter Befehl: " + command.targetId()
                              + "\n" + commandService.helpText();
         };
@@ -113,16 +114,25 @@ public class ChefRedakteurService {
         articles.stream()
                 .sorted((a, b) -> a.id().compareTo(b.id()))
                 .forEach(a -> sb.append("  ").append(a.id())
-                        .append(" [").append(a.status()).append("] ")
+                        .append(" [").append(statusLabel(a.status())).append("] ")
                         .append(a.title()).append("\n"));
 
         sb.append("\nAusgaben:\n");
         issues.stream()
                 .sorted((a, b) -> a.id().compareTo(b.id()))
                 .forEach(i -> sb.append("  ").append(i.id())
-                        .append(" [").append(i.status()).append("] ")
+                        .append(" [").append(statusLabel(i.status())).append("] ")
                         .append(i.title()).append("\n"));
 
         return sb.toString();
+    }
+
+    private String statusLabel(String status) {
+        return switch (status) {
+            case "published" -> "veröffentlicht";
+            case "draft"     -> "Entwurf";
+            case "archived"  -> "archiviert";
+            default          -> status;
+        };
     }
 }

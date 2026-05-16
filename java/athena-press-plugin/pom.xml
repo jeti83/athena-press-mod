@@ -60,7 +60,6 @@
                             <artifactSet>
                                 <excludes>
                                     <exclude>com.hypixel:hytale-server</exclude>
-                                    <exclude>com.fasterxml.jackson.core:*</exclude>
                                 </excludes>
                             </artifactSet>
                             <filters>

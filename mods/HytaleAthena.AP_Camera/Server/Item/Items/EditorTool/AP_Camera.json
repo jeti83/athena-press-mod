@@ -1,0 +1,20 @@
+{
+  "TranslationProperties": {
+    "Name": "athenapress.camera.name",
+    "Description": "athenapress.camera.description"
+  },
+  "Icon": "Icons/Items/EditorTools/Machinima.png",
+  "Categories": [
+    "Tool.AthenaPress"
+  ],
+  "SubCategory": "AthenaPressTools",
+  "Model": "Items/CreativeTools/EditorTool_Machinima.blockymodel",
+  "Texture": "Items/CreativeTools/EditorTool_Machinima_Texture.png",
+  "MaxStack": 1,
+  "PlayerAnimationsId": "Item",
+  "Quality": "Tool",
+  "Interactions": {
+    "Primary": "Use",
+    "Secondary": "Use"
+  }
+}

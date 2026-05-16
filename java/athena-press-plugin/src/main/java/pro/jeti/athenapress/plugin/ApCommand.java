@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.AbstractCommand;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
+import com.hypixel.hytale.server.core.inventory.InventoryComponent;
 
 import pro.jeti.athenapress.integration.ArticleEditorView;
 import pro.jeti.athenapress.integration.AthenaPressIntegrationPlugin;
@@ -27,10 +28,14 @@ public class ApCommand extends AbstractCommand {
 
     static final String AP_ADMIN_PERMISSION = "athenapress.admin";
 
+    // TODO: Item-ID im laufenden Spiel prüfen – ggf. "HytaleAthena.AP_Camera:Items/EditorTool/AP_Camera"
+    static final String CAMERA_ITEM_ID = "Items/EditorTool/AP_Camera";
+
     private final HytaleNewspaperVisualRuntime<String> runtime;
 
     public ApCommand(HytaleNewspaperVisualRuntime<String> runtime) {
         super("ap", "Zeitung öffnen", false);
+        setAllowsExtraArguments(true);
         this.runtime = runtime;
     }
 
@@ -40,9 +45,12 @@ public class ApCommand extends AbstractCommand {
         String playerName = ctx.sender().getDisplayName();
         boolean admin     = ctx.sender().hasPermission(AP_ADMIN_PERMISSION);
 
-        // TODO: Verifizieren ob getInputString() nur die Argumente (ohne "ap") liefert
         String input = ctx.getInputString().trim();
-        String[] args = input.isEmpty() ? new String[0] : input.split("\\s+");
+        String[] rawArgs = input.isEmpty() ? new String[0] : input.split("\\s+");
+        // getInputString() kann "ap ausgabe" oder nur "ausgabe" liefern – defensiv normieren
+        String[] args = (rawArgs.length > 0 && "ap".equalsIgnoreCase(rawArgs[0]))
+                ? java.util.Arrays.copyOfRange(rawArgs, 1, rawArgs.length)
+                : rawArgs;
 
         handleCommand(ctx, playerId, playerName, admin, args);
         return CompletableFuture.completedFuture(null);
@@ -72,7 +80,12 @@ public class ApCommand extends AbstractCommand {
         }
 
         if (args.length == 0) {
-            runtime.onPlayerChatCommand(playerId, "open", null);
+            try {
+                sendEditorText(ctx, plugin.onPlayerOpenLatestNewspaper(playerId));
+            } catch (IOException e) {
+                LOGGER.at(Level.WARNING).withCause(e).log("Zeitung konnte nicht geöffnet werden");
+                sendEditorText(ctx, "Fehler beim Öffnen der Zeitung.");
+            }
             return;
         }
 
@@ -84,17 +97,34 @@ public class ApCommand extends AbstractCommand {
             case "ausgabe" ->
                 startIssueEditor(ctx, plugin, playerId, playerName, admin);
 
-            case "weiter", "next" ->
-                runtime.onPlayerChatCommand(playerId, "visual_next_spread", null);
+            case "weiter", "next" -> {
+                try {
+                    sendEditorText(ctx, plugin.onPlayerOpenNewspaper(
+                            playerId, plugin.getOpenIssueId(playerId)));
+                } catch (IOException e) {
+                    LOGGER.at(Level.WARNING).withCause(e).log("Seitennavigation fehlgeschlagen");
+                }
+            }
 
             case "zurueck", "zurück", "back" ->
-                runtime.onPlayerChatCommand(playerId, "visual_previous_spread", null);
+                sendEditorText(ctx, plugin.onPlayerRequestOverview(playerId));
 
-            case "schliessen", "schließen", "close" ->
-                runtime.onPlayerChatCommand(playerId, "visual_close", null);
+            case "schliessen", "schließen", "close" -> {
+                plugin.onPlayerCloseNewspaper(playerId);
+                sendEditorText(ctx, "Zeitung geschlossen.");
+            }
 
-            default ->
-                runtime.onPlayerChatCommand(playerId, "chef", String.join(" ", args));
+            case "kamera", "camera" -> giveCamera(ctx);
+
+            default -> {
+                try {
+                    String result = plugin.handleChefRedakteurCommand(args);
+                    sendEditorText(ctx, result);
+                } catch (IOException e) {
+                    LOGGER.at(Level.WARNING).withCause(e).log("Chef-Befehl fehlgeschlagen");
+                    sendEditorText(ctx, "Befehl konnte nicht ausgeführt werden.");
+                }
+            }
         }
     }
 
@@ -158,6 +188,19 @@ public class ApCommand extends AbstractCommand {
         } catch (IOException e) {
             LOGGER.at(Level.WARNING).withCause(e).log("Ausgaben-Editor-Eingabe fehlgeschlagen");
         }
+    }
+
+    private void giveCamera(CommandContext ctx) {
+        if (!ctx.isPlayer()) {
+            sendEditorText(ctx, "Dieser Befehl ist nur für Spieler.");
+            return;
+        }
+        var playerRef = ctx.senderAsPlayerRef();
+        var hotbar = playerRef.getStore().getComponent(
+                playerRef, InventoryComponent.Hotbar.getComponentType());
+        var camera = new com.hypixel.hytale.server.core.inventory.ItemStack(CAMERA_ITEM_ID, 1);
+        hotbar.getInventory().addItemStack(camera);
+        sendEditorText(ctx, "Kamera erhalten.");
     }
 
     private void sendEditorText(CommandContext ctx, String text) {

@@ -36,6 +36,10 @@ public class AthenaPressIntegrationPlugin {
         return metadata;
     }
 
+    public String onPlayerOpenLatestNewspaper(String playerId) throws IOException {
+        return gateway.openLatestIssueForPlayer(playerId);
+    }
+
     public String onPlayerOpenNewspaper(String playerId, String issueId) throws IOException {
         return gateway.openIssueForPlayer(playerId, issueId);
     }
