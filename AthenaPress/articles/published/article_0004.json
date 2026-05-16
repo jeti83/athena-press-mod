@@ -1,35 +1,21 @@
 {
   "id": "article_0004",
   "status": "published",
-  "categoryId": "classifieds",
-  "title": "Aushangplatz gesucht",
-  "subtitle": "Kleine Anzeige mit großem Brettbedarf",
-  "summary": "Gesucht wird ein wetterfester Platz für wichtige Zettel, unwichtige Gerüchte und gelegentlich einen Kuchenhinweis.",
-  "teaser": "Wer ein Brett hat, möge sich melden.",
-  "author": {
-    "playerName": "Athena Redaktion",
-    "playerUuid": "unknown"
-  },
-  "body": "Die Redaktion sucht einen gut sichtbaren Aushangplatz nahe des Spawns. Geboten werden sorgfältige Beschriftung, wechselnde Inhalte und die feste Zusage, keine drei Monate alten Angebote kleben zu lassen.",
+  "categoryId": "build_projects",
+  "title": "Das Kolosseum der Stille",
+  "subtitle": "Athenas Raid-Arena ist von der Natur zurückerobert worden – und das sieht großartig aus",
+  "teaser": "Wer die Raid-Arena betritt, erwartet Kampf. Was ihn stattdessen empfängt: Efeu, Moos und Sonnenlicht.",
+  "author": { "playerName": "HF_jeti83", "playerUuid": "unknown" },
+  "body": "Wer die Raid-Arenen zum ersten Mal betritt, erwartet Kampflärm, Fallen und vielleicht ein Monster oder drei. Was unsere Redaktion stattdessen antraf, war Stille. Und Grün. Viel Grün.\n\nDie kreisrunde Arena ist in den vergangenen Monaten von Efeu, Moos und allerhand anderen Pflanzen überwachsen worden, und das Ergebnis könnte kaum malerischer sein: Sonnenstrahlen brechen durch die runden Bögen im oberen Ring, Gras wächst dort, wo einst Kämpfer standen, und in der Mitte liegt nur Licht und Schatten – kein Mob, kein Lärm, nur Atmosphäre.\n\nDie Konstruktion selbst ist beeindruckend: ein mehrstöckiger Rundbau aus dunklem Stein, der Arkaden und offene Galerien übereinanderstapelt wie ein antikes Theater, das sich irgendwie in eine Fantasiewelt verirrt hat. Von innen wirkt die Arena deutlich größer als von außen – eine Eigenschaft, die guten Bauten vorbehalten ist.\n\nWir haben uns kurz gefragt, ob man hier nicht besser ein Café eröffnen sollte. Dann fiel uns ein, dass gleich nebenan wieder ein Raid startet.",
   "image": {
-    "file": "placeholders/dating.png",
-    "caption": "Symbolbild: Zwei Herzen, ein Plot und offenbar auch Platz für einen Aushang.",
-    "credit": "Athena Botenblatt",
-    "sourceType": "placeholder"
+    "file": "ausgabe_0002/kolosseum_innen.png",
+    "caption": "Sonnenlicht fällt durch die Bögen der überwachsenen Raid-Arena. Kampf optional.",
+    "credit": "Foto: HF_jeti83",
+    "sourceType": "ingame"
   },
-  "location": {
-    "enabled": false,
-    "world": "",
-    "x": 0,
-    "y": 0,
-    "z": 0
-  },
-  "tags": [
-    "kleinanzeige",
-    "aushang",
-    "redaktion"
-  ],
-  "createdAt": "2026-05-15T17:29:00+02:00",
-  "updatedAt": "2026-05-15T17:29:00+02:00",
-  "publishedAt": "2026-05-15T17:29:00+02:00"
+  "location": { "enabled": true, "world": "Athena Raid Arenen", "x": 0, "y": 64, "z": 0 },
+  "tags": ["raid", "arena", "bauprojekt", "natur"],
+  "createdAt": "2026-05-17T10:05:00+02:00",
+  "updatedAt": "2026-05-17T10:05:00+02:00",
+  "publishedAt": "2026-05-17T10:05:00+02:00"
 }

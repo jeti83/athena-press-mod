@@ -1,35 +1,21 @@
 {
   "id": "article_0006",
   "status": "published",
-  "categoryId": "server_news",
-  "title": "Spawnbrunnen wieder begehbar",
-  "subtitle": "Nasse Schuhe weiterhin möglich",
-  "summary": "Nach kurzer Baupause ist der Weg um den Spawnbrunnen wieder frei.",
-  "teaser": "Der Brunnenweg ist wieder offen.",
-  "author": {
-    "playerName": "Athena Redaktion",
-    "playerUuid": "unknown"
-  },
-  "body": "Der Weg um den Spawnbrunnen ist wieder begehbar. Die Redaktion empfiehlt weiterhin Abstand zu allen Spielern mit Eimern.",
+  "categoryId": "economy",
+  "title": "Hunger? Koch Wario hat geöffnet!",
+  "subtitle": "Am Spawn-Markt gibt es jetzt frisch zubereitetes Etwas – zu verhandelbaren Preisen",
+  "teaser": "Ein neuer Imbissstand am Spawn öffnet seine Klappe. Wir haben reingeschaut.",
+  "author": { "playerName": "HF_jeti83", "playerUuid": "unknown" },
+  "body": "Am Spawn-Markt tut sich was: Ein neues Imbiss-Häuschen hat seine Klappe geöffnet und bietet hungrigen Spielern Unterhaltung und vermutlich auch Speisen an. Hinter dem Tresen steht ein Koch in bunter Mütze, der freundlich auf Kundschaft wartet – und der, laut Aushang, gerne über Preise verhandelt.\n\nDas rotgestreifte Sonnendach wirft ein einladendes Licht auf den Eingang, in der Küche dahinter blitzen mehrere Öfen auf, und draußen lädt eine Holzbank zur Rast ein. Gegenüber: ein Grill, ebenfalls frisch aufgestellt. Die Gesamtatmosphäre: irgendwo zwischen Marktstand und gemütlicher Dorfkneipe.\n\nWas genau auf der Karte steht, war zum Zeitpunkt unseres Besuchs noch nicht ganz geklärt. Wir wurden aufgefordert, F zu drücken, um zu handeln – was wir pflichtbewusst taten. Das Ergebnis: ein Sortiment, das wir aus Platzgründen nicht vollständig abdrucken können, das aber durchaus empfehlenswert ist.\n\nFazit: Hunger lohnt sich wieder. Einfach am Spawn vorbeischauen, die Klappe suchen und F drücken.",
   "image": {
-    "file": "placeholders/no_image.png",
-    "caption": "Symbolbild: Der Brunnen blieb zum Redaktionsschluss auffallend gelassen.",
-    "credit": "Athena Botenblatt",
-    "sourceType": "placeholder"
+    "file": "ausgabe_0002/spawn_imbiss.png",
+    "caption": "Koch Wario hinter seinem Tresen am Spawn-Markt. Öffnungszeiten: wann immer er Lust hat.",
+    "credit": "Foto: HF_jeti83",
+    "sourceType": "ingame"
   },
-  "location": {
-    "enabled": false,
-    "world": "",
-    "x": 0,
-    "y": 0,
-    "z": 0
-  },
-  "tags": [
-    "kurzmeldung",
-    "spawn",
-    "brunnen"
-  ],
-  "createdAt": "2026-05-15T18:35:00+02:00",
-  "updatedAt": "2026-05-15T18:35:00+02:00",
-  "publishedAt": "2026-05-15T18:35:00+02:00"
+  "location": { "enabled": true, "world": "Citybuild", "x": 0, "y": 64, "z": 0 },
+  "tags": ["spawn", "markt", "handel", "imbiss", "wirtschaft"],
+  "createdAt": "2026-05-17T10:15:00+02:00",
+  "updatedAt": "2026-05-17T10:15:00+02:00",
+  "publishedAt": "2026-05-17T10:15:00+02:00"
 }

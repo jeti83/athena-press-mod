@@ -1,35 +1,21 @@
 {
   "id": "article_0007",
   "status": "published",
-  "categoryId": "server_news",
-  "title": "Verschollen im Nebel",
-  "subtitle": "Die Redaktion wartet weiter auf ein Lebenszeichen",
-  "summary": "Seit drei Tagen fehlt jede Spur von einem Spieler, der zuletzt Richtung Nordpfad aufbrach.",
-  "teaser": "Ein stiller Gruß an alle, die noch auf Rückkehr hoffen.",
-  "author": {
-    "playerName": "Athena Redaktion",
-    "playerUuid": "unknown"
-  },
-  "body": "Die Redaktion nimmt Anteil und hält den Platz am Feuer frei. Hinweise werden entgegengenommen, Gerüchte bitte erst nach dem zweiten Kaffee.",
+  "categoryId": "build_projects",
+  "title": "Bestiarum Atheneae",
+  "subtitle": "Eine Kreaturenschau im Citybuild-Plot – Zutritt auf eigene Gefahr",
+  "teaser": "Eisriese, Braunbär, Grünling und Knochengolem: Auf einem Citybuild-Plot wartet eine ganze Menagerie.",
+  "author": { "playerName": "HF_jeti83", "playerUuid": "unknown" },
+  "body": "Auf einem Citybuild-Plot im Herzen des Servers hat jemand eine Menagerie des Außergewöhnlichen errichtet. Wer das gepflasterte Gelände betritt, steht plötzlich Schulter an Schulter mit einem Eisriesen, einem pelzigen Braunbären, einer grünen Kreatur von zweifelhafter Herkunft und einem knöchernen Golem, der einen merkwürdig freundlichen Gesichtsausdruck hat – soweit man bei Gerippen überhaupt von freundlich sprechen kann.\n\nDie Figuren sind in einem Innenhof aus dunklem Stein arrangiert, die Wände mit Fackeln beleuchtet, das Flair: eindeutig Fantasy, leicht Dungeon, angenehm begehbar. Zwischen den Kreaturen gibt es genug Platz zum Durchlaufen – oder zum Posieren, falls man ein Foto möchte.\n\nOb es sich um ein Museum, eine Ausstellung oder einfach eine Privatsammlung handelt, war vor Ort nicht zweifelsfrei zu klären. Die Besitzerin war nicht anzutreffen. Wir haben eine Notiz hinterlassen und warten auf Rückmeldung.\n\nEmpfehlung der Redaktion: Hingehen. Staunen. Den Eisriesen nicht anfassen.",
   "image": {
-    "file": "placeholders/no_image.png",
-    "caption": "Symbolbild: Ein freier Platz am Feuer.",
-    "credit": "Athena Botenblatt",
-    "sourceType": "placeholder"
+    "file": "ausgabe_0002/kreaturenschau.png",
+    "caption": "Vier Kreaturen, ein Innenhof, keine Beschilderung. Die Menagerie auf dem Citybuild-Plot.",
+    "credit": "Foto: HF_jeti83",
+    "sourceType": "ingame"
   },
-  "location": {
-    "enabled": false,
-    "world": "",
-    "x": 0,
-    "y": 0,
-    "z": 0
-  },
-  "tags": [
-    "verschollen",
-    "gedenken",
-    "community"
-  ],
-  "createdAt": "2026-05-15T18:35:00+02:00",
-  "updatedAt": "2026-05-15T18:35:00+02:00",
-  "publishedAt": "2026-05-15T18:35:00+02:00"
+  "location": { "enabled": true, "world": "Citybuild", "x": 0, "y": 64, "z": 0 },
+  "tags": ["bauprojekt", "citybuild", "kreaturen", "plot", "ausstellung"],
+  "createdAt": "2026-05-17T10:20:00+02:00",
+  "updatedAt": "2026-05-17T10:20:00+02:00",
+  "publishedAt": "2026-05-17T10:20:00+02:00"
 }

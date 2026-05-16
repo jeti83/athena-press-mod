@@ -3,23 +3,24 @@
   "status": "published",
   "issueNumber": 2,
   "title": "Athena Botenblatt",
-  "subtitle": "Die erste echte Testausgabe",
-  "editionName": "Farmwelt Spezial",
+  "subtitle": "Kameras, Kolosseen und Koch Wario",
+  "editionName": "Erste Test-Ausgabe",
   "cover": {
-    "mainArticleId": "article_0001",
-    "image": "placeholders/dating.png"
+    "mainArticleId": "article_0003",
+    "image": "ausgabe_0002/lobby_selfie.png"
   },
   "articles": [
-    "article_0001",
-    "article_0002",
+    "article_0003",
+    "article_0004",
+    "article_0005",
     "article_0006",
     "article_0007",
-    "article_0004",
-    "article_0005"
+    "article_0008"
   ],
-  "createdAt": "2026-05-10T14:20:06+02:00",
-  "updatedAt": "2026-05-15T18:35:00+02:00",
-  "publishedAt": "2026-05-10T14:38:20+02:00",
-  "deliveredToSubscribers": true,
-  "lastDeliveredAt": "2026-05-10T14:56:47+02:00"
+  "createdAt": "2026-05-17T10:30:00+02:00",
+  "updatedAt": "2026-05-17T10:30:00+02:00",
+  "publishedAt": "2026-05-17T10:30:00+02:00",
+  "deliveredToSubscribers": false,
+  "archivedAt": null,
+  "previousStatus": "draft"
 }

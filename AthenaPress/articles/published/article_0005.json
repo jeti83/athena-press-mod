@@ -1,35 +1,21 @@
 {
   "id": "article_0005",
   "status": "published",
-  "categoryId": "classifieds",
-  "title": "Leiter verschwunden",
-  "subtitle": "Finderlohn in Form von ehrlichem Dank",
-  "summary": "Gesucht wird eine Leiter, zuletzt gesehen an einer Hauswand und seitdem offenbar auf eigenen Wegen.",
-  "teaser": "Sie war lang, nützlich und plötzlich weg.",
-  "author": {
-    "playerName": "Athena Redaktion",
-    "playerUuid": "unknown"
-  },
-  "body": "Vermisst wird eine einfache Leiter aus hellem Holz. Hinweise bitte an die Redaktion oder direkt an alle, die verdächtig schnell Dächer erreichen.",
+  "categoryId": "server_news",
+  "title": "Mondlicht und Steilküste",
+  "subtitle": "Eine Nacht im Survival-Modus – und warum man dabei trotzdem innehalten kann",
+  "teaser": "Kurz nach Mitternacht, Klippe, Mond, volles Inventar. Unser Bericht aus der Survival-Nacht.",
+  "author": { "playerName": "HF_jeti83", "playerUuid": "unknown" },
+  "body": "Es ist kurz nach Mitternacht auf dem Survival-Server. Irgendwo in der Ferne bellt ein Mob. Unser Berichterstatter steht am Rand einer hohen Klippe, die Waffe in der Hand – nicht aus Aggression, sondern weil das Inventar voll ist und irgendwas irgendwo hinmuss.\n\nDer Mond hängt groß und klar über dem Horizont. Die Sterne spiegeln sich in der Dunkelheit darunter, und die Stille ist fast vollständig – abgesehen vom Wind und dem leisen Verdacht, dass irgendwo hinter einem gleich ein Skelett auftaucht.\n\nMomente wie dieser machen Athena zu mehr als einem Server. Es ist ein Ort, an dem man innehalten kann, auch wenn man eigentlich gerade auf der Suche nach Eisen ist. Die Welt sieht von oben anders aus: kleiner, ruhiger, irgendwie ordentlicher als auf Bodenniveau.\n\nFotografiert wurde das Bild auf einem Vorsprung östlich der Hauptklippe, kurz bevor der nächste Mob die Ruhe beendete. Der Weg zurück nach unten ist übrigens steiler als er aussieht.",
   "image": {
-    "file": "placeholders/no_image.png",
-    "caption": "Symbolbild: Die Leiter war zum Redaktionsschluss weiterhin nicht auffindbar.",
-    "credit": "Athena Botenblatt",
-    "sourceType": "placeholder"
+    "file": "ausgabe_0002/mondnacht_klippe.png",
+    "caption": "Blick vom Klippenrand in die Survival-Nacht. Gleich dahinter fängt das Abenteuer wieder an.",
+    "credit": "Foto: HF_jeti83",
+    "sourceType": "ingame"
   },
-  "location": {
-    "enabled": false,
-    "world": "",
-    "x": 0,
-    "y": 0,
-    "z": 0
-  },
-  "tags": [
-    "kleinanzeige",
-    "fundbuero",
-    "leiter"
-  ],
-  "createdAt": "2026-05-15T18:16:00+02:00",
-  "updatedAt": "2026-05-15T18:16:00+02:00",
-  "publishedAt": "2026-05-15T18:16:00+02:00"
+  "location": { "enabled": true, "world": "Survival", "x": 0, "y": 128, "z": 0 },
+  "tags": ["survival", "nacht", "natur", "stimmung"],
+  "createdAt": "2026-05-17T10:10:00+02:00",
+  "updatedAt": "2026-05-17T10:10:00+02:00",
+  "publishedAt": "2026-05-17T10:10:00+02:00"
 }

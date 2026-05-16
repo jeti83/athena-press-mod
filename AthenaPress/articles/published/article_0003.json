@@ -1,0 +1,30 @@
+{
+  "id": "article_0003",
+  "status": "published",
+  "categoryId": "headline",
+  "title": "Schaut mal, wer fotografiert!",
+  "subtitle": "Die AthenaPress-Kamera macht ihre ersten Aufnahmen – und trifft direkt ins Schwarze",
+  "teaser": "Ein neues Werkzeug hat Athena betreten. Unser Reporter war naturgemäß das erste Motiv.",
+  "author": {
+    "playerName": "HF_jeti83",
+    "playerUuid": "unknown"
+  },
+  "body": "Ein neues Werkzeug hat Athena betreten – die AthenaPress-Kamera. Unser Reporter HF_jeti83 war naturgemäß das erste Opfer des Objektivs und stellte sich couragiert vor die Linse. Dahinter: das Dunkel der Lobby, ein blau gleißender Durchgang und – für alle, die genau hinschauen – ein Drache, der offenbar nichts Besseres zu tun hatte, als Kulisse zu spielen. Wir nennen das investigativen Journalismus mit Selbstportrait-Energie.\n\nDie AthenaPress-Kamera ist ab sofort über den Befehl /ap kamera erhältlich. Sie ermöglicht es jedem Spieler, Momente festzuhalten und sie der Redaktion zur Verfügung zu stellen. Was mit den Fotos passiert? Das lest ihr in den kommenden Ausgaben. Die Redaktion freut sich, ihre erste echte Ausgabe mit echten Bildern – von echten Orten, echten Spielern und einem echten Drachen im Hintergrund – präsentieren zu dürfen.\n\nDas Werkzeug der Stunde: Goggle-Brille, Mut und die neue Kamera. Den Drachen haben wir nicht gefragt.",
+  "image": {
+    "file": "ausgabe_0002/lobby_selfie.png",
+    "caption": "HF_jeti83 weiht die neue AthenaPress-Kamera in der Lobby ein. Der Drache im Hintergrund war nicht für ein Interview verfügbar.",
+    "credit": "Foto: HF_jeti83",
+    "sourceType": "ingame"
+  },
+  "location": {
+    "enabled": true,
+    "world": "Athena Lobby",
+    "x": 0,
+    "y": 64,
+    "z": 0
+  },
+  "tags": ["kamera", "redaktion", "lobby", "headline"],
+  "createdAt": "2026-05-17T10:00:00+02:00",
+  "updatedAt": "2026-05-17T10:00:00+02:00",
+  "publishedAt": "2026-05-17T10:00:00+02:00"
+}
