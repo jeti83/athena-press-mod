@@ -1,5 +1,6 @@
 package pro.jeti.athenapress.integration;
 
+@Deprecated
 public class PlayerNewspaperInputMapper {
 
     public PlayerNewspaperUiCommand toUiCommand(PlayerNewspaperInputEvent event) {

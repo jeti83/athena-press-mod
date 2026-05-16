@@ -3,6 +3,7 @@ package pro.jeti.athenapress.integration;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class NewspaperUiViewFactory {
 
     public NewspaperUiView fromResponse(PlayerNewspaperResponse response) {

@@ -1,5 +1,6 @@
 package pro.jeti.athenapress.integration;
 
+@Deprecated
 public record PlayerNewspaperUiCommand(
         PlayerNewspaperAction action,
         String value,

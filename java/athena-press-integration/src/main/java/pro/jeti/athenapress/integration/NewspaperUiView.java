@@ -2,6 +2,7 @@ package pro.jeti.athenapress.integration;
 
 import java.util.List;
 
+@Deprecated
 public record NewspaperUiView(
         String playerId,
         NewspaperUiScreenType screenType,

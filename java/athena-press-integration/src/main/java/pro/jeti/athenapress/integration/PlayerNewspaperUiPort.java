@@ -1,5 +1,6 @@
 package pro.jeti.athenapress.integration;
 
+@Deprecated
 public interface PlayerNewspaperUiPort {
 
     void show(PlayerNewspaperResponse response);

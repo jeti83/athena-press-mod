@@ -3,6 +3,7 @@ package pro.jeti.athenapress.integration;
 import java.util.HashMap;
 import java.util.Map;
 
+@Deprecated
 public class HytaleNewspaperUiPort implements PlayerNewspaperUiPort {
 
     private final HytaleNewspaperUiBridge uiBridge;

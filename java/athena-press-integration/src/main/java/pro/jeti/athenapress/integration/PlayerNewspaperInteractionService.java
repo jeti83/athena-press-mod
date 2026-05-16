@@ -2,6 +2,7 @@ package pro.jeti.athenapress.integration;
 
 import java.io.IOException;
 
+@Deprecated
 public class PlayerNewspaperInteractionService {
 
     private final AthenaPressIntegrationPlugin plugin;
