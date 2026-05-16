@@ -398,10 +398,10 @@ athena-press-mod/
 
 | Aufgabe | Beschreibung |
 |---|---|
-| Blockbench-Modell | Kamera-Item in Blockbench bauen (~50–200 Faces, Anleitung in camera_workflow.md) |
-| Ausgaben-Editor | Ingame-Tool zum Zusammenstellen von Ausgaben aus vorhandenen Artikeln |
-| Admin-Befehle | `/ap veröffentlichen`, `/ap archivieren` für Redakteure |
-| Pagination verbessern | Leerraum auf Folgeseiten bei langen Artikeln reduzieren |
+| ~~Blockbench-Modell~~ | Geparkt – Alternativen in camera_workflow.md dokumentiert |
+| ~~Ausgaben-Editor~~ | ✅ Erledigt – IssueEditorService implementiert |
+| ~~Admin-Befehle~~ | ✅ Erledigt – ChefRedakteurService mit /ap-Befehlen |
+| ~~Pagination verbessern~~ | ✅ Erledigt – Continuation-Pages füllen sich jetzt greedy |
 
 ### Wartet auf Hytale-API
 
@@ -409,9 +409,24 @@ athena-press-mod/
 |---|---|
 | `HytaleNewspaperVisualUiBridge` | NoesisGUI-Implementierung für Zeitungs-Overlay |
 | `HytalePlayerContextResolver` | Echten Spieler → HytalePlayerContext |
-| `HytaleCameraUiBridge` | HUD toggle + captureScreenshot |
-| Kamera-Item-JSON | Hytale Data Asset Definition |
-| Plugin-Manifest | Hytale Plugin-Einstiegspunkt |
+| `HytaleCameraUiBridge` | HUD toggle + captureScreenshot (oder `/kamera`-Befehl als Alternative) |
+| Kamera-Item-Modell | `.blockymodel`-Format (nicht `.bbmodel`!) – Blockbench-Plugin exportiert dahin |
+| Plugin-Manifest | Hytale Plugin-Einstiegspunkt – Format erst nach Release bekannt |
+
+### Was wir über die Hytale-API wissen (Stand Mai 2026)
+
+Community-Recherche (hytalecommunity.de, de.hytalewiki.org, hytale.com/news):
+
+| Fakt | Quelle |
+|---|---|
+| Server-Plugins = Java `.jar`, vollständig server-seitig | Offizieller Modding-Artikel |
+| UI-System = **NoesisGUI** (wird konsolidiert) | Offizieller Modding-Artikel |
+| Kein Lua, keine Text-Skriptsprache – nur Java + Visual Scripting | Offizieller Modding-Artikel |
+| Modell-Format = **`.blockymodel`** (nicht `.bbmodel`) | de.hytalewiki.org |
+| Plugin-Quellcode wird 1–2 Monate nach Release veröffentlicht | Offizieller Modding-Artikel |
+| Konkrete Java-Interfaces noch nicht öffentlich | Alle Community-Quellen |
+
+**Konsequenz:** Die drei Adapter-Stubs (`HytalePlayerContextResolver`, `HytaleNewspaperVisualUiBridge`, `HytaleCameraUiBridge`) sind korrekt vorbereitet. Die Implementierung folgt sobald der Source Code veröffentlicht wird.
 
 ---
 
@@ -446,4 +461,4 @@ Spieler hält Kamera-Item → linke Maustaste
 
 ---
 
-*Generiert: Mai 2026 — AthenaPress v0.4*
+*Generiert: Mai 2026 — AthenaPress v0.4 — Roadmap aktualisiert nach Community-Recherche*
