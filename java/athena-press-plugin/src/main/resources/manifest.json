@@ -1,0 +1,17 @@
+{
+  "Group": "pro.jeti",
+  "Name": "AthenaPress",
+  "Version": "0.4.0",
+  "Description": "Athena Botenblatt – Ingame-Zeitung und Redaktionssystem für den Athena-Server",
+  "Authors": [
+    {
+      "Name": "jeti83"
+    }
+  ],
+  "Main": "pro.jeti.athenapress.plugin.AthenaPressPlugin",
+  "ServerVersion": "*",
+  "Dependencies": {},
+  "OptionalDependencies": {},
+  "DisabledByDefault": false,
+  "IncludesAssetPack": false
+}

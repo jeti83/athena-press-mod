@@ -14,4 +14,19 @@
         <module>athena-press-core</module>
         <module>athena-press-integration</module>
     </modules>
+
+    <!-- athena-press-plugin wird nur gebaut wenn libraries/HytaleServer.jar vorhanden ist -->
+    <profiles>
+        <profile>
+            <id>hytale-plugin</id>
+            <activation>
+                <file>
+                    <exists>${project.basedir}/libraries/HytaleServer.jar</exists>
+                </file>
+            </activation>
+            <modules>
+                <module>athena-press-plugin</module>
+            </modules>
+        </profile>
+    </profiles>
 </project>
