@@ -1,8 +1,10 @@
 package pro.jeti.athenapress.plugin;
 
+import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
+import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.AbstractCommand;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 
@@ -23,6 +25,8 @@ import pro.jeti.athenapress.integration.IssueEditorView;
  */
 public class ApCommand extends AbstractCommand {
 
+    static final String AP_ADMIN_PERMISSION = "athenapress.admin";
+
     private final HytaleNewspaperVisualRuntime<String> runtime;
 
     public ApCommand(HytaleNewspaperVisualRuntime<String> runtime) {
@@ -34,18 +38,23 @@ public class ApCommand extends AbstractCommand {
     protected CompletableFuture<Void> execute(CommandContext ctx) {
         String playerId   = ctx.sender().getUuid().toString();
         String playerName = ctx.sender().getDisplayName();
-        // TODO: isAdmin über Hytale-Permissions-API ermitteln
-        boolean admin     = false;
+        boolean admin     = ctx.sender().hasPermission(AP_ADMIN_PERMISSION);
 
         // TODO: Verifizieren ob getInputString() nur die Argumente (ohne "ap") liefert
         String input = ctx.getInputString().trim();
         String[] args = input.isEmpty() ? new String[0] : input.split("\\s+");
 
-        handleCommand(playerId, playerName, admin, args);
+        handleCommand(ctx, playerId, playerName, admin, args);
         return CompletableFuture.completedFuture(null);
     }
 
-    private void handleCommand(String playerId, String playerName, boolean admin, String[] args) {
+    private void handleCommand(
+            CommandContext ctx,
+            String playerId,
+            String playerName,
+            boolean admin,
+            String[] args
+    ) {
         AthenaPressIntegrationPlugin plugin = runtime.plugin();
 
         // Aktive Editor-Sessions bekommen rohen Text als Eingabe
@@ -53,11 +62,11 @@ public class ApCommand extends AbstractCommand {
             String rawInput = String.join(" ", args);
 
             if (plugin.hasActiveEditorSession(playerId)) {
-                forwardToArticleEditor(plugin, playerId, rawInput);
+                forwardToArticleEditor(ctx, plugin, playerId, rawInput);
                 return;
             }
             if (plugin.hasActiveIssueEditorSession(playerId)) {
-                forwardToIssueEditor(plugin, playerId, rawInput);
+                forwardToIssueEditor(ctx, plugin, playerId, rawInput);
                 return;
             }
         }
@@ -70,10 +79,10 @@ public class ApCommand extends AbstractCommand {
         String sub = args[0].toLowerCase();
         switch (sub) {
             case "redaktion" ->
-                startArticleEditor(plugin, playerId, playerName, admin);
+                startArticleEditor(ctx, plugin, playerId, playerName, admin);
 
             case "ausgabe" ->
-                startIssueEditor(plugin, playerId, playerName, admin);
+                startIssueEditor(ctx, plugin, playerId, playerName, admin);
 
             case "weiter", "next" ->
                 runtime.onPlayerChatCommand(playerId, "visual_next_spread", null);
@@ -94,20 +103,18 @@ public class ApCommand extends AbstractCommand {
     // -----------------------------------------------------------------------
 
     private void startArticleEditor(
+            CommandContext ctx,
             AthenaPressIntegrationPlugin plugin,
             String playerId,
             String playerName,
             boolean admin
     ) {
-        try {
-            ArticleEditorView view = plugin.startArticleEditor(playerId, playerName, admin);
-            logEditorView(playerId, view.prompt());
-        } catch (Exception e) {
-            LOGGER.at(Level.WARNING).withCause(e).log("Artikel-Editor konnte nicht gestartet werden");
-        }
+        ArticleEditorView view = plugin.startArticleEditor(playerId, playerName, admin);
+        sendEditorText(ctx, view.prompt());
     }
 
     private void startIssueEditor(
+            CommandContext ctx,
             AthenaPressIntegrationPlugin plugin,
             String playerId,
             String playerName,
@@ -115,41 +122,46 @@ public class ApCommand extends AbstractCommand {
     ) {
         try {
             IssueEditorView view = plugin.startIssueEditor(playerId, playerName, admin);
-            logEditorView(playerId, view.prompt());
-        } catch (Exception e) {
+            sendEditorText(ctx, view.prompt());
+        } catch (IOException e) {
             LOGGER.at(Level.WARNING).withCause(e).log("Ausgaben-Editor konnte nicht gestartet werden");
         }
     }
 
     private void forwardToArticleEditor(
+            CommandContext ctx,
             AthenaPressIntegrationPlugin plugin,
             String playerId,
             String input
     ) {
         try {
             ArticleEditorView view = plugin.handleEditorInput(playerId, input);
-            logEditorView(playerId, view.message() != null ? view.message() : view.prompt());
-        } catch (Exception e) {
+            String text = view.message() != null && !view.message().isBlank()
+                    ? view.message() : view.prompt();
+            sendEditorText(ctx, text);
+        } catch (IOException e) {
             LOGGER.at(Level.WARNING).withCause(e).log("Artikel-Editor-Eingabe fehlgeschlagen");
         }
     }
 
     private void forwardToIssueEditor(
+            CommandContext ctx,
             AthenaPressIntegrationPlugin plugin,
             String playerId,
             String input
     ) {
         try {
             IssueEditorView view = plugin.handleIssueEditorInput(playerId, input);
-            logEditorView(playerId, view.message() != null ? view.message() : view.prompt());
-        } catch (Exception e) {
+            String text = view.message() != null && !view.message().isBlank()
+                    ? view.message() : view.prompt();
+            sendEditorText(ctx, text);
+        } catch (IOException e) {
             LOGGER.at(Level.WARNING).withCause(e).log("Ausgaben-Editor-Eingabe fehlgeschlagen");
         }
     }
 
-    private void logEditorView(String playerId, String text) {
+    private void sendEditorText(CommandContext ctx, String text) {
         if (text == null || text.isBlank()) return;
-        // TODO: Text als Spieler-Nachricht senden sobald Hytale-Nachrichten-API verfügbar ist
-        LOGGER.at(Level.INFO).log("[AP-Editor] " + playerId + ": " + text);
+        ctx.sendMessage(Message.raw(text));
     }
 }
