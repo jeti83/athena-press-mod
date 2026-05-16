@@ -1,13 +1,11 @@
 package pro.jeti.athenapress.plugin;
 
-import javax.annotation.Nonnull;
+import java.util.concurrent.CompletableFuture;
 
-// TODO: Paketnamen gegen HytaleServer.jar prüfen
-import com.hypixel.hytale.plugin.command.CommandBase;
-import com.hypixel.hytale.plugin.command.CommandContext;
+import com.hypixel.hytale.server.core.command.system.AbstractCommand;
+import com.hypixel.hytale.server.core.command.system.CommandContext;
 
 import pro.jeti.athenapress.integration.HytaleNewspaperVisualRuntime;
-import pro.jeti.athenapress.integration.HytalePlayerContext;
 
 /**
  * Verarbeitet den Ingame-Befehl /ap.
@@ -18,44 +16,28 @@ import pro.jeti.athenapress.integration.HytalePlayerContext;
  *   /ap ausgabe             → Ausgaben-Editor starten
  *   /ap publish|archive|... → Chef-Redakteur-Befehle (nur Admins)
  */
-public class ApCommand extends CommandBase {
+public class ApCommand extends AbstractCommand {
 
     private final HytaleNewspaperVisualRuntime<String> runtime;
-    private final PlayerContextResolver resolver;
 
-    public ApCommand(
-            HytaleNewspaperVisualRuntime<String> runtime,
-            PlayerContextResolver resolver
-    ) {
-        // TODO: Konstruktor-Signatur gegen HytaleServer.jar prüfen
-        // Britakee-Guide: super("ap", "Zeitung öffnen", false)
-        //   Parameter 3 = requiresOp (false = alle Spieler)
+    public ApCommand(HytaleNewspaperVisualRuntime<String> runtime) {
         super("ap", "Zeitung öffnen", false);
         this.runtime = runtime;
-        this.resolver = resolver;
     }
 
     @Override
-    protected void executeSync(@Nonnull CommandContext ctx) {
-        // TODO: Player-Objekt aus CommandContext extrahieren
-        // Britakee-Guide: ctx.senderAs(Player.class)
-        //
-        // String playerId  = player.getUuid().toString();
-        // String[] args    = ctx.getArgs();  // oder ctx.getArguments()
+    protected CompletableFuture<Void> execute(CommandContext ctx) {
+        String playerId = ctx.sender().getUuid().toString();
+        // TODO: Verifizieren ob getInputString() nur die Argumente (ohne "ap") liefert
+        String input = ctx.getInputString().trim();
+        String[] args = input.isEmpty() ? new String[0] : input.split("\\s+");
 
-        // Bis zur Verifikation: Platzhalter-ID aus ctx.getSender()
-        String playerId = ctx.getSender().toString();
-        String[] args = ctx.getArgs();
-
-        // TODO: world.execute() wrappen sobald World-Zugriff bekannt
         handleCommand(playerId, args);
+        return CompletableFuture.completedFuture(null);
     }
 
     private void handleCommand(String playerId, String[] args) {
-        HytalePlayerContext player = resolver.resolve(playerId);
-
-        if (args == null || args.length == 0) {
-            // /ap → neueste Ausgabe öffnen
+        if (args.length == 0) {
             runtime.onPlayerChatCommand(playerId, "open", null);
             return;
         }
@@ -63,11 +45,9 @@ public class ApCommand extends CommandBase {
         String sub = args[0].toLowerCase();
         switch (sub) {
             case "redaktion" ->
-                // /ap redaktion → Artikel-Editor
                 runtime.onPlayerChatCommand(playerId, "editorial", null);
 
             case "ausgabe" ->
-                // /ap ausgabe → Ausgaben-Editor
                 runtime.onPlayerChatCommand(playerId, "issue-editor", null);
 
             case "weiter", "next" ->
@@ -79,11 +59,8 @@ public class ApCommand extends CommandBase {
             case "schliessen", "schließen", "close" ->
                 runtime.onPlayerChatCommand(playerId, "visual_close", null);
 
-            default -> {
-                // Alle übrigen Argumente → Chef-Redakteur
-                // /ap publish article_0001 / /ap archive issue_0002 etc.
+            default ->
                 runtime.onPlayerChatCommand(playerId, "chef", String.join(" ", args));
-            }
         }
     }
 }

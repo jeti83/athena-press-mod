@@ -4,16 +4,14 @@ import java.nio.file.Path;
 import javax.annotation.Nonnull;
 
 // Hytale Plugin API
-// TODO: Paketnamen ggf. gegen HytaleServer.jar anpassen
-import com.hypixel.hytale.plugin.JavaPlugin;
-import com.hypixel.hytale.plugin.JavaPluginInit;
+import com.hypixel.hytale.server.core.plugin.JavaPlugin;
+import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import com.hypixel.hytale.event.PlayerConnectEvent;
 import com.hypixel.hytale.event.PlayerDisconnectEvent;
 import com.hypixel.hytale.event.PlayerInteractEvent;
 import com.hypixel.hytale.event.PlayerChatEvent;
 
 // AthenaPress Integration
-import pro.jeti.athenapress.integration.ArticleEditorView;
 import pro.jeti.athenapress.integration.AthenaPressIntegrationPlugin;
 import pro.jeti.athenapress.integration.ConsoleNewspaperUiPort;
 import pro.jeti.athenapress.integration.HytaleNewspaperVisualRuntime;
@@ -71,7 +69,7 @@ public class AthenaPressPlugin extends JavaPlugin {
         getEventRegistry().register(PlayerChatEvent.class, this::onPlayerChat);
 
         // Befehle registrieren
-        getCommandRegistry().register(new ApCommand(runtime, contextResolver), "ap");
+        getCommandRegistry().registerCommand(new ApCommand(runtime));
 
         getLogger().at(java.util.logging.Level.INFO)
                 .log("AthenaPress geladen – Datenpfad: " + athenaPressRoot);
@@ -162,23 +160,18 @@ public class AthenaPressPlugin extends JavaPlugin {
     // -----------------------------------------------------------------------
 
     private String extractPlayerId(PlayerConnectEvent event) {
-        // TODO: event.getPlayerRef().getUuid().toString()
-        return event.getPlayerRef().toString();
+        return event.getPlayerRef().getUuid().toString();
     }
 
     private String extractPlayerName(PlayerConnectEvent event) {
-        // TODO: event.getPlayerRef().getUsername()
-        return event.getPlayerRef().toString();
+        return event.getPlayerRef().getUsername();
     }
 
     private String extractPlayerId(PlayerDisconnectEvent event) {
-        // PlayerDisconnectEvent extends PlayerEvent → getPlayer()
-        // TODO: event.getPlayer().getUuid().toString()
-        return event.getPlayerRef().toString();
+        return event.getPlayerRef().getUuid().toString();
     }
 
     private String extractPlayerId(PlayerInteractEvent event) {
-        // TODO: event.getPlayer().getUuid().toString()
-        return event.getPlayerRef().toString();
+        return event.getPlayerRef().getUuid().toString();
     }
 }

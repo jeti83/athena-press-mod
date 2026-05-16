@@ -1,3 +1,7 @@
 {
-    "java.configuration.updateBuildConfiguration": "interactive"
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "java.project.referencedLibraries": [
+        "java/libraries/HytaleServer.jar"
+    ],
+    "java.compile.nullAnalysis.mode": "disabled"
 }

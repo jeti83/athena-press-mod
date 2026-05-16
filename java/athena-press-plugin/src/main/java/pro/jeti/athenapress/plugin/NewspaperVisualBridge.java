@@ -54,9 +54,9 @@ public class NewspaperVisualBridge implements HytaleNewspaperVisualUiBridge {
 
         // Vorläufig: Konsolenausgabe (funktionale Brücke ohne natives UI)
         System.out.printf("[AthenaPress] %s – Seite %d/%d%n",
-                view.issueTitle(),
+                view.title(),
                 view.spreadIndex() + 1,
-                view.totalSpreads());
+                view.totalSpreadCount());
     }
 
     @Override
