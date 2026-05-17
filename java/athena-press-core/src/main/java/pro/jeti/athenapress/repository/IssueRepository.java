@@ -63,6 +63,7 @@ public class IssueRepository {
             return stream
                     .filter(path -> path.toString().endsWith(".json"))
                     .map(this::readIssueUnchecked)
+                    .filter(java.util.Objects::nonNull)
                     .toList();
         }
     }
@@ -71,7 +72,9 @@ public class IssueRepository {
         try {
             return objectMapper.readValue(path.toFile(), Issue.class);
         } catch (IOException exception) {
-            throw new RuntimeException("Could not read issue JSON: " + path, exception);
+            java.util.logging.Logger.getLogger(IssueRepository.class.getName())
+                    .warning("Überspringe unlesbare Ausgabe-Datei: " + path + " – " + exception.getMessage());
+            return null;
         }
     }
 }

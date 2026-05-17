@@ -63,6 +63,7 @@ public class ArticleRepository {
             return stream
                     .filter(path -> path.toString().endsWith(".json"))
                     .map(this::readArticleUnchecked)
+                    .filter(java.util.Objects::nonNull)
                     .toList();
         }
     }
@@ -71,7 +72,9 @@ public class ArticleRepository {
         try {
             return objectMapper.readValue(path.toFile(), Article.class);
         } catch (IOException exception) {
-            throw new RuntimeException("Could not read article JSON: " + path, exception);
+            java.util.logging.Logger.getLogger(ArticleRepository.class.getName())
+                    .warning("Überspringe unlesbare Artikel-Datei: " + path + " – " + exception.getMessage());
+            return null;
         }
     }
 }

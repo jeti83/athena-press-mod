@@ -82,14 +82,24 @@ public class ApCommand extends AbstractCommand {
         if (args.length == 0) {
             try {
                 sendEditorText(ctx, plugin.onPlayerOpenLatestNewspaper(playerId));
-            } catch (IOException e) {
+            } catch (IOException | RuntimeException e) {
                 LOGGER.at(Level.WARNING).withCause(e).log("Zeitung konnte nicht geöffnet werden");
-                sendEditorText(ctx, "Fehler beim Öffnen der Zeitung.");
+                sendEditorText(ctx, "Fehler beim Öffnen der Zeitung: " + e.getMessage());
             }
             return;
         }
 
         String sub = args[0].toLowerCase();
+
+        // Artikelnummer-Navigation: /ap 1, /ap 2, ...
+        try {
+            int articleNumber = Integer.parseInt(sub);
+            sendEditorText(ctx, plugin.onPlayerSelectArticle(playerId, articleNumber));
+            return;
+        } catch (NumberFormatException ignored) {
+            // kein Artikelindex – weiter zum Switch
+        }
+
         switch (sub) {
             case "redaktion" ->
                 startArticleEditor(ctx, plugin, playerId, playerName, admin);
@@ -101,8 +111,9 @@ public class ApCommand extends AbstractCommand {
                 try {
                     sendEditorText(ctx, plugin.onPlayerOpenNewspaper(
                             playerId, plugin.getOpenIssueId(playerId)));
-                } catch (IOException e) {
+                } catch (IOException | RuntimeException e) {
                     LOGGER.at(Level.WARNING).withCause(e).log("Seitennavigation fehlgeschlagen");
+                    sendEditorText(ctx, "Navigation fehlgeschlagen: " + e.getMessage());
                 }
             }
 
@@ -117,12 +128,16 @@ public class ApCommand extends AbstractCommand {
             case "kamera", "camera" -> giveCamera(ctx);
 
             default -> {
+                if (!admin) {
+                    sendEditorText(ctx, "Keine Berechtigung. Benötigt: " + AP_ADMIN_PERMISSION);
+                    return;
+                }
                 try {
                     String result = plugin.handleChefRedakteurCommand(args);
                     sendEditorText(ctx, result);
-                } catch (IOException e) {
+                } catch (IOException | RuntimeException e) {
                     LOGGER.at(Level.WARNING).withCause(e).log("Chef-Befehl fehlgeschlagen");
-                    sendEditorText(ctx, "Befehl konnte nicht ausgeführt werden.");
+                    sendEditorText(ctx, "Befehl konnte nicht ausgeführt werden: " + e.getMessage());
                 }
             }
         }
