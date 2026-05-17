@@ -28,31 +28,31 @@ $C.@Container {
 
       Label #ArticleTitle {
         Padding: (Horizontal: 20, Top: 12, Bottom: 4);
-        Style: (FontSize: 22, RenderBold: true, TextColor: #ffffff, WrapText: true);
+        Style: (FontSize: 22, RenderBold: true, TextColor: #ffffff);
         Text: "";
       }
 
       Label #ArticleSubtitle {
         Padding: (Horizontal: 20, Bottom: 8);
-        Style: (FontSize: 14, TextColor: #96a9be, WrapText: true);
+        Style: (FontSize: 14, TextColor: #96a9be);
         Text: "";
       }
 
       Group #ArticleImage {
         Anchor: (Height: 180);
         Padding: (Horizontal: 20, Bottom: 4);
-        Background: (TexturePath: "Images/placeholder_news.png", ScaleType: Fill);
+        Background: (TexturePath: "Images/placeholder_news.png", Border: 4);
       }
 
       Label #ArticleCaption {
         Padding: (Horizontal: 20, Bottom: 8);
-        Style: (FontSize: 11, TextColor: #787e8c, WrapText: true, FontStyle: Italic);
+        Style: (FontSize: 11, TextColor: #787e8c);
         Text: "";
       }
 
       Label #ArticleBody {
         Padding: (Horizontal: 20, Top: 4, Bottom: 12);
-        Style: (FontSize: 14, TextColor: #d0d8e8, WrapText: true);
+        Style: (FontSize: 14, TextColor: #d0d8e8);
         Text: "";
       }
     }
