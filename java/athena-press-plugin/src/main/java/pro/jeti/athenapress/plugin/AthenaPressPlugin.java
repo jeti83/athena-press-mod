@@ -54,13 +54,14 @@ public class AthenaPressPlugin extends JavaPlugin {
         AthenaPressIntegrationPlugin core = new AthenaPressIntegrationPlugin(athenaPressRoot);
 
         // Runtime zusammensetzen
-        // ConsoleNewspaperUiPort = Text-Fallback bis Visual-Bridge vollständig ist
         runtime = new HytaleNewspaperVisualRuntime<>(
                 core,
                 new ConsoleNewspaperUiPort(),
                 visualBridge,
                 contextResolver
         );
+        // Bridge mit Runtime-Referenz versorgen (für onUiButton-Callbacks)
+        visualBridge.setRuntime(runtime);
 
         // Events registrieren
         getEventRegistry().register(PlayerConnectEvent.class, this::onPlayerConnect);

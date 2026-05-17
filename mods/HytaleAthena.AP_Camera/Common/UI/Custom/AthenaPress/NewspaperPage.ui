@@ -1,0 +1,71 @@
+$C = "../../../../Common.ui";
+
+$C.@PageOverlay {}
+
+$C.@Container {
+  Anchor: (Width: 760, Height: 620);
+
+  #Title {
+    Group {
+      $C.@Title { @Text = "Athena Botenblatt"; }
+    }
+  }
+
+  #Content {
+    LayoutMode: Top;
+
+    // Artikelliste (Übersicht) – wird via UICommandBuilder befüllt
+    Group #ArticleList {
+      LayoutMode: TopScrolling;
+      ScrollbarStyle: $C.@DefaultScrollbarStyle;
+      FlexWeight: 1;
+    }
+
+    // Artikelansicht (Einzelartikel) – anfangs verborgen
+    Group #ArticleView {
+      LayoutMode: Top;
+      FlexWeight: 1;
+
+      Label #ArticleTitle {
+        Padding: (Horizontal: 20, Top: 12, Bottom: 4);
+        Style: (FontSize: 22, RenderBold: true, TextColor: #ffffff, WrapText: true);
+        Text: "";
+      }
+
+      Label #ArticleSubtitle {
+        Padding: (Horizontal: 20, Bottom: 8);
+        Style: (FontSize: 14, TextColor: #96a9be, WrapText: true);
+        Text: "";
+      }
+
+      Group #ArticleImage {
+        Anchor: (Height: 180);
+        Padding: (Horizontal: 20, Bottom: 4);
+        Background: (TexturePath: "Images/placeholder_news.png", ScaleType: Fill);
+      }
+
+      Label #ArticleCaption {
+        Padding: (Horizontal: 20, Bottom: 8);
+        Style: (FontSize: 11, TextColor: #787e8c, WrapText: true, FontStyle: Italic);
+        Text: "";
+      }
+
+      Label #ArticleBody {
+        Padding: (Horizontal: 20, Top: 4, Bottom: 12);
+        Style: (FontSize: 14, TextColor: #d0d8e8, WrapText: true);
+        Text: "";
+      }
+    }
+  }
+
+  // Navigationsleiste
+  Group #NavBar {
+    LayoutMode: Left;
+    Anchor: (Height: 52, Top: 8);
+    Padding: (Horizontal: 16);
+
+    $C.@TextButton #BtnBack  { Text: "← Zurück"; FlexWeight: 1; }
+    $C.@TextButton #BtnClose { Text: "Schließen"; FlexWeight: 1; }
+    $C.@TextButton #BtnNext  { Text: "Weiter →";  FlexWeight: 1; }
+  }
+}

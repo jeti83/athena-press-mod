@@ -3,27 +3,30 @@ package pro.jeti.athenapress.plugin;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-// TODO: Paketnamen gegen HytaleServer.jar prüfen
-// import com.hypixel.hytale.server.core.entity.player.Player;
-// import com.flecs.Ref; // oder com.hypixel.hytale.ecs.Ref
+import com.hypixel.hytale.server.core.entity.entities.Player;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
 
+import pro.jeti.athenapress.integration.HytaleNewspaperVisualRuntime;
 import pro.jeti.athenapress.integration.HytaleNewspaperVisualUiBridge;
 import pro.jeti.athenapress.integration.HytalePlayerContext;
 import pro.jeti.athenapress.integration.PlayerNewspaperVisualView;
+import pro.jeti.athenapress.plugin.ui.NewspaperPage;
 
 /**
  * Bindet das AthenaPress Visual-System an die Hytale-UI.
  *
- * Jede Methode markiert genau einen Schritt der NoesisGUI-Anbindung –
- * der umgebende AthenaPress-Code ist vollständig, nur der UI-Aufruf
- * muss gegen die reale Hytale-API ausgefüllt werden.
+ * openOrUpdate() öffnet bzw. aktualisiert die ingame NewspaperPage für
+ * den jeweiligen Spieler über den WorldThread-Executor (World.execute()).
  */
 public class NewspaperVisualBridge implements HytaleNewspaperVisualUiBridge {
 
-    // TODO: Ersetzen durch Map<String, Ref<EntityStore>> sobald
-    //       Player-Objekte aus Events extrahiert werden können.
-    //       Wird in AthenaPressPlugin beim Connect-Event befüllt.
     private final Map<String, Object> playerRefs = new ConcurrentHashMap<>();
+    private volatile HytaleNewspaperVisualRuntime<?> runtime;
+
+    // Wird von AthenaPressPlugin.setup() nach Runtime-Konstruktion gesetzt
+    public void setRuntime(HytaleNewspaperVisualRuntime<?> runtime) {
+        this.runtime = runtime;
+    }
 
     public void registerPlayer(String playerId, Object playerRef) {
         playerRefs.put(playerId, playerRef);
@@ -35,39 +38,47 @@ public class NewspaperVisualBridge implements HytaleNewspaperVisualUiBridge {
 
     @Override
     public void openOrUpdate(HytalePlayerContext player, PlayerNewspaperVisualView view) {
-        Object ref = playerRefs.get(player.playerId());
-        if (ref == null) return;
+        if (runtime == null) return;
+        Object rawRef = playerRefs.get(player.playerId());
+        if (rawRef == null) return;
 
-        // TODO: Echte NoesisGUI-Implementierung:
-        //
-        // World world = /* aus player-ref holen */;
-        // world.execute(() -> {
-        //     Page page = buildNewspaperPage(view);
-        //     player.getPageManager().openCustomPage(ref, store, page);
-        // });
-        //
-        // buildNewspaperPage(view) muss PlayerNewspaperVisualView
-        // in eine Hytale-seitige Page-Klasse übersetzen:
-        // - view.leftPage() und view.rightPage() → linke/rechte Seite
-        // - view.navigationState() → Weiter/Zurück-Buttons
-        // - view.issueTitle() → Seitentitel
+        // Der echte Hytale PlayerRef – zur Compile-Zeit als Object gespeichert,
+        // zur Laufzeit immer com.hypixel.hytale.server.core.universe.PlayerRef.
+        PlayerRef hytaleRef = (PlayerRef) rawRef;
+        var entityRef = hytaleRef.getReference();
+        var store     = entityRef.getStore();
+        var world     = store.getExternalData().getWorld();
 
-        // Vorläufig: Konsolenausgabe (funktionale Brücke ohne natives UI)
-        System.out.printf("[AthenaPress] %s – Seite %d/%d%n",
-                view.title(),
-                view.spreadIndex() + 1,
-                view.totalSpreadCount());
+        world.execute(() -> {
+            Player hytalePlayer = store.getComponent(entityRef, Player.getComponentType());
+            if (hytalePlayer == null) return;
+
+            NewspaperPage page = new NewspaperPage(
+                    hytaleRef, player, view,
+                    (cmd, val) -> runtime.onUiButton(player, cmd, val)
+            );
+            hytalePlayer.getPageManager().openCustomPage(entityRef, store, page);
+        });
     }
 
     @Override
     public void close(HytalePlayerContext player) {
-        Object ref = playerRefs.get(player.playerId());
-        if (ref == null) return;
+        Object rawRef = playerRefs.get(player.playerId());
+        if (rawRef == null) return;
 
-        // TODO: Echte Implementierung:
-        // world.execute(() -> player.getPageManager().closePage(ref, store));
+        PlayerRef hytaleRef = (PlayerRef) rawRef;
+        var entityRef = hytaleRef.getReference();
+        var store     = entityRef.getStore();
+        var world     = store.getExternalData().getWorld();
 
-        System.out.printf("[AthenaPress] Zeitung geschlossen für %s%n",
-                player.playerName());
+        world.execute(() -> {
+            Player hytalePlayer = store.getComponent(entityRef, Player.getComponentType());
+            if (hytalePlayer == null) return;
+
+            var currentPage = hytalePlayer.getPageManager().getCustomPage();
+            if (currentPage instanceof NewspaperPage np) {
+                np.requestClose();
+            }
+        });
     }
 }
