@@ -3,18 +3,36 @@
     "Name": "athenapress.camera.name",
     "Description": "athenapress.camera.description"
   },
-  "Icon": "Icons/Items/EditorTools/Machinima.png",
+  "Icon": "Icons/ItemsGenerated/AP_Camera02.png",
   "Categories": [
-    "Tool.AthenaPress"
+    "Tool.Machinima"
   ],
-  "SubCategory": "AthenaPressTools",
-  "Model": "Items/CreativeTools/EditorTool_Machinima.blockymodel",
-  "Texture": "Items/CreativeTools/EditorTool_Machinima_Texture.png",
+  "SubCategory": "MachinimaTools",
+  "Model": "Items/EditorTool_Machinima.blockymodel",
+  "Texture": "Textures/EditorTool_Machinima_Texture.png",
   "MaxStack": 1,
   "PlayerAnimationsId": "Item",
-  "Quality": "Tool",
+  "HudUI": [
+    {
+      "Path": "Hud/ToolsLegends/MachinimaToolLegend.ui",
+      "Type": "Legend"
+    }
+  ],
   "Interactions": {
     "Primary": "Use",
     "Secondary": "Use"
+  },
+  "Quality": "Tool",
+  "IconProperties": {
+    "Scale": 0.5,
+    "Rotation": [
+      0,
+      66,
+      0
+    ],
+    "Translation": [
+      0,
+      -19
+    ]
   }
 }
