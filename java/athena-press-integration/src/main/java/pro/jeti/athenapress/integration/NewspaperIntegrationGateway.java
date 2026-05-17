@@ -48,6 +48,10 @@ public class NewspaperIntegrationGateway {
         );
     }
 
+    public pro.jeti.athenapress.service.PlayerAlbumService getPlayerAlbumService() {
+        return core.getPlayerAlbumService();
+    }
+
     public String openLatestIssueForPlayer(String playerId) throws IOException {
         var issues = core.getPressService().findPublishedIssues();
         if (issues.isEmpty()) {

@@ -23,5 +23,9 @@
     "allowedExtensions": ["png", "jpg", "jpeg", "webp"],
     "maxFileSizeMb": 8,
     "generateThumbnails": true
+  },
+
+  "camera": {
+    "screenshotDirectory": "C:\\Users\\jeti8\\OneDrive\\Pictures\\Hytale Screenshots"
   }
 }

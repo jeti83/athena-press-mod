@@ -195,4 +195,8 @@ public class AthenaPressIntegrationPlugin {
     public String chefRedakteurHelpText() {
         return gateway.chefRedakteurHelpText();
     }
+
+    public pro.jeti.athenapress.service.PlayerAlbumService getAlbumService() {
+        return gateway.getPlayerAlbumService();
+    }
 }

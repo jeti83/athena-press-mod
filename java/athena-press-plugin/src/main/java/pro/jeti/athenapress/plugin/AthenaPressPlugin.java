@@ -1,7 +1,12 @@
 package pro.jeti.athenapress.plugin;
 
+import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import javax.annotation.Nonnull;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 // Hytale Plugin API
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
@@ -13,20 +18,15 @@ import com.hypixel.hytale.event.PlayerChatEvent;
 
 // AthenaPress Integration
 import pro.jeti.athenapress.integration.AthenaPressIntegrationPlugin;
+import pro.jeti.athenapress.integration.CameraScreenshotService;
 import pro.jeti.athenapress.integration.ConsoleNewspaperUiPort;
 import pro.jeti.athenapress.integration.HytaleNewspaperVisualRuntime;
 
 /**
  * Einstiegspunkt der AthenaPress Hytale-Mod.
  *
- * Verbindet die fertige AthenaPress-Logik (core + integration) mit
- * dem Hytale-Server über die drei Adapter-Stubs:
- *   - PlayerContextResolver   → HytalePlayerContextResolver
- *   - NewspaperVisualBridge   → HytaleNewspaperVisualUiBridge
- *   - CameraUiBridge          → HytaleCameraUiBridge
- *
  * Deployment: athena-press-plugin-*.jar → <server>/mods/
- * Datenpfad:  <server>/mods/pro.jeti_AthenaPress/AthenaPress/
+ * Datenpfad:  <plugin-data>/AthenaPress/
  */
 @SuppressWarnings("deprecation") // ConsoleNewspaperUiPort als Text-Fallback
 public class AthenaPressPlugin extends JavaPlugin {
@@ -35,6 +35,7 @@ public class AthenaPressPlugin extends JavaPlugin {
     private PlayerContextResolver contextResolver;
     private NewspaperVisualBridge visualBridge;
     private CameraUiBridge cameraBridge;
+    private CameraScreenshotService cameraService;
 
     public AthenaPressPlugin(@Nonnull JavaPluginInit init) {
         super(init);
@@ -42,34 +43,44 @@ public class AthenaPressPlugin extends JavaPlugin {
 
     @Override
     protected void setup() {
-        // Datenpfad: <plugin-data>/AthenaPress/
         Path athenaPressRoot = getDataDirectory().resolve("AthenaPress");
 
-        // Adapter und Bridge-Implementierungen
         contextResolver = new PlayerContextResolver();
         visualBridge    = new NewspaperVisualBridge();
         cameraBridge    = new CameraUiBridge();
 
-        // AthenaPress Core + Integration
         AthenaPressIntegrationPlugin core = new AthenaPressIntegrationPlugin(athenaPressRoot);
 
-        // Runtime zusammensetzen
         runtime = new HytaleNewspaperVisualRuntime<>(
                 core,
                 new ConsoleNewspaperUiPort(),
                 visualBridge,
                 contextResolver
         );
-        // Bridge mit Runtime-Referenz versorgen (für onUiButton-Callbacks)
         visualBridge.setRuntime(runtime);
 
-        // Events registrieren
-        getEventRegistry().register(PlayerConnectEvent.class, this::onPlayerConnect);
-        getEventRegistry().register(PlayerDisconnectEvent.class, this::onPlayerDisconnect);
-        getEventRegistry().register(PlayerInteractEvent.class, this::onPlayerInteract);
-        getEventRegistry().register(PlayerChatEvent.class, this::onPlayerChat);
+        // CameraScreenshotService starten
+        try {
+            Path screenshotDir = readScreenshotDir(athenaPressRoot);
+            cameraService = new CameraScreenshotService(
+                    cameraBridge,
+                    core.getAlbumService(),
+                    athenaPressRoot,
+                    screenshotDir
+            );
+            getLogger().at(java.util.logging.Level.INFO)
+                    .log("Kamera-Watcher gestartet – Verzeichnis: " + screenshotDir);
+        } catch (Exception e) {
+            getLogger().at(java.util.logging.Level.WARNING)
+                    .withCause(e)
+                    .log("Kamera-Watcher konnte nicht gestartet werden");
+        }
 
-        // Befehle registrieren
+        getEventRegistry().register(PlayerConnectEvent.class,    this::onPlayerConnect);
+        getEventRegistry().register(PlayerDisconnectEvent.class, this::onPlayerDisconnect);
+        getEventRegistry().register(PlayerInteractEvent.class,   this::onPlayerInteract);
+        getEventRegistry().register(PlayerChatEvent.class,       this::onPlayerChat);
+
         getCommandRegistry().registerCommand(new ApCommand(runtime));
 
         getLogger().at(java.util.logging.Level.INFO)
@@ -83,6 +94,7 @@ public class AthenaPressPlugin extends JavaPlugin {
 
     @Override
     protected void shutdown() {
+        if (cameraService != null) cameraService.shutdown();
         runtime.onServerShutdown();
         getLogger().at(java.util.logging.Level.INFO).log("AthenaPress beendet.");
     }
@@ -92,9 +104,6 @@ public class AthenaPressPlugin extends JavaPlugin {
     // -----------------------------------------------------------------------
 
     private void onPlayerConnect(PlayerConnectEvent event) {
-        // TODO: Methoden-Namen gegen HytaleServer.jar prüfen
-        // Wahrscheinlich: event.getPlayerRef().getUuid().toString()
-        //                 event.getPlayerRef().getUsername()
         String playerId   = extractPlayerId(event);
         String playerName = extractPlayerName(event);
 
@@ -116,23 +125,26 @@ public class AthenaPressPlugin extends JavaPlugin {
     }
 
     private void onPlayerInteract(PlayerInteractEvent event) {
-        // Kamera-Item-Erkennung: PlayerInteractEvent hat getItemInHand()
-        // ItemStack aus der Hand → ID prüfen
         var item = event.getItemInHand();
         if (item == null || item.isEmpty()) return;
 
-        if (ApCommand.CAMERA_ITEM_ID.equals(item.getItemId())) {
+        String itemId = item.getItemId();
+        if (itemId == null) return;
+
+        // Logging zur Item-ID-Verifizierung (wird ins Server-Log geschrieben)
+        if (itemId.contains("AP_Camera")) {
+            getLogger().at(java.util.logging.Level.INFO)
+                    .log("AP_Camera erkannt – tatsächliche Item-ID: " + itemId);
+        }
+
+        boolean isCamera = ApCommand.CAMERA_ITEM_ID.equals(itemId)
+                || ("HytaleAthena.AP_Camera:" + ApCommand.CAMERA_ITEM_ID).equals(itemId);
+
+        if (isCamera && cameraService != null) {
             String playerId   = extractPlayerId(event);
             String playerName = contextResolver.resolve(playerId).playerName();
-
-            // Läuft auf dem Server – CameraScreenshotService übernimmt den Rest
             try {
-                // TODO: athenaPressRoot-Pfad und screenshotDir aus Config lesen
-                // runtime.plugin() gibt AthenaPressIntegrationPlugin zurück:
-                // runtime.plugin().getGateway().getCameraService()
-                //     .onCameraItemUse(playerId, playerName);
-                getLogger().at(java.util.logging.Level.INFO)
-                        .log("Kamera benutzt von " + playerName);
+                cameraService.onCameraItemUse(playerId, playerName);
             } catch (Exception e) {
                 getLogger().at(java.util.logging.Level.WARNING)
                         .withCause(e)
@@ -142,22 +154,11 @@ public class AthenaPressPlugin extends JavaPlugin {
     }
 
     private void onPlayerChat(PlayerChatEvent event) {
-        // Chat-Nachrichten während aktiver Editor-Sessions weiterleiten
-        // TODO: event.getSender().getUuid().toString() für Player-ID
-        //       event.getContent() für Eingabe-Text
-        //
-        // String playerId = extractPlayerId(event.getSender());
-        // String input    = event.getContent();
-        //
-        // if (runtime.plugin().hasActiveEditorSession(playerId)) {
-        //     event.setCancelled(true);
-        //     ArticleEditorView view = runtime.plugin().handleEditorInput(playerId, input);
-        //     // View als Nachricht an den Spieler senden
-        // }
+        // TODO: Chat-Weiterleitung an aktive Editor-Sessions
     }
 
     // -----------------------------------------------------------------------
-    // Hilfsmethoden – TODO: gegen echte Hytale-API verifizieren
+    // Hilfsmethoden
     // -----------------------------------------------------------------------
 
     private String extractPlayerId(PlayerConnectEvent event) {
@@ -174,5 +175,25 @@ public class AthenaPressPlugin extends JavaPlugin {
 
     private String extractPlayerId(PlayerInteractEvent event) {
         return event.getPlayerRef().getUuid().toString();
+    }
+
+    /** Liest das Screenshot-Verzeichnis aus AthenaPress/config.json. */
+    private Path readScreenshotDir(Path athenaPressRoot) throws IOException {
+        Path configFile = athenaPressRoot.resolve("config.json");
+        if (!configFile.toFile().exists()) {
+            return defaultScreenshotDir();
+        }
+        JsonNode root = new ObjectMapper().readTree(configFile.toFile());
+        JsonNode camera = root.path("camera");
+        if (!camera.isMissingNode() && camera.has("screenshotDirectory")) {
+            return Paths.get(camera.get("screenshotDirectory").asText());
+        }
+        return defaultScreenshotDir();
+    }
+
+    private Path defaultScreenshotDir() {
+        // Fallback: Hytale-Standard-Screenshots-Ordner unter OneDrive/Pictures
+        return Paths.get(System.getProperty("user.home"),
+                "OneDrive", "Pictures", "Hytale Screenshots");
     }
 }
