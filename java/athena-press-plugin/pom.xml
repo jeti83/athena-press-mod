@@ -27,16 +27,17 @@
         </dependency>
 
         <!--
-            HytaleServer.jar manuell herunterladen und unter
-            java/libraries/HytaleServer.jar ablegen.
+            HytaleServer.jar – einmalig ins lokale Maven-Repo installieren:
+            mvn install:install-file -Dfile=<Pfad>/HytaleServer.jar
+              -DgroupId=com.hypixel -DartifactId=hytale-server
+              -Dversion=1.0.0 -Dpackaging=jar
             Wird NICHT mit dem Plugin-JAR gebündelt (provided).
         -->
         <dependency>
             <groupId>com.hypixel</groupId>
             <artifactId>hytale-server</artifactId>
             <version>1.0.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/../libraries/HytaleServer.jar</systemPath>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
