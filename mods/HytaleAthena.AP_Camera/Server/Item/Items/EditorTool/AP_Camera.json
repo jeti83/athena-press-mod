@@ -9,7 +9,7 @@
   ],
   "SubCategory": "MachinimaTools",
   "Model": "Items/EditorTool_Machinima.blockymodel",
-  "Texture": "Textures/EditorTool_Machinima_Texture.png",
+  "Texture": "Items/CreativeTools/EditorTool_Machinima_Texture.png",
   "MaxStack": 1,
   "PlayerAnimationsId": "Item",
   "HudUI": [
@@ -19,8 +19,8 @@
     }
   ],
   "Interactions": {
-    "Primary": "Use",
-    "Secondary": "Use"
+    "Primary": "Builder_Tool",
+    "Secondary": "Builder_Tool"
   },
   "Quality": "Tool",
   "IconProperties": {
