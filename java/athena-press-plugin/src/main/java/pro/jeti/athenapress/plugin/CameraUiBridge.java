@@ -34,7 +34,7 @@ public class CameraUiBridge implements HytaleCameraUiBridge {
 
         PlayerRef hytaleRef = (PlayerRef) rawRef;
         hytaleRef.sendMessage(Message.raw(
-                "§e[AthenaPress Kamera] §fBereit! Drücke §eF12 §ffür die Aufnahme. " +
+                "§e[AthenaPress Kamera] §fBereit! Druecke §eF12 §ffuer die Aufnahme. " +
                 "Das Foto wird automatisch in deinem Album gespeichert."
         ));
     }

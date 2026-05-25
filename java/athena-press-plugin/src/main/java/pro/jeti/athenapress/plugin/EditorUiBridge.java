@@ -18,12 +18,11 @@ import pro.jeti.athenapress.plugin.ui.IssueEditorPage;
 import pro.jeti.athenapress.plugin.ui.MainMenuPage;
 
 /**
- * Öffnet und aktualisiert die AthenaPress-GUI-Seiten (Menü, Artikel-Editor,
- * Ausgaben-Editor) über den Hytale WorldThread.
+ * Öffnet und aktualisiert die AthenaPress-GUI-Seiten über den Hytale WorldThread.
  *
- * playerEntityRefs speichert Ref<EntityStore> (aus ctx.senderAsPlayerRef(), thread-safe).
- * Der PlayerRef-Lookup passiert ausschließlich innerhalb von world.execute(),
- * weil store.getComponent() eine WorldThread-Assertion hat.
+ * Speichert den echten com.hypixel.hytale.server.core.universe.PlayerRef als Object
+ * (selbes Muster wie NewspaperVisualBridge). getReference() wird lazy beim Öffnen
+ * der Seite aufgerufen, weil es zur Connect-Zeit noch null zurückgeben kann.
  */
 public class EditorUiBridge {
 
@@ -39,8 +38,7 @@ public class EditorUiBridge {
         void handle(String playerId, String cmd, String val);
     }
 
-    @SuppressWarnings("rawtypes")
-    private final Map<String, Ref>   playerEntityRefs = new ConcurrentHashMap<>();
+    private final Map<String, Object>  playerRefs      = new ConcurrentHashMap<>();
     private final Map<String, Boolean> playerAdminCache = new ConcurrentHashMap<>();
 
     private volatile MenuHandler   menuHandler;
@@ -56,28 +54,37 @@ public class EditorUiBridge {
     // -----------------------------------------------------------------------
 
     /**
-     * Registriert den Spieler mit seinem Ref<EntityStore>.
-     * Darf aus beliebigem Thread aufgerufen werden – kein store.getComponent() hier.
+     * Registriert den Spieler mit dem echten PlayerRef-Objekt vom Connect-Event.
+     * Darf aus beliebigem Thread aufgerufen werden.
      */
-    public void registerPlayer(String playerId, Ref<EntityStore> entityRef) {
-        if (entityRef == null) return;
-        playerEntityRefs.put(playerId, entityRef);
+    public void registerPlayer(String playerId, Object playerRef) {
+        if (playerRef == null) return;
+        playerRefs.put(playerId, playerRef);
     }
 
     public void unregisterPlayer(String playerId) {
-        playerEntityRefs.remove(playerId);
+        playerRefs.remove(playerId);
         playerAdminCache.remove(playerId);
     }
 
-    /** true wenn ein Ref für diesen Spieler vorhanden ist. */
+    /** true wenn ein PlayerRef für diesen Spieler vorhanden ist. */
     public boolean isRegistered(String playerId) {
-        return playerEntityRefs.containsKey(playerId);
+        return playerRefs.containsKey(playerId);
     }
 
-    /** Gibt den gespeicherten EntityRef zurück – für direkte Zugriffe aus dem WorldThread. */
+    /**
+     * Gibt den Ref<EntityStore> für direkte WorldThread-Zugriffe zurück (z.B. giveCameraItem).
+     * Gibt null zurück wenn kein PlayerRef bekannt oder getReference() noch null ist.
+     */
     @SuppressWarnings("unchecked")
     public Ref<EntityStore> getEntityRef(String playerId) {
-        return playerEntityRefs.get(playerId);
+        Object raw = playerRefs.get(playerId);
+        if (raw == null) return null;
+        try {
+            return ((PlayerRef) raw).getReference();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     /** Gibt den zuletzt gecachten Admin-Status zurück. */
@@ -128,47 +135,45 @@ public class EditorUiBridge {
         CustomUIPage create(PlayerRef playerRef);
     }
 
-    @SuppressWarnings("unchecked")
     private void openPage(String playerId, PageFactory factory) {
-        Ref<EntityStore> entityRef = playerEntityRefs.get(playerId);
+        Object raw = playerRefs.get(playerId);
+        if (raw == null) {
+            LOG.log(Level.WARNING, "[AP] openPage: kein PlayerRef fuer {0}", playerId);
+            return;
+        }
+
+        // Selbes Muster wie NewspaperVisualBridge: ref lazy aus dem PlayerRef holen
+        PlayerRef hytaleRef = (PlayerRef) raw;
+        Ref<EntityStore> entityRef = hytaleRef.getReference();
         if (entityRef == null) {
-            LOG.log(Level.WARNING, "[AP] openPage: kein EntityRef für {0}", playerId);
+            LOG.log(Level.WARNING, "[AP] openPage: getReference() null fuer {0}", playerId);
             return;
         }
 
         var store = entityRef.getStore();
         if (store == null) {
-            LOG.log(Level.WARNING, "[AP] openPage: Store null für {0}", playerId);
+            LOG.log(Level.WARNING, "[AP] openPage: Store null fuer {0}", playerId);
             return;
         }
 
-        var externalData = store.getExternalData();
-        var world = externalData != null ? externalData.getWorld() : null;
+        var world = store.getExternalData() != null ? store.getExternalData().getWorld() : null;
         if (world == null) {
-            LOG.log(Level.WARNING, "[AP] openPage: World null für {0}", playerId);
+            LOG.log(Level.WARNING, "[AP] openPage: World null fuer {0}", playerId);
             return;
         }
 
-        LOG.log(Level.INFO, "[AP] openPage: world.execute() für {0}", playerId);
+        LOG.log(Level.INFO, "[AP] openPage: world.execute() fuer {0}", playerId);
         world.execute(() -> {
             try {
-                // PlayerRef-Lookup hier im WorldThread – store.getComponent() erlaubt
-                PlayerRef playerRef = store.getComponent(entityRef, PlayerRef.getComponentType());
-                if (playerRef == null) {
-                    LOG.log(Level.WARNING, "[AP] openPage: PlayerRef-Komponente null für {0}", playerId);
-                    return;
-                }
-
                 Player player = store.getComponent(entityRef, Player.getComponentType());
                 if (player == null) {
-                    LOG.log(Level.WARNING, "[AP] openPage: Player-Komponente null für {0}", playerId);
+                    LOG.log(Level.WARNING, "[AP] openPage: Player-Komponente null fuer {0}", playerId);
                     return;
                 }
-
-                player.getPageManager().openCustomPage(entityRef, store, factory.create(playerRef));
-                LOG.log(Level.INFO, "[AP] openPage: openCustomPage() aufgerufen für {0}", playerId);
+                player.getPageManager().openCustomPage(entityRef, store, factory.create(hytaleRef));
+                LOG.log(Level.INFO, "[AP] openPage: openCustomPage() aufgerufen fuer {0}", playerId);
             } catch (Exception e) {
-                LOG.log(Level.SEVERE, "[AP] openPage: Ausnahme in world.execute() für " + playerId, e);
+                LOG.log(Level.SEVERE, "[AP] openPage: Ausnahme in world.execute() fuer " + playerId, e);
             }
         });
     }

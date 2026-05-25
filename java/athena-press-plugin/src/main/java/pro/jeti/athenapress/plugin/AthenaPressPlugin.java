@@ -14,7 +14,6 @@ import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import com.hypixel.hytale.server.core.inventory.InventoryComponent;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
-import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.event.PlayerConnectEvent;
 import com.hypixel.hytale.event.PlayerDisconnectEvent;
 import com.hypixel.hytale.event.PlayerInteractEvent;
@@ -83,7 +82,7 @@ public class AthenaPressPlugin extends JavaPlugin {
                     screenshotDir
             );
             getLogger().at(Level.INFO)
-                    .log("Kamera-Watcher gestartet – Verzeichnis: " + screenshotDir);
+                    .log("Kamera-Watcher gestartet - Verzeichnis: " + screenshotDir);
         } catch (Exception e) {
             getLogger().at(Level.WARNING)
                     .withCause(e)
@@ -98,7 +97,7 @@ public class AthenaPressPlugin extends JavaPlugin {
         getCommandRegistry().registerCommand(new ApCommand(runtime, editorBridge));
 
         getLogger().at(Level.INFO)
-                .log("AthenaPress geladen – Datenpfad: " + athenaPressRoot);
+                .log("AthenaPress geladen - Datenpfad: " + athenaPressRoot);
     }
 
     @Override
@@ -113,7 +112,7 @@ public class AthenaPressPlugin extends JavaPlugin {
             runtime.onServerShutdown();
         } catch (Exception | Error e) {
             getLogger().at(Level.WARNING)
-                    .log("Shutdown-Cleanup übersprungen (Classloader bereits geschlossen)");
+                    .log("Shutdown-Cleanup uebersprungen (Classloader bereits geschlossen)");
         }
         getLogger().at(Level.INFO).log("AthenaPress beendet.");
     }
@@ -130,17 +129,9 @@ public class AthenaPressPlugin extends JavaPlugin {
         visualBridge.registerPlayer(playerId, event.getPlayerRef());
         cameraBridge.registerPlayer(playerId, event.getPlayerRef());
 
-        // editorBridge braucht Ref<EntityStore> – aus dem echten PlayerRef extrahieren,
-        // der zur Laufzeit als com.hypixel.hytale.server.core.universe.PlayerRef ankommt.
-        // ctx.senderAsPlayerRef() liefert einen Command-Context-Ref, den openCustomPage()
-        // als "Invalid entity reference" ablehnt.
-        try {
-            PlayerRef realRef = (PlayerRef) event.getPlayerRef();
-            editorBridge.registerPlayer(playerId, realRef.getReference());
-        } catch (Exception e) {
-            getLogger().at(Level.WARNING).withCause(e)
-                    .log("EditorBridge-Registrierung beim Connect fehlgeschlagen für " + playerId);
-        }
+        // editorBridge speichert den PlayerRef als Object (selbes Muster wie visualBridge/cameraBridge).
+        // getReference() wird lazy beim Öffnen der Seite aufgerufen, nicht hier.
+        editorBridge.registerPlayer(playerId, event.getPlayerRef());
 
         runtime.onPlayerConnected(playerId);
     }
@@ -165,7 +156,7 @@ public class AthenaPressPlugin extends JavaPlugin {
 
         if (itemId.contains("AP_Camera")) {
             getLogger().at(Level.INFO)
-                    .log("AP_Camera erkannt – tatsächliche Item-ID: " + itemId);
+                    .log("AP_Camera erkannt - tatsaechliche Item-ID: " + itemId);
         }
 
         boolean isCamera = ApCommand.CAMERA_ITEM_ID.equals(itemId)
@@ -224,7 +215,7 @@ public class AthenaPressPlugin extends JavaPlugin {
     // -----------------------------------------------------------------------
 
     private void handleMenuCommand(String playerId, String cmd, boolean isAdmin) {
-        getLogger().at(Level.INFO).log("[Menü] id=" + playerId + " cmd=" + cmd);
+        getLogger().at(Level.INFO).log("[Menue] id=" + playerId + " cmd=" + cmd);
         switch (cmd) {
             case "open_newspaper" -> {
                 try {
@@ -236,7 +227,7 @@ public class AthenaPressPlugin extends JavaPlugin {
                         runtime.onPlayerChatCommand(playerId, "open", issueId);
                     }
                 } catch (IOException e) {
-                    getLogger().at(Level.WARNING).withCause(e).log("Zeitung konnte nicht geöffnet werden");
+                    getLogger().at(Level.WARNING).withCause(e).log("Zeitung konnte nicht geoeffnet werden");
                 }
             }
             case "start_article_editor" -> {
@@ -255,7 +246,7 @@ public class AthenaPressPlugin extends JavaPlugin {
             }
             case "give_camera" -> giveCameraItem(playerId);
             case "close"       -> { /* Seite schließt sich bereits durch die UI */ }
-            default            -> getLogger().at(Level.WARNING).log("Unbekannter Menü-Befehl: " + cmd);
+            default            -> getLogger().at(Level.WARNING).log("Unbekannter Menue-Befehl: " + cmd);
         }
     }
 
@@ -267,7 +258,7 @@ public class AthenaPressPlugin extends JavaPlugin {
                     ArticleEditorView view = core.handleEditorInput(playerId, val);
                     editorBridge.openOrUpdateArticleEditor(playerId, view);
                 } catch (IOException e) {
-                    getLogger().at(Level.WARNING).withCause(e).log("Artikel-Editor-Schaltfläche fehlgeschlagen");
+                    getLogger().at(Level.WARNING).withCause(e).log("Artikel-Editor-Schaltflaeche fehlgeschlagen");
                 }
             }
             case "cancel" -> {
@@ -288,7 +279,7 @@ public class AthenaPressPlugin extends JavaPlugin {
                     IssueEditorView view = core.handleIssueEditorInput(playerId, val);
                     editorBridge.openOrUpdateIssueEditor(playerId, view);
                 } catch (IOException e) {
-                    getLogger().at(Level.WARNING).withCause(e).log("Ausgaben-Editor-Schaltfläche fehlgeschlagen");
+                    getLogger().at(Level.WARNING).withCause(e).log("Ausgaben-Editor-Schaltflaeche fehlgeschlagen");
                 }
             }
             case "cancel" -> core.cancelIssueEditorSession(playerId);

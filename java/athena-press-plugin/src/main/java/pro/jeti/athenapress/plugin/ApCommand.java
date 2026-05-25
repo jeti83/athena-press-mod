@@ -7,8 +7,6 @@ import java.util.logging.Level;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.AbstractCommand;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
-import com.hypixel.hytale.component.Ref;
-import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
 import pro.jeti.athenapress.integration.AthenaPressIntegrationPlugin;
 import pro.jeti.athenapress.integration.HytaleNewspaperVisualRuntime;
@@ -32,7 +30,7 @@ public class ApCommand extends AbstractCommand {
     private final EditorUiBridge editorBridge;
 
     public ApCommand(HytaleNewspaperVisualRuntime<String> runtime, EditorUiBridge editorBridge) {
-        super("ap", "Zeitung öffnen", false);
+        super("ap", "Zeitung oeffnen", false);
         setAllowsExtraArguments(true);
         this.runtime      = runtime;
         this.editorBridge = editorBridge;
@@ -53,7 +51,7 @@ public class ApCommand extends AbstractCommand {
         sendDbg(ctx, "CMD id=" + playerId.substring(0, 8) + "... input=\"" + input + "\" admin=" + admin);
 
         if (!ensurePlayerRegistered(ctx, playerId)) {
-            sendMsg(ctx, "[AP] Spieler-Referenz nicht gefunden – bitte Server-Log prüfen oder neu verbinden.");
+            sendMsg(ctx, "[AP] Spieler-Referenz nicht gefunden - bitte Server-Log pruefen oder neu verbinden.");
             return CompletableFuture.completedFuture(null);
         }
 
@@ -135,7 +133,7 @@ public class ApCommand extends AbstractCommand {
 
             default -> {
                 if (!admin) {
-                    sendMsg(ctx, "Keine Berechtigung. Benötigt: " + AP_ADMIN_PERMISSION);
+                    sendMsg(ctx, "Keine Berechtigung. Benoetigt: " + AP_ADMIN_PERMISSION);
                     return;
                 }
                 try {
@@ -143,7 +141,7 @@ public class ApCommand extends AbstractCommand {
                     sendMsg(ctx, result);
                 } catch (IOException | RuntimeException e) {
                     LOGGER.at(Level.WARNING).withCause(e).log("Chef-Befehl fehlgeschlagen");
-                    sendMsg(ctx, "Befehl konnte nicht ausgeführt werden: " + e.getMessage());
+                    sendMsg(ctx, "Befehl konnte nicht ausgefuehrt werden: " + e.getMessage());
                 }
             }
         }
@@ -161,27 +159,14 @@ public class ApCommand extends AbstractCommand {
     }
 
     /**
-     * Stellt sicher dass ein echter PlayerRef im EditorUiBridge hinterlegt ist.
-     * Nötig weil der PlayerConnectEvent-Stub nicht mit dem echten Hytale-Event matcht.
-     *
-     * @return true wenn ein PlayerRef verfügbar ist (neu oder bereits gespeichert)
-     */
-    /**
-     * Stellt sicher dass ein EntityRef im EditorUiBridge hinterlegt ist.
-     * Nutzt ctx.senderAsPlayerRef() – thread-safe, kein store.getComponent() hier.
-     * Der PlayerRef-Lookup passiert später im WorldThread (inside openPage).
+     * Prüft ob der Spieler beim Connect-Event registriert wurde.
+     * Fehlt der Eintrag, war der PlayerConnectEvent noch nicht verarbeitet –
+     * der Spieler soll sich neu verbinden.
      */
     private boolean ensurePlayerRegistered(CommandContext ctx, String playerId) {
         if (editorBridge.isRegistered(playerId)) return true;
-        try {
-            Ref<EntityStore> entityRef = ctx.senderAsPlayerRef();
-            editorBridge.registerPlayer(playerId, entityRef);
-            LOGGER.at(Level.INFO).log("[AP] EntityRef lazy registriert für " + playerId);
-            return true;
-        } catch (Exception e) {
-            LOGGER.at(Level.WARNING).withCause(e)
-                    .log("[AP] EntityRef-Lookup fehlgeschlagen für " + playerId);
-            return false;
-        }
+        LOGGER.at(Level.WARNING).log("[AP] PlayerRef nicht gefunden fuer " + playerId
+                + " - neu verbinden oder Server-Log pruefen.");
+        return false;
     }
 }
