@@ -8,6 +8,8 @@ import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.AbstractCommand;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 
+import com.hypixel.hytale.server.core.universe.PlayerRef;
+
 import pro.jeti.athenapress.integration.AthenaPressIntegrationPlugin;
 import pro.jeti.athenapress.integration.HytaleNewspaperVisualRuntime;
 
@@ -49,6 +51,12 @@ public class ApCommand extends AbstractCommand {
                 : rawArgs;
 
         LOGGER.at(Level.INFO).log("[CMD /ap] id=" + playerId + " input=\"" + input + "\"");
+
+        // Spieler lazy registrieren – PlayerConnectEvent-Stub matcht ggf. nicht
+        // mit dem echten Hytale-Event. Hier beim ersten Befehl sicherstellen,
+        // dass ein echter PlayerRef (aus dem EntityStore) hinterlegt ist.
+        ensurePlayerRegistered(ctx, playerId);
+
         handleCommand(ctx, playerId, playerName, admin, args);
         return CompletableFuture.completedFuture(null);
     }
@@ -140,5 +148,21 @@ public class ApCommand extends AbstractCommand {
         if (text == null || text.isBlank()) return;
         LOGGER.at(Level.INFO).log("[AP→Spieler] " + text.replace("\n", "\\n"));
         ctx.sendMessage(Message.raw(text));
+    }
+
+    private void ensurePlayerRegistered(CommandContext ctx, String playerId) {
+        if (editorBridge.getPlayerRef(playerId) != null) return;
+        try {
+            var entityRef = ctx.senderAsPlayerRef();
+            var store     = entityRef.getStore();
+            PlayerRef playerRef = store.getComponent(entityRef, PlayerRef.getComponentType());
+            if (playerRef != null) {
+                editorBridge.registerPlayer(playerId, playerRef);
+                LOGGER.at(Level.INFO).log("[AP] PlayerRef lazy registriert für " + playerId);
+            }
+        } catch (Exception e) {
+            LOGGER.at(Level.WARNING).withCause(e)
+                    .log("[AP] PlayerRef-Lookup fehlgeschlagen für " + playerId);
+        }
     }
 }
