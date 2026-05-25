@@ -74,6 +74,12 @@ public class EditorUiBridge {
         return playerEntityRefs.containsKey(playerId);
     }
 
+    /** Gibt den gespeicherten EntityRef zurück – für direkte Zugriffe aus dem WorldThread. */
+    @SuppressWarnings("unchecked")
+    public Ref<EntityStore> getEntityRef(String playerId) {
+        return playerEntityRefs.get(playerId);
+    }
+
     /** Gibt den zuletzt gecachten Admin-Status zurück. */
     public boolean getCachedAdminStatus(String playerId) {
         return playerAdminCache.getOrDefault(playerId, false);

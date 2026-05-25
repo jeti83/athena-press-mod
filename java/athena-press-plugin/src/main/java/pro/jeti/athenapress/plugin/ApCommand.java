@@ -7,7 +7,8 @@ import java.util.logging.Level;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.AbstractCommand;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
-import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
 import pro.jeti.athenapress.integration.AthenaPressIntegrationPlugin;
 import pro.jeti.athenapress.integration.HytaleNewspaperVisualRuntime;
@@ -165,26 +166,21 @@ public class ApCommand extends AbstractCommand {
      *
      * @return true wenn ein PlayerRef verfügbar ist (neu oder bereits gespeichert)
      */
+    /**
+     * Stellt sicher dass ein EntityRef im EditorUiBridge hinterlegt ist.
+     * Nutzt ctx.senderAsPlayerRef() – thread-safe, kein store.getComponent() hier.
+     * Der PlayerRef-Lookup passiert später im WorldThread (inside openPage).
+     */
     private boolean ensurePlayerRegistered(CommandContext ctx, String playerId) {
-        if (editorBridge.getPlayerRef(playerId) != null) return true;
+        if (editorBridge.isRegistered(playerId)) return true;
         try {
-            var entityRef = ctx.senderAsPlayerRef();
-            var store     = entityRef.getStore();
-            if (store == null) {
-                LOGGER.at(Level.WARNING).log("[AP] EntityStore null für " + playerId);
-                return false;
-            }
-            PlayerRef playerRef = store.getComponent(entityRef, PlayerRef.getComponentType());
-            if (playerRef != null) {
-                editorBridge.registerPlayer(playerId, playerRef);
-                LOGGER.at(Level.INFO).log("[AP] PlayerRef lazy registriert für " + playerId);
-                return true;
-            }
-            LOGGER.at(Level.WARNING).log("[AP] store.getComponent(PlayerRef) → null für " + playerId);
-            return false;
+            Ref<EntityStore> entityRef = ctx.senderAsPlayerRef();
+            editorBridge.registerPlayer(playerId, entityRef);
+            LOGGER.at(Level.INFO).log("[AP] EntityRef lazy registriert für " + playerId);
+            return true;
         } catch (Exception e) {
             LOGGER.at(Level.WARNING).withCause(e)
-                    .log("[AP] PlayerRef-Lookup fehlgeschlagen für " + playerId);
+                    .log("[AP] EntityRef-Lookup fehlgeschlagen für " + playerId);
             return false;
         }
     }

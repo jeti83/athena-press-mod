@@ -14,7 +14,6 @@ import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import com.hypixel.hytale.server.core.inventory.InventoryComponent;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
-import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.event.PlayerConnectEvent;
 import com.hypixel.hytale.event.PlayerDisconnectEvent;
 import com.hypixel.hytale.event.PlayerInteractEvent;
@@ -129,7 +128,8 @@ public class AthenaPressPlugin extends JavaPlugin {
         contextResolver.register(playerId, playerName);
         visualBridge.registerPlayer(playerId, event.getPlayerRef());
         cameraBridge.registerPlayer(playerId, event.getPlayerRef());
-        editorBridge.registerPlayer(playerId, event.getPlayerRef());
+        // editorBridge wird per ctx.senderAsPlayerRef() beim ersten /ap-Befehl registriert,
+        // weil der PlayerConnectEvent-Stub keinen Ref<EntityStore> liefert.
 
         runtime.onPlayerConnected(playerId);
     }
@@ -290,18 +290,22 @@ public class AthenaPressPlugin extends JavaPlugin {
     // -----------------------------------------------------------------------
 
     private void giveCameraItem(String playerId) {
-        Object rawRef = editorBridge.getPlayerRef(playerId);
-        if (rawRef == null) return;
+        var entityRef = editorBridge.getEntityRef(playerId);
+        if (entityRef == null) return;
 
-        PlayerRef hytaleRef = (PlayerRef) rawRef;
-        var entityRef = hytaleRef.getReference();
-        var store     = entityRef.getStore();
-        var world     = store.getExternalData().getWorld();
+        var store = entityRef.getStore();
+        var ext   = store != null ? store.getExternalData() : null;
+        var world = ext  != null ? ext.getWorld()           : null;
+        if (world == null) return;
 
         world.execute(() -> {
-            var hotbar = store.getComponent(entityRef, InventoryComponent.Hotbar.getComponentType());
-            var camera = new ItemStack(ApCommand.CAMERA_ITEM_ID, 1);
-            hotbar.getInventory().addItemStack(camera);
+            try {
+                var hotbar = store.getComponent(entityRef, InventoryComponent.Hotbar.getComponentType());
+                if (hotbar == null) return;
+                hotbar.getInventory().addItemStack(new ItemStack(ApCommand.CAMERA_ITEM_ID, 1));
+            } catch (Exception e) {
+                getLogger().at(Level.WARNING).withCause(e).log("Kamera-Item konnte nicht gegeben werden");
+            }
         });
     }
 
