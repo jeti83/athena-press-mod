@@ -95,7 +95,13 @@ public class AthenaPressPlugin extends JavaPlugin {
     @Override
     protected void shutdown() {
         if (cameraService != null) cameraService.shutdown();
-        runtime.onServerShutdown();
+        try {
+            runtime.onServerShutdown();
+        } catch (Exception | Error e) {
+            // Hytale kann den Plugin-Classloader vor shutdown() invalidieren — ignorieren
+            getLogger().at(java.util.logging.Level.WARNING)
+                    .log("Shutdown-Cleanup übersprungen (Classloader bereits geschlossen)");
+        }
         getLogger().at(java.util.logging.Level.INFO).log("AthenaPress beendet.");
     }
 
@@ -156,6 +162,12 @@ public class AthenaPressPlugin extends JavaPlugin {
     private void onPlayerChat(PlayerChatEvent event) {
         String playerId = extractPlayerId(event);
         String message  = event.getMessage();
+
+        getLogger().at(java.util.logging.Level.INFO)
+                .log("[Chat] id=" + playerId + " msg=" + message
+                        + " articleEditor=" + runtime.plugin().hasActiveEditorSession(playerId)
+                        + " issueEditor=" + runtime.plugin().hasActiveIssueEditorSession(playerId));
+
         if (message == null || message.isBlank()) return;
 
         var plugin = runtime.plugin();

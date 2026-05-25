@@ -52,6 +52,7 @@ public class ApCommand extends AbstractCommand {
                 ? java.util.Arrays.copyOfRange(rawArgs, 1, rawArgs.length)
                 : rawArgs;
 
+        LOGGER.at(Level.INFO).log("[CMD /ap] id=" + playerId + " input=\"" + input + "\"");
         handleCommand(ctx, playerId, playerName, admin, args);
         return CompletableFuture.completedFuture(null);
     }
@@ -224,6 +225,7 @@ public class ApCommand extends AbstractCommand {
 
     private void sendEditorText(CommandContext ctx, String text) {
         if (text == null || text.isBlank()) return;
+        LOGGER.at(Level.INFO).log("[AP→Spieler] " + text.replace("\n", "\\n"));
         ctx.sendMessage(Message.raw(text));
     }
 }
