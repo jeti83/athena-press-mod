@@ -154,7 +154,38 @@ public class AthenaPressPlugin extends JavaPlugin {
     }
 
     private void onPlayerChat(PlayerChatEvent event) {
-        // TODO: Chat-Weiterleitung an aktive Editor-Sessions
+        String playerId = extractPlayerId(event);
+        String message  = event.getMessage();
+        if (message == null || message.isBlank()) return;
+
+        var plugin = runtime.plugin();
+
+        if (plugin.hasActiveEditorSession(playerId)) {
+            try {
+                var view = plugin.handleEditorInput(playerId, message);
+                String text = view.message() != null && !view.message().isBlank()
+                        ? view.message() : view.prompt();
+                sendToPlayer(event, text);
+                event.setCancelled(true);
+            } catch (java.io.IOException e) {
+                getLogger().at(java.util.logging.Level.WARNING)
+                        .withCause(e).log("Artikel-Editor Chat-Eingabe fehlgeschlagen");
+            }
+            return;
+        }
+
+        if (plugin.hasActiveIssueEditorSession(playerId)) {
+            try {
+                var view = plugin.handleIssueEditorInput(playerId, message);
+                String text = view.message() != null && !view.message().isBlank()
+                        ? view.message() : view.prompt();
+                sendToPlayer(event, text);
+                event.setCancelled(true);
+            } catch (java.io.IOException e) {
+                getLogger().at(java.util.logging.Level.WARNING)
+                        .withCause(e).log("Ausgaben-Editor Chat-Eingabe fehlgeschlagen");
+            }
+        }
     }
 
     // -----------------------------------------------------------------------
@@ -175,6 +206,17 @@ public class AthenaPressPlugin extends JavaPlugin {
 
     private String extractPlayerId(PlayerInteractEvent event) {
         return event.getPlayerRef().getUuid().toString();
+    }
+
+    private String extractPlayerId(PlayerChatEvent event) {
+        return event.getPlayerRef().getUuid().toString();
+    }
+
+    private void sendToPlayer(PlayerChatEvent event, String text) {
+        if (text == null || text.isBlank()) return;
+        com.hypixel.hytale.server.core.universe.PlayerRef ref =
+                (com.hypixel.hytale.server.core.universe.PlayerRef) event.getPlayerRef();
+        ref.sendMessage(com.hypixel.hytale.server.core.Message.raw(text));
     }
 
     /** Liest das Screenshot-Verzeichnis aus AthenaPress/config.json. */
