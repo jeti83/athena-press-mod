@@ -22,7 +22,7 @@ $pluginData = "$savesDir\$worldName\mods\pro.jeti_AthenaPress"
 Write-Host "Baue Plugin..." -ForegroundColor Cyan
 Push-Location $javaDir
 try {
-    mvn -q package -pl athena-press-integration,athena-press-plugin -am -DskipTests
+    mvn -q clean package -pl athena-press-integration,athena-press-plugin -am -DskipTests
     if ($LASTEXITCODE -ne 0) { throw "Maven-Build fehlgeschlagen (Exit $LASTEXITCODE)" }
 } finally {
     Pop-Location
