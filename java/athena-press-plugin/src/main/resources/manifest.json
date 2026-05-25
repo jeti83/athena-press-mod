@@ -2,12 +2,13 @@
   "Group": "pro.jeti",
   "Name": "AthenaPress",
   "Version": "0.4.0",
-  "Description": "Athena Botenblatt – Ingame-Zeitung und Redaktionssystem für den Athena-Server",
+  "Description": "Ingame-Zeitung und Redaktionssystem für den Athena-Server",
   "Authors": [
     {
       "Name": "jeti83"
     }
   ],
+  "Website": "https://athena-hytale.com/",
   "Main": "pro.jeti.athenapress.plugin.AthenaPressPlugin",
   "ServerVersion": "2026.03.26-89796e57b",
   "Dependencies": {},
