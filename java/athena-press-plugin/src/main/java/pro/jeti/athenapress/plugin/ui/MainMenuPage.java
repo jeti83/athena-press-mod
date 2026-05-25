@@ -15,7 +15,82 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
 public class MainMenuPage extends CustomUIPage {
 
-    public static final String UI_LAYOUT = "UI/Custom/AthenaPress/MainMenuPage.ui";
+    private static final String INLINE_UI = """
+            Group {
+              Background: (Color: #000000(0.82));
+              LayoutMode: Middle;
+
+              Group {
+                Background: (Color: #1a2436);
+                Anchor: (Width: 420, Height: 380);
+                LayoutMode: Top;
+                Padding: (Horizontal: 24, Top: 16, Bottom: 8);
+
+                Label {
+                  Text: "Athena Botenblatt";
+                  Anchor: (Height: 36);
+                  Style: (FontSize: 20, RenderBold: true, HorizontalAlignment: Center,
+                          TextColor: #bfcdd5, VerticalAlignment: Center);
+                }
+
+                Group #Content {
+                  LayoutMode: Top;
+                  Padding: (Top: 8);
+
+                  TextButton #BtnReadNewspaper {
+                    Text: "Zeitung lesen";
+                    Anchor: (Height: 44);
+                    Padding: (Full: 8);
+                    FlexWeight: 1;
+                  }
+
+                  TextButton #BtnGiveCamera {
+                    Text: "Kamera holen";
+                    Anchor: (Height: 44);
+                    Padding: (Full: 8);
+                    FlexWeight: 1;
+                  }
+
+                  Group #AdminSection {
+                    LayoutMode: Top;
+
+                    Label {
+                      Anchor: (Height: 24);
+                      Padding: (Top: 10, Bottom: 4);
+                      Style: (FontSize: 11, TextColor: #96a9be, HorizontalAlignment: Center,
+                              VerticalAlignment: Center);
+                      Text: "— Redaktion —";
+                    }
+
+                    TextButton #BtnNewArticle {
+                      Text: "Artikel schreiben";
+                      Anchor: (Height: 44);
+                      Padding: (Full: 8);
+                      FlexWeight: 1;
+                    }
+
+                    TextButton #BtnNewIssue {
+                      Text: "Ausgabe erstellen";
+                      Anchor: (Height: 44);
+                      Padding: (Full: 8);
+                      FlexWeight: 1;
+                    }
+                  }
+                }
+
+                Group #NavBar {
+                  LayoutMode: Left;
+                  Anchor: (Height: 52);
+                  Padding: (Horizontal: 16, Top: 8);
+
+                  TextButton #BtnClose {
+                    Text: "Schließen";
+                    FlexWeight: 1;
+                  }
+                }
+              }
+            }
+            """;
 
     private final boolean isAdmin;
     private final Consumer<String> onCommand;
@@ -33,7 +108,7 @@ public class MainMenuPage extends CustomUIPage {
             UIEventBuilder events,
             Store<EntityStore> store
     ) {
-        ui.append(UI_LAYOUT);
+        ui.appendInline(null, INLINE_UI);
 
         if (!isAdmin) {
             ui.remove("#AdminSection");

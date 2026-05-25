@@ -29,8 +29,97 @@ import pro.jeti.athenapress.integration.PlayerNewspaperVisualView;
  */
 public class NewspaperPage extends CustomUIPage {
 
-    /** Relativer Pfad zur .ui-Layoutdatei im Mod-Asset-Pack */
-    public static final String UI_LAYOUT = "UI/Custom/AthenaPress/NewspaperPage.ui";
+    private static final String INLINE_UI = """
+            Group {
+              Background: (Color: #000000(0.82));
+              LayoutMode: Middle;
+
+              Group {
+                Background: (Color: #1a2436);
+                Anchor: (Width: 760, Height: 620);
+                LayoutMode: Top;
+                Padding: (Horizontal: 20, Top: 12, Bottom: 0);
+
+                Label #Title {
+                  Anchor: (Height: 36);
+                  Style: (FontSize: 18, RenderBold: true, HorizontalAlignment: Center,
+                          TextColor: #bfcdd5, VerticalAlignment: Center);
+                  Text: "";
+                }
+
+                Group #Content {
+                  LayoutMode: Top;
+                  FlexWeight: 1;
+                  Padding: (Top: 8);
+
+                  Group #ArticleList {
+                    LayoutMode: Top;
+                    FlexWeight: 1;
+                  }
+
+                  Group #ArticleView {
+                    LayoutMode: Top;
+                    FlexWeight: 1;
+
+                    Label #ArticleTitle {
+                      Anchor: (Height: 36);
+                      Padding: (Horizontal: 0, Top: 4, Bottom: 4);
+                      Style: (FontSize: 22, RenderBold: true, TextColor: #ffffff,
+                              VerticalAlignment: Center, Wrap: true);
+                      Text: "";
+                    }
+
+                    Label #ArticleSubtitle {
+                      Anchor: (Height: 22);
+                      Padding: (Bottom: 8);
+                      Style: (FontSize: 14, TextColor: #96a9be, VerticalAlignment: Center);
+                      Text: "";
+                    }
+
+                    Group #ArticleImage {
+                      Anchor: (Height: 180);
+                      Padding: (Bottom: 4);
+                    }
+
+                    Label #ArticleCaption {
+                      Anchor: (Height: 18);
+                      Padding: (Bottom: 8);
+                      Style: (FontSize: 11, TextColor: #787e8c, VerticalAlignment: Center);
+                      Text: "";
+                    }
+
+                    Label #ArticleBody {
+                      FlexWeight: 1;
+                      Padding: (Top: 4, Bottom: 12);
+                      Style: (FontSize: 14, TextColor: #d0d8e8, Wrap: true, VerticalAlignment: Top);
+                      Text: "";
+                    }
+                  }
+                }
+
+                Group #NavBar {
+                  LayoutMode: Left;
+                  Anchor: (Height: 52);
+                  Padding: (Horizontal: 16, Top: 8);
+
+                  TextButton #BtnBack {
+                    Text: "← Zurück";
+                    FlexWeight: 1;
+                  }
+
+                  TextButton #BtnClose {
+                    Text: "Schließen";
+                    FlexWeight: 1;
+                  }
+
+                  TextButton #BtnNext {
+                    Text: "Weiter →";
+                    FlexWeight: 1;
+                  }
+                }
+              }
+            }
+            """;
 
     private final PlayerNewspaperVisualView view;
     private final HytalePlayerContext player;
@@ -55,8 +144,7 @@ public class NewspaperPage extends CustomUIPage {
             UIEventBuilder events,
             Store<EntityStore> store
     ) {
-        // Basis-Layout aus .ui Datei laden
-        ui.append(UI_LAYOUT);
+        ui.appendInline(null, INLINE_UI);
 
         // Titel setzen
         ui.set("#Title", view.title() + "  –  " + view.spreadStatus().label());

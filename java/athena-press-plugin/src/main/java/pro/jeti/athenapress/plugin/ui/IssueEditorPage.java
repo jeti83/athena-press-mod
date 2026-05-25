@@ -24,7 +24,56 @@ import pro.jeti.athenapress.integration.IssueEditorView;
  */
 public class IssueEditorPage extends CustomUIPage {
 
-    public static final String UI_LAYOUT = "UI/Custom/AthenaPress/IssueEditorPage.ui";
+    private static final String INLINE_UI = """
+            Group {
+              Background: (Color: #000000(0.82));
+              LayoutMode: Middle;
+
+              Group {
+                Background: (Color: #1a2436);
+                Anchor: (Width: 580, Height: 560);
+                LayoutMode: Top;
+                Padding: (Horizontal: 20, Top: 12, Bottom: 8);
+
+                Label #StepLabel {
+                  Anchor: (Height: 20);
+                  Padding: (Bottom: 4);
+                  Style: (FontSize: 11, TextColor: #96a9be, VerticalAlignment: Center);
+                  Text: "";
+                }
+
+                Label #MessageLabel {
+                  Anchor: (Height: 22);
+                  Padding: (Bottom: 6);
+                  Style: (FontSize: 12, TextColor: #e07070, VerticalAlignment: Center);
+                  Text: "";
+                }
+
+                Label #PromptLabel {
+                  Anchor: (Height: 200);
+                  Padding: (Bottom: 10);
+                  Style: (FontSize: 13, TextColor: #d0d8e8, Wrap: true, VerticalAlignment: Top);
+                  Text: "";
+                }
+
+                Group #ActionButtons {
+                  LayoutMode: Top;
+                  FlexWeight: 1;
+                }
+
+                Group #NavBar {
+                  LayoutMode: Left;
+                  Anchor: (Height: 52);
+                  Padding: (Horizontal: 16, Top: 8);
+
+                  TextButton #BtnCancel {
+                    Text: "Abbrechen";
+                    FlexWeight: 1;
+                  }
+                }
+              }
+            }
+            """;
 
     private final IssueEditorView view;
     private final BiConsumer<String, String> onCommand; // (cmd, val)
@@ -46,7 +95,7 @@ public class IssueEditorPage extends CustomUIPage {
             UIEventBuilder events,
             Store<EntityStore> store
     ) {
-        ui.append(UI_LAYOUT);
+        ui.appendInline(null, INLINE_UI);
 
         ui.set("#StepLabel", stepLabel());
         ui.set("#PromptLabel", safeStr(view.prompt()));
