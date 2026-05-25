@@ -16,6 +16,7 @@ import pro.jeti.athenapress.integration.IssueEditorView;
 import pro.jeti.athenapress.plugin.ui.ArticleEditorPage;
 import pro.jeti.athenapress.plugin.ui.IssueEditorPage;
 import pro.jeti.athenapress.plugin.ui.MainMenuPage;
+import pro.jeti.athenapress.plugin.ui.MainMenuPage.ProbeMode;
 
 /**
  * Öffnet und aktualisiert die AthenaPress-GUI-Seiten über den Hytale WorldThread.
@@ -97,10 +98,15 @@ public class EditorUiBridge {
     // -----------------------------------------------------------------------
 
     public void openMainMenu(String playerId, boolean isAdmin) {
+        openMainMenu(playerId, isAdmin, ProbeMode.MINIMAL);
+    }
+
+    public void openMainMenu(String playerId, boolean isAdmin, ProbeMode probeMode) {
         playerAdminCache.put(playerId, isAdmin);
         openPage(playerId, ref -> new MainMenuPage(
                 ref, isAdmin,
-                cmd -> { if (menuHandler != null) menuHandler.handle(playerId, cmd, isAdmin); }
+                cmd -> { if (menuHandler != null) menuHandler.handle(playerId, cmd, isAdmin); },
+                probeMode
         ));
     }
 

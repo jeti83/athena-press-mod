@@ -12,6 +12,7 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 
 import pro.jeti.athenapress.integration.AthenaPressIntegrationPlugin;
 import pro.jeti.athenapress.integration.HytaleNewspaperVisualRuntime;
+import pro.jeti.athenapress.plugin.ui.MainMenuPage.ProbeMode;
 
 /**
  * Verarbeitet den Ingame-Befehl /ap.
@@ -115,6 +116,31 @@ public class ApCommand extends AbstractCommand {
         String sub = args[0].toLowerCase();
 
         switch (sub) {
+            case "uimin", "uiminimal" -> {
+                sendDbg(ctx, "openMainMenu probe=minimal");
+                editorBridge.openMainMenu(playerId, admin, ProbeMode.MINIMAL);
+            }
+
+            case "uipanel" -> {
+                sendDbg(ctx, "openMainMenu probe=panel");
+                editorBridge.openMainMenu(playerId, admin, ProbeMode.PANEL);
+            }
+
+            case "uibuttons" -> {
+                sendDbg(ctx, "openMainMenu probe=buttons");
+                editorBridge.openMainMenu(playerId, admin, ProbeMode.BUTTONS);
+            }
+
+            case "uievents" -> {
+                sendDbg(ctx, "openMainMenu probe=events");
+                editorBridge.openMainMenu(playerId, admin, ProbeMode.EVENTS);
+            }
+
+            case "uinormal" -> {
+                sendDbg(ctx, "openMainMenu probe=normal");
+                editorBridge.openMainMenu(playerId, admin, ProbeMode.NORMAL);
+            }
+
             case "redaktion" -> {
                 sendDbg(ctx, "startArticleEditor");
                 var view = plugin.startArticleEditor(playerId, playerName, admin);

@@ -15,7 +15,13 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
 public class MainMenuPage extends CustomUIPage {
 
-    private static final boolean USE_CRASH_PROBE_UI = true;
+    public enum ProbeMode {
+        MINIMAL,
+        PANEL,
+        BUTTONS,
+        EVENTS,
+        NORMAL
+    }
 
     private static final String CRASH_PROBE_UI = """
             Group {
@@ -25,6 +31,75 @@ public class MainMenuPage extends CustomUIPage {
                 Text: "AthenaPress GUI-Test";
                 Anchor: (Width: 360, Height: 80);
                 Style: (FontSize: 20, HorizontalAlignment: Center, VerticalAlignment: Center);
+              }
+            }
+            """;
+
+    private static final String PANEL_PROBE_UI = """
+            Group {
+              Background: (Color: #000000(0.82));
+              LayoutMode: Middle;
+
+              Group {
+                Background: (Color: #1a2436);
+                Anchor: (Width: 420, Height: 220);
+                LayoutMode: Top;
+                Padding: (Horizontal: 24, Top: 16, Bottom: 8);
+
+                Label {
+                  Text: "Athena Botenblatt";
+                  Anchor: (Height: 36);
+                  Style: (FontSize: 20, RenderBold: true, HorizontalAlignment: Center,
+                          TextColor: #bfcdd5, VerticalAlignment: Center);
+                }
+
+                Label {
+                  Text: "Panel-Probe ohne Buttons";
+                  FlexWeight: 1;
+                  Style: (FontSize: 14, HorizontalAlignment: Center,
+                          TextColor: #d0d8e8, VerticalAlignment: Center);
+                }
+              }
+            }
+            """;
+
+    private static final String BUTTON_PROBE_UI = """
+            Group {
+              Background: (Color: #000000(0.82));
+              LayoutMode: Middle;
+
+              Group {
+                Background: (Color: #1a2436);
+                Anchor: (Width: 420, Height: 300);
+                LayoutMode: Top;
+                Padding: (Horizontal: 24, Top: 16, Bottom: 8);
+
+                Label {
+                  Text: "Athena Botenblatt";
+                  Anchor: (Height: 36);
+                  Style: (FontSize: 20, RenderBold: true, HorizontalAlignment: Center,
+                          TextColor: #bfcdd5, VerticalAlignment: Center);
+                }
+
+                Group #Content {
+                  LayoutMode: Top;
+                  Padding: (Top: 8);
+                  FlexWeight: 1;
+
+                  TextButton #BtnReadNewspaper {
+                    Text: "Zeitung lesen";
+                    Anchor: (Height: 44);
+                    Padding: (Full: 8);
+                    FlexWeight: 1;
+                  }
+
+                  TextButton #BtnGiveCamera {
+                    Text: "Kamera holen";
+                    Anchor: (Height: 44);
+                    Padding: (Full: 8);
+                    FlexWeight: 1;
+                  }
+                }
               }
             }
             """;
@@ -108,11 +183,22 @@ public class MainMenuPage extends CustomUIPage {
 
     private final boolean isAdmin;
     private final Consumer<String> onCommand;
+    private final ProbeMode probeMode;
 
     public MainMenuPage(PlayerRef hytaleRef, boolean isAdmin, Consumer<String> onCommand) {
+        this(hytaleRef, isAdmin, onCommand, ProbeMode.MINIMAL);
+    }
+
+    public MainMenuPage(
+            PlayerRef hytaleRef,
+            boolean isAdmin,
+            Consumer<String> onCommand,
+            ProbeMode probeMode
+    ) {
         super(hytaleRef, CustomPageLifetime.CanDismissOrCloseThroughInteraction);
         this.isAdmin = isAdmin;
         this.onCommand = onCommand;
+        this.probeMode = probeMode;
     }
 
     @Override
@@ -122,9 +208,32 @@ public class MainMenuPage extends CustomUIPage {
             UIEventBuilder events,
             Store<EntityStore> store
     ) {
-        if (USE_CRASH_PROBE_UI) {
-            ui.appendInline(null, CRASH_PROBE_UI);
-            return;
+        switch (probeMode) {
+            case MINIMAL -> {
+                ui.appendInline(null, CRASH_PROBE_UI);
+                return;
+            }
+            case PANEL -> {
+                ui.appendInline(null, PANEL_PROBE_UI);
+                return;
+            }
+            case BUTTONS -> {
+                ui.appendInline(null, BUTTON_PROBE_UI);
+                return;
+            }
+            case EVENTS -> {
+                ui.appendInline(null, BUTTON_PROBE_UI);
+                events.addEventBinding(CustomUIEventBindingType.Activating, "#BtnReadNewspaper",
+                        EventData.of("cmd", "open_newspaper"));
+                events.addEventBinding(CustomUIEventBindingType.Activating, "#BtnGiveCamera",
+                        EventData.of("cmd", "give_camera"));
+                events.addEventBinding(CustomUIEventBindingType.Dismissing, null,
+                        EventData.of("cmd", "close"));
+                return;
+            }
+            case NORMAL -> {
+                // fall through below
+            }
         }
 
         ui.appendInline(null, INLINE_UI);
