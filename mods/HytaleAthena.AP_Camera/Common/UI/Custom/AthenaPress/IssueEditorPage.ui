@@ -1,0 +1,52 @@
+$C = "../Common.ui";
+
+$C.@PageOverlay {}
+
+$C.@Container {
+  Anchor: (Width: 580, Height: 560);
+
+  #Title {
+    Group {
+      $C.@Title { @Text = "Ausgaben-Editor"; }
+    }
+  }
+
+  #Content {
+    LayoutMode: Top;
+    Padding: (Horizontal: 20, Top: 8, Bottom: 8);
+
+    Label #StepLabel {
+      Padding: (Bottom: 4);
+      Style: (FontSize: 11, TextColor: #96a9be);
+      Text: "";
+    }
+
+    Label #MessageLabel {
+      Padding: (Bottom: 6);
+      Style: (FontSize: 12, TextColor: #e07070);
+      Text: "";
+    }
+
+    // Prompt-Text (enthält die nummerierte Artikelliste)
+    Label #PromptLabel {
+      Padding: (Bottom: 10);
+      Style: (FontSize: 13, TextColor: #d0d8e8);
+      Text: "";
+    }
+
+    // Dynamische Aktions-Buttons (Weiter/Überspringen/Einreichen je nach Schritt)
+    Group #ActionButtons {
+      LayoutMode: TopScrolling;
+      ScrollbarStyle: $C.@DefaultScrollbarStyle;
+      FlexWeight: 1;
+    }
+  }
+
+  Group #NavBar {
+    LayoutMode: Left;
+    Anchor: (Height: 52, Top: 8);
+    Padding: (Horizontal: 16);
+
+    $C.@TextButton #BtnCancel { Text: "Abbrechen"; FlexWeight: 1; }
+  }
+}

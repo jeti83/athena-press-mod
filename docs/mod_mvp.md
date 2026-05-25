@@ -176,12 +176,21 @@ Aufgabe:
 
 ## Aktuelle Grenze
 
-Noch nicht Teil des MVP:
+Noch nicht Teil des MVP (wartet auf echten Hytale-Server):
 
-- echte Hytale-API-Imports
-- echte native Overlay-Implementierung
-- echte Server-Hooks
-- echte Zustellung im Spiel
-- Redaktions-UI im Spiel
+- Echte Hytale-API-Imports (Server noch nicht öffentlich)
+- Tatsächliches Rendern der `CustomUIPage`-Overlays im Spiel
+- Echte Server-Hooks
+- Echte Zustellung im Spiel (Items, Mailbox)
 
-Diese Punkte sollen erst ergänzt werden, wenn konkrete und verlässliche Hytale-API-Anbindungen vorliegen.
+## MVP 3: Ingame-GUI (implementiert, wartet auf Server)
+
+Die GUI-Infrastruktur ist vollständig vorbereitet und wartet nur auf einen laufenden Hytale-Server:
+
+- **Hauptmenü** (`MainMenuPage`) – alle Funktionen per Klick erreichbar
+- **Zeitungsleser** (`NewspaperPage`) – Doppelseiten-Overlay mit Navigation
+- **Artikel-Editor** (`ArticleEditorPage`) – Kategorie per Button, Text per Chat
+- **Ausgaben-Editor** (`IssueEditorPage`) – Schritt-für-Schritt mit Aktions-Buttons
+- **`EditorUiBridge`** – koordiniert Öffnen/Aktualisieren aller Seiten
+
+Der gesamte Code kompiliert, alle 300 Tests sind grün. Die Funktionalität kann aktiviert werden, sobald `openCustomPage()` auf einem echten Hytale-Server ausführbar ist.

@@ -1,0 +1,77 @@
+$C = "../Common.ui";
+
+$C.@PageOverlay {}
+
+$C.@Container {
+  Anchor: (Width: 580, Height: 540);
+
+  #Title {
+    Group {
+      $C.@Title { @Text = "Artikel-Editor"; }
+    }
+  }
+
+  #Content {
+    LayoutMode: Top;
+    Padding: (Horizontal: 20, Top: 8, Bottom: 8);
+
+    Label #StepLabel {
+      Padding: (Bottom: 4);
+      Style: (FontSize: 11, TextColor: #96a9be);
+      Text: "";
+    }
+
+    Label #PromptLabel {
+      Padding: (Bottom: 10);
+      Style: (FontSize: 14, TextColor: #ffffff);
+      Text: "";
+    }
+
+    Label #MessageLabel {
+      Padding: (Bottom: 6);
+      Style: (FontSize: 12, TextColor: #e07070);
+      Text: "";
+    }
+
+    Group #FieldsGroup {
+      LayoutMode: Top;
+      Padding: (Bottom: 6);
+
+      Label #FieldTitle {
+        Padding: (Bottom: 2);
+        Style: (FontSize: 12, TextColor: #96a9be);
+        Text: "";
+      }
+      Label #FieldCategory {
+        Padding: (Bottom: 2);
+        Style: (FontSize: 12, TextColor: #96a9be);
+        Text: "";
+      }
+      Label #FieldBodyPreview {
+        Padding: (Bottom: 2);
+        Style: (FontSize: 12, TextColor: #96a9be);
+        Text: "";
+      }
+      Label #FieldImage {
+        Padding: (Bottom: 2);
+        Style: (FontSize: 12, TextColor: #96a9be);
+        Text: "";
+      }
+    }
+
+    // Dynamische Buttons (Kategorien, Bilder, Einreichen)
+    Group #ActionButtons {
+      LayoutMode: TopScrolling;
+      ScrollbarStyle: $C.@DefaultScrollbarStyle;
+      FlexWeight: 1;
+    }
+  }
+
+  Group #NavBar {
+    LayoutMode: Left;
+    Anchor: (Height: 52, Top: 8);
+    Padding: (Horizontal: 16);
+
+    $C.@TextButton #BtnCancel { Text: "Abbrechen"; FlexWeight: 1; }
+  }
+}

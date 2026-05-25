@@ -3,6 +3,7 @@ package pro.jeti.athenapress.plugin;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.logging.Level;
 import javax.annotation.Nonnull;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -11,16 +12,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 // Hytale Plugin API
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
+import com.hypixel.hytale.server.core.inventory.InventoryComponent;
+import com.hypixel.hytale.server.core.inventory.ItemStack;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.event.PlayerConnectEvent;
 import com.hypixel.hytale.event.PlayerDisconnectEvent;
 import com.hypixel.hytale.event.PlayerInteractEvent;
 import com.hypixel.hytale.event.PlayerChatEvent;
 
 // AthenaPress Integration
+import pro.jeti.athenapress.integration.ArticleEditorView;
 import pro.jeti.athenapress.integration.AthenaPressIntegrationPlugin;
 import pro.jeti.athenapress.integration.CameraScreenshotService;
 import pro.jeti.athenapress.integration.ConsoleNewspaperUiPort;
 import pro.jeti.athenapress.integration.HytaleNewspaperVisualRuntime;
+import pro.jeti.athenapress.integration.IssueEditorView;
 
 /**
  * Einstiegspunkt der AthenaPress Hytale-Mod.
@@ -35,7 +41,9 @@ public class AthenaPressPlugin extends JavaPlugin {
     private PlayerContextResolver contextResolver;
     private NewspaperVisualBridge visualBridge;
     private CameraUiBridge cameraBridge;
+    private EditorUiBridge editorBridge;
     private CameraScreenshotService cameraService;
+    private AthenaPressIntegrationPlugin core;
 
     public AthenaPressPlugin(@Nonnull JavaPluginInit init) {
         super(init);
@@ -48,8 +56,9 @@ public class AthenaPressPlugin extends JavaPlugin {
         contextResolver = new PlayerContextResolver();
         visualBridge    = new NewspaperVisualBridge();
         cameraBridge    = new CameraUiBridge();
+        editorBridge    = new EditorUiBridge();
 
-        AthenaPressIntegrationPlugin core = new AthenaPressIntegrationPlugin(athenaPressRoot);
+        core = new AthenaPressIntegrationPlugin(athenaPressRoot);
 
         runtime = new HytaleNewspaperVisualRuntime<>(
                 core,
@@ -58,6 +67,11 @@ public class AthenaPressPlugin extends JavaPlugin {
                 contextResolver
         );
         visualBridge.setRuntime(runtime);
+
+        // EditorUiBridge-Callbacks verdrahten
+        editorBridge.setMenuHandler(this::handleMenuCommand);
+        editorBridge.setArticleEditorHandler(this::handleArticleEditorCommand);
+        editorBridge.setIssueEditorHandler(this::handleIssueEditorCommand);
 
         // CameraScreenshotService starten
         try {
@@ -68,10 +82,10 @@ public class AthenaPressPlugin extends JavaPlugin {
                     athenaPressRoot,
                     screenshotDir
             );
-            getLogger().at(java.util.logging.Level.INFO)
+            getLogger().at(Level.INFO)
                     .log("Kamera-Watcher gestartet – Verzeichnis: " + screenshotDir);
         } catch (Exception e) {
-            getLogger().at(java.util.logging.Level.WARNING)
+            getLogger().at(Level.WARNING)
                     .withCause(e)
                     .log("Kamera-Watcher konnte nicht gestartet werden");
         }
@@ -81,15 +95,15 @@ public class AthenaPressPlugin extends JavaPlugin {
         getEventRegistry().register(PlayerInteractEvent.class,   this::onPlayerInteract);
         getEventRegistry().register(PlayerChatEvent.class,       this::onPlayerChat);
 
-        getCommandRegistry().registerCommand(new ApCommand(runtime));
+        getCommandRegistry().registerCommand(new ApCommand(runtime, editorBridge));
 
-        getLogger().at(java.util.logging.Level.INFO)
+        getLogger().at(Level.INFO)
                 .log("AthenaPress geladen – Datenpfad: " + athenaPressRoot);
     }
 
     @Override
     protected void start() {
-        getLogger().at(java.util.logging.Level.INFO).log("AthenaPress aktiv.");
+        getLogger().at(Level.INFO).log("AthenaPress aktiv.");
     }
 
     @Override
@@ -98,11 +112,10 @@ public class AthenaPressPlugin extends JavaPlugin {
         try {
             runtime.onServerShutdown();
         } catch (Exception | Error e) {
-            // Hytale kann den Plugin-Classloader vor shutdown() invalidieren — ignorieren
-            getLogger().at(java.util.logging.Level.WARNING)
+            getLogger().at(Level.WARNING)
                     .log("Shutdown-Cleanup übersprungen (Classloader bereits geschlossen)");
         }
-        getLogger().at(java.util.logging.Level.INFO).log("AthenaPress beendet.");
+        getLogger().at(Level.INFO).log("AthenaPress beendet.");
     }
 
     // -----------------------------------------------------------------------
@@ -110,23 +123,25 @@ public class AthenaPressPlugin extends JavaPlugin {
     // -----------------------------------------------------------------------
 
     private void onPlayerConnect(PlayerConnectEvent event) {
-        String playerId   = extractPlayerId(event);
-        String playerName = extractPlayerName(event);
+        String playerId   = event.getPlayerRef().getUuid().toString();
+        String playerName = event.getPlayerRef().getUsername();
 
         contextResolver.register(playerId, playerName);
         visualBridge.registerPlayer(playerId, event.getPlayerRef());
         cameraBridge.registerPlayer(playerId, event.getPlayerRef());
+        editorBridge.registerPlayer(playerId, event.getPlayerRef());
 
         runtime.onPlayerConnected(playerId);
     }
 
     private void onPlayerDisconnect(PlayerDisconnectEvent event) {
-        String playerId = extractPlayerId(event);
+        String playerId = event.getPlayerRef().getUuid().toString();
 
         runtime.onPlayerDisconnected(playerId);
 
         visualBridge.unregisterPlayer(playerId);
         cameraBridge.unregisterPlayer(playerId);
+        editorBridge.unregisterPlayer(playerId);
         contextResolver.unregister(playerId);
     }
 
@@ -137,9 +152,8 @@ public class AthenaPressPlugin extends JavaPlugin {
         String itemId = item.getItemId();
         if (itemId == null) return;
 
-        // Logging zur Item-ID-Verifizierung (wird ins Server-Log geschrieben)
         if (itemId.contains("AP_Camera")) {
-            getLogger().at(java.util.logging.Level.INFO)
+            getLogger().at(Level.INFO)
                     .log("AP_Camera erkannt – tatsächliche Item-ID: " + itemId);
         }
 
@@ -147,12 +161,12 @@ public class AthenaPressPlugin extends JavaPlugin {
                 || ("HytaleAthena.AP_Camera:" + ApCommand.CAMERA_ITEM_ID).equals(itemId);
 
         if (isCamera && cameraService != null) {
-            String playerId   = extractPlayerId(event);
+            String playerId   = event.getPlayerRef().getUuid().toString();
             String playerName = contextResolver.resolve(playerId).playerName();
             try {
                 cameraService.onCameraItemUse(playerId, playerName);
             } catch (Exception e) {
-                getLogger().at(java.util.logging.Level.WARNING)
+                getLogger().at(Level.WARNING)
                         .withCause(e)
                         .log("Fehler bei Kamera-Aufnahme");
             }
@@ -160,43 +174,114 @@ public class AthenaPressPlugin extends JavaPlugin {
     }
 
     private void onPlayerChat(PlayerChatEvent event) {
-        String playerId = extractPlayerId(event);
+        String playerId = event.getPlayerRef().getUuid().toString();
         String message  = event.getMessage();
 
-        getLogger().at(java.util.logging.Level.INFO)
+        getLogger().at(Level.INFO)
                 .log("[Chat] id=" + playerId + " msg=" + message
-                        + " articleEditor=" + runtime.plugin().hasActiveEditorSession(playerId)
-                        + " issueEditor=" + runtime.plugin().hasActiveIssueEditorSession(playerId));
+                        + " articleEditor=" + core.hasActiveEditorSession(playerId)
+                        + " issueEditor="   + core.hasActiveIssueEditorSession(playerId));
 
         if (message == null || message.isBlank()) return;
 
-        var plugin = runtime.plugin();
-
-        if (plugin.hasActiveEditorSession(playerId)) {
+        if (core.hasActiveEditorSession(playerId)) {
             try {
-                var view = plugin.handleEditorInput(playerId, message);
-                String text = view.message() != null && !view.message().isBlank()
-                        ? view.message() : view.prompt();
-                sendToPlayer(event, text);
+                ArticleEditorView view = core.handleEditorInput(playerId, message);
+                editorBridge.openOrUpdateArticleEditor(playerId, view);
                 event.setCancelled(true);
-            } catch (java.io.IOException e) {
-                getLogger().at(java.util.logging.Level.WARNING)
+            } catch (IOException e) {
+                getLogger().at(Level.WARNING)
                         .withCause(e).log("Artikel-Editor Chat-Eingabe fehlgeschlagen");
             }
             return;
         }
 
-        if (plugin.hasActiveIssueEditorSession(playerId)) {
+        if (core.hasActiveIssueEditorSession(playerId)) {
             try {
-                var view = plugin.handleIssueEditorInput(playerId, message);
-                String text = view.message() != null && !view.message().isBlank()
-                        ? view.message() : view.prompt();
-                sendToPlayer(event, text);
+                IssueEditorView view = core.handleIssueEditorInput(playerId, message);
+                editorBridge.openOrUpdateIssueEditor(playerId, view);
                 event.setCancelled(true);
-            } catch (java.io.IOException e) {
-                getLogger().at(java.util.logging.Level.WARNING)
+            } catch (IOException e) {
+                getLogger().at(Level.WARNING)
                         .withCause(e).log("Ausgaben-Editor Chat-Eingabe fehlgeschlagen");
             }
+        }
+    }
+
+    // -----------------------------------------------------------------------
+    // EditorUiBridge-Callbacks
+    // -----------------------------------------------------------------------
+
+    private void handleMenuCommand(String playerId, String cmd, boolean isAdmin) {
+        getLogger().at(Level.INFO).log("[Menü] id=" + playerId + " cmd=" + cmd);
+        switch (cmd) {
+            case "open_newspaper" -> {
+                try {
+                    // Text-Session öffnen, um die neueste Ausgaben-ID zu ermitteln
+                    core.onPlayerOpenLatestNewspaper(playerId);
+                    String issueId = core.getOpenIssueId(playerId);
+                    if (issueId != null) {
+                        // Visuelle Zeitung über den Runtime öffnen
+                        runtime.onPlayerChatCommand(playerId, "open", issueId);
+                    }
+                } catch (IOException e) {
+                    getLogger().at(Level.WARNING).withCause(e).log("Zeitung konnte nicht geöffnet werden");
+                }
+            }
+            case "start_article_editor" -> {
+                String playerName = contextResolver.resolve(playerId).playerName();
+                ArticleEditorView view = core.startArticleEditor(playerId, playerName, isAdmin);
+                editorBridge.openOrUpdateArticleEditor(playerId, view);
+            }
+            case "start_issue_editor" -> {
+                String playerName = contextResolver.resolve(playerId).playerName();
+                try {
+                    IssueEditorView view = core.startIssueEditor(playerId, playerName, isAdmin);
+                    editorBridge.openOrUpdateIssueEditor(playerId, view);
+                } catch (IOException e) {
+                    getLogger().at(Level.WARNING).withCause(e).log("Ausgaben-Editor konnte nicht gestartet werden");
+                }
+            }
+            case "give_camera" -> giveCameraItem(playerId);
+            case "close"       -> { /* Seite schließt sich bereits durch die UI */ }
+            default            -> getLogger().at(Level.WARNING).log("Unbekannter Menü-Befehl: " + cmd);
+        }
+    }
+
+    private void handleArticleEditorCommand(String playerId, String cmd, String val) {
+        getLogger().at(Level.INFO).log("[ArtikelEditor] id=" + playerId + " cmd=" + cmd + " val=" + val);
+        switch (cmd) {
+            case "select" -> {
+                try {
+                    ArticleEditorView view = core.handleEditorInput(playerId, val);
+                    editorBridge.openOrUpdateArticleEditor(playerId, view);
+                } catch (IOException e) {
+                    getLogger().at(Level.WARNING).withCause(e).log("Artikel-Editor-Schaltfläche fehlgeschlagen");
+                }
+            }
+            case "cancel" -> {
+                core.cancelEditorSession(playerId);
+                // EditorUiBridge kennt den Admin-Status aus dem Cache (gesetzt beim openMainMenu)
+                editorBridge.openMainMenu(playerId,
+                        editorBridge.getCachedAdminStatus(playerId));
+            }
+            default -> getLogger().at(Level.WARNING).log("Unbekannter Artikel-Editor-Befehl: " + cmd);
+        }
+    }
+
+    private void handleIssueEditorCommand(String playerId, String cmd, String val) {
+        getLogger().at(Level.INFO).log("[AusgabenEditor] id=" + playerId + " cmd=" + cmd + " val=" + val);
+        switch (cmd) {
+            case "select" -> {
+                try {
+                    IssueEditorView view = core.handleIssueEditorInput(playerId, val);
+                    editorBridge.openOrUpdateIssueEditor(playerId, view);
+                } catch (IOException e) {
+                    getLogger().at(Level.WARNING).withCause(e).log("Ausgaben-Editor-Schaltfläche fehlgeschlagen");
+                }
+            }
+            case "cancel" -> core.cancelIssueEditorSession(playerId);
+            default -> getLogger().at(Level.WARNING).log("Unbekannter Ausgaben-Editor-Befehl: " + cmd);
         }
     }
 
@@ -204,34 +289,22 @@ public class AthenaPressPlugin extends JavaPlugin {
     // Hilfsmethoden
     // -----------------------------------------------------------------------
 
-    private String extractPlayerId(PlayerConnectEvent event) {
-        return event.getPlayerRef().getUuid().toString();
+    private void giveCameraItem(String playerId) {
+        Object rawRef = editorBridge.getPlayerRef(playerId);
+        if (rawRef == null) return;
+
+        PlayerRef hytaleRef = (PlayerRef) rawRef;
+        var entityRef = hytaleRef.getReference();
+        var store     = entityRef.getStore();
+        var world     = store.getExternalData().getWorld();
+
+        world.execute(() -> {
+            var hotbar = store.getComponent(entityRef, InventoryComponent.Hotbar.getComponentType());
+            var camera = new ItemStack(ApCommand.CAMERA_ITEM_ID, 1);
+            hotbar.getInventory().addItemStack(camera);
+        });
     }
 
-    private String extractPlayerName(PlayerConnectEvent event) {
-        return event.getPlayerRef().getUsername();
-    }
-
-    private String extractPlayerId(PlayerDisconnectEvent event) {
-        return event.getPlayerRef().getUuid().toString();
-    }
-
-    private String extractPlayerId(PlayerInteractEvent event) {
-        return event.getPlayerRef().getUuid().toString();
-    }
-
-    private String extractPlayerId(PlayerChatEvent event) {
-        return event.getPlayerRef().getUuid().toString();
-    }
-
-    private void sendToPlayer(PlayerChatEvent event, String text) {
-        if (text == null || text.isBlank()) return;
-        com.hypixel.hytale.server.core.universe.PlayerRef ref =
-                (com.hypixel.hytale.server.core.universe.PlayerRef) event.getPlayerRef();
-        ref.sendMessage(com.hypixel.hytale.server.core.Message.raw(text));
-    }
-
-    /** Liest das Screenshot-Verzeichnis aus AthenaPress/config.json. */
     private Path readScreenshotDir(Path athenaPressRoot) throws IOException {
         Path configFile = athenaPressRoot.resolve("config.json");
         if (!configFile.toFile().exists()) {
@@ -246,7 +319,6 @@ public class AthenaPressPlugin extends JavaPlugin {
     }
 
     private Path defaultScreenshotDir() {
-        // Fallback: Hytale-Standard-Screenshots-Ordner unter OneDrive/Pictures
         return Paths.get(System.getProperty("user.home"),
                 "OneDrive", "Pictures", "Hytale Screenshots");
     }

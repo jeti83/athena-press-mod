@@ -54,10 +54,16 @@ Aktueller Stand:
 
 Noch nicht enthalten:
 
-- echte Hytale-API
+- echte Hytale-API (Hytale Server noch nicht öffentlich)
 - echte Ingame-Zustellung
 - echte Ingame-Items
 - Live-Kommunikation mit einem Server
+
+Ingame-GUI vorhanden (wartet auf Hytale-Server-Lauf):
+
+- Hauptmenü via `/ap` (Buttons: Zeitung lesen, Kamera holen, Artikel schreiben, Ausgabe erstellen)
+- Artikel-Editor als GUI-Overlay (Kategorie per Button, Text per Chat)
+- Ausgaben-Editor als GUI-Overlay (Schritt-für-Schritt mit Buttons)
 
 ---
 
@@ -88,11 +94,15 @@ athena-press-mod/
 │  │  └─ categories.json
 │  └─ logs/
 ├─ docs/
+├─ mods/
+│  └─ HytaleAthena.AP_Camera/
+│     └─ Common/UI/Custom/AthenaPress/   ← .ui-Layoutdateien
 ├─ tools/
 ├─ press.py
 └─ java/
    ├─ athena-press-core/
-   └─ athena-press-integration/
+   ├─ athena-press-integration/
+   └─ athena-press-plugin/               ← Hytale-Plugin-Einstiegspunkt
 
 ---
 
@@ -178,8 +188,9 @@ mvn -B clean verify
 Letzter bekannter stabiler Teststand:
 
 text
-Core: 91 Tests
-Integration: 169 Tests
+Core: 103 Tests
+Integration: 197 Tests
+Gesamt: 300 Tests
 Failures: 0
 Errors: 0
 

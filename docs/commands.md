@@ -663,13 +663,17 @@ Diese Befehle werden direkt im Spiel eingegeben. Sie sind in `ChefRedakteurServi
 
 Befehle ohne Hytale-API bereits vollständig testbar über `ChefRedakteurService.handle(args)`.
 
-### Zeitung öffnen (für alle Spieler)
+### Hauptmenü öffnen (für alle Spieler)
 
 ```
 /ap
 ```
 
-Öffnet die aktuelle Ausgabe als Visual-Doppelseiten-Overlay.
+Öffnet das **AthenaPress-Hauptmenü** als GUI-Overlay mit klickbaren Buttons:
+- **Zeitung lesen** → öffnet die neueste veröffentlichte Ausgabe als Doppelseiten-Overlay
+- **Kamera holen** → Kamera-Item ins Inventar
+- **Artikel schreiben** *(nur Admins)* → öffnet den Artikel-Editor
+- **Ausgabe erstellen** *(nur Admins)* → öffnet den Ausgaben-Editor
 
 ---
 ### Veröffentlichen
@@ -762,17 +766,28 @@ Implementiert in `AlbumCommandService`.
 ---
 ## 13. Ingame-Befehl: Artikel schreiben (`/ap redaktion`)
 
-Implementiert in `ArticleEditorService`. Schritt-für-Schritt-Flow:
+Implementiert in `ArticleEditorService` + `ArticleEditorPage` (GUI). Schritt-für-Schritt-Flow:
 
 ```
 /ap redaktion
 ```
 
-Schritte: Titel → Kategorie → Text → Foto aus Album → Vorschau → Einreichen
+Öffnet den **Artikel-Editor als GUI-Overlay**. Schritte:
+
+| Schritt | Eingabe |
+|---|---|
+| 1. Titel | Freitext im Chat |
+| 2. Kategorie | Klick auf Kategorie-Button im Overlay |
+| 3. Artikeltext | Freitext im Chat |
+| 4. Foto (optional) | Button „Ohne Bild weiter" oder Nummer im Chat |
+| 5. Überprüfen & Einreichen | Button „Artikel einreichen ✓" |
+
+Das Overlay aktualisiert sich automatisch nach jeder Chat-Eingabe.
+„Abbrechen"-Button ist auf jeder Schritt-Seite verfügbar.
 
 Einreichung erzeugt einen Draft in `AthenaPress/articles/draft/`.
 
-Eingaben während einer aktiven Session werden direkt mit `/ap <text>` übergeben:
+Direkteingabe während einer aktiven Session auch per Chat möglich (Fallback):
 
 ```
 /ap Mein Artikeltitel
@@ -786,19 +801,27 @@ Eingaben während einer aktiven Session werden direkt mit `/ap <text>` übergebe
 ---
 ## 14. Ingame-Befehl: Ausgabe zusammenstellen (`/ap ausgabe`)
 
-Implementiert in `IssueEditorService`. Schritt-für-Schritt-Flow:
+Implementiert in `IssueEditorService` + `IssueEditorPage` (GUI). Schritt-für-Schritt-Flow:
 
 ```
 /ap ausgabe
 ```
 
-Schritte:
-1. **Artikel auswählen** – Nummernliste kommasepariert, z. B. `1,3` oder `alle`
-2. **Titelartikel wählen** – Nummer oder `weiter` (erster Artikel)
-3. **Untertitel eingeben** – Freitext oder `weiter` (kein Untertitel)
-4. **Prüfen und einreichen** – `einreichen` speichert als Entwurf, `abbrechen` bricht ab
+Öffnet den **Ausgaben-Editor als GUI-Overlay**. Schritte:
 
-Alle Eingaben über `/ap <text>`:
+| Schritt | Eingabe |
+|---|---|
+| 1. Artikel auswählen | Nummern kommasepariert im Chat, z. B. `1,3` oder `alle` |
+| 2. Titelartikel wählen | Button „Ersten Artikel wählen" oder Nummer im Chat |
+| 3. Untertitel eingeben | Freitext im Chat oder Button „Ohne Untertitel weiter" |
+| 4. Überprüfen & Einreichen | Button „Ausgabe einreichen ✓" |
+
+Das Overlay aktualisiert sich automatisch nach jeder Chat-Eingabe.
+„Abbrechen"-Button ist auf jeder Schritt-Seite verfügbar.
+
+Einreichung erzeugt einen Entwurf in `AthenaPress/issues/draft/`. Ein Admin kann ihn anschließend mit `/ap veroeffentlichen issue_XXXX` veröffentlichen.
+
+Direkteingabe per Chat auch ohne GUI möglich (Fallback):
 
 ```
 /ap ausgabe
@@ -807,8 +830,6 @@ Alle Eingaben über `/ap <text>`:
 /ap Sonderausgabe Stadtentwicklung
 /ap einreichen
 ```
-
-Einreichung erzeugt einen Entwurf in `AthenaPress/issues/draft/`. Ein Admin kann ihn anschließend mit `/ap veroeffentlichen issue_XXXX` veröffentlichen.
 
 ---
 ## 15. Berechtigungen

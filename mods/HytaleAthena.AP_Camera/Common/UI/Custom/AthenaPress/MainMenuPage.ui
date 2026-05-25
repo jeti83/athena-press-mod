@@ -1,0 +1,61 @@
+$C = "../Common.ui";
+
+$C.@PageOverlay {}
+
+$C.@Container {
+  Anchor: (Width: 420, Height: 380);
+
+  #Title {
+    Group {
+      $C.@Title { @Text = "Athena Botenblatt"; }
+    }
+  }
+
+  #Content {
+    LayoutMode: Top;
+    Padding: (Horizontal: 24, Top: 12, Bottom: 8);
+
+    $C.@TextButton #BtnReadNewspaper {
+      Text: "Zeitung lesen";
+      FlexWeight: 1;
+      Padding: (Full: 10);
+    }
+
+    $C.@TextButton #BtnGiveCamera {
+      Text: "Kamera holen";
+      FlexWeight: 1;
+      Padding: (Full: 10);
+    }
+
+    // Admin-Bereich – wird bei Nicht-Admins entfernt
+    Group #AdminSection {
+      LayoutMode: Top;
+
+      Label #AdminSeparator {
+        Padding: (Top: 14, Bottom: 6, Horizontal: 0);
+        Style: (FontSize: 11, TextColor: #96a9be);
+        Text: "— Redaktion —";
+      }
+
+      $C.@TextButton #BtnNewArticle {
+        Text: "Artikel schreiben";
+        FlexWeight: 1;
+        Padding: (Full: 10);
+      }
+
+      $C.@TextButton #BtnNewIssue {
+        Text: "Ausgabe erstellen";
+        FlexWeight: 1;
+        Padding: (Full: 10);
+      }
+    }
+  }
+
+  Group #NavBar {
+    LayoutMode: Left;
+    Anchor: (Height: 52, Top: 8);
+    Padding: (Horizontal: 16);
+
+    $C.@TextButton #BtnClose { Text: "Schließen"; FlexWeight: 1; }
+  }
+}

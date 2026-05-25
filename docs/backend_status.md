@@ -52,7 +52,12 @@ Das Backend ist stabil. Der Ausgaben-Editor ist verdrahtet und einsatzbereit. Da
 - Nutzt reale Hytale-API: `JavaPlugin`, `AbstractCommand`, `EventRegistry`, `Message.raw()`, `hasPermission()`
 - Stubs für noch nicht existente Player-Events (`PlayerConnectEvent` etc.) in `com.hypixel.hytale.event`
 - `AP_ADMIN_PERMISSION = "athenapress.admin"` – via Hytale Permissions-System zuzuweisen
-- Editor-Ausgaben via `ctx.sendMessage(Message.raw(text))` direkt an Spieler
+- **GUI-Seiten als `CustomUIPage`**: `MainMenuPage`, `ArticleEditorPage`, `IssueEditorPage`, `NewspaperPage`
+- **`EditorUiBridge`** öffnet/aktualisiert GUI-Seiten über den WorldThread
+- `/ap` öffnet das Hauptmenü (GUI-Overlay mit klickbaren Buttons)
+- Artikel-Editor: Kategorie per Button klickbar, freier Text per Chat; UI aktualisiert sich automatisch
+- Ausgaben-Editor: Schritt-für-Schritt-Overlay mit Aktions-Buttons (Weiter, Einreichen, Abbrechen)
+- Nach Abschluss/Abbruch kehrt die UI automatisch zum Hauptmenü zurück
 
 ### Tests (aktueller stabiler Stand)
 - Core: 103 Tests, 0 Failures, 0 Errors
@@ -88,15 +93,15 @@ mvn exec:java -pl athena-press-integration -Dexec.mainClass=pro.jeti.athenapress
 
 ## Offene Hytale-Anbindung
 
-Folgende Adapter-Klassen sind vorbereitet aber noch nicht mit echter Hytale-API verdrahtet:
+Die GUI-Infrastruktur (`CustomUIPage`, `.ui`-Dateien, `EditorUiBridge`) ist vollständig implementiert. Folgende Adapter-Klassen warten noch auf die echte Hytale-API:
 
 | Klasse | Was fehlt |
 |---|---|
 | `HytalePlayerContextResolver<TPlayer>` | Hytale-Spieler → HytalePlayerContext (UUID, Name) |
-| `HytaleNewspaperVisualUiBridge` | NoesisGUI-Fenster öffnen/schließen/aktualisieren |
+| `NewspaperVisualBridge` / `HytaleNewspaperVisualUiBridge` | `openCustomPage()` läuft erst auf echtem Hytale-Server |
 | `HytaleCameraUiBridge` | HUD ausblenden, Screenshot auslösen |
 
-Sobald die Hytale Plugin-API öffentlich verfügbar ist, werden nur diese drei Stellen ausgefüllt. Das übrige Plugin (`AthenaPressPlugin`, `ApCommand`, `PlayerContextResolver`, `NewspaperVisualBridge`, `CameraUiBridge`) ist bereits vollständig und wartet nur auf die echten Implementierungen der drei Adapter.
+Sobald die Hytale Plugin-API öffentlich verfügbar ist und ein Server läuft, sind nur noch diese Stellen anzupassen. Die gesamte GUI-Logik, alle Services, alle Tests und alle `.ui`-Dateien sind bereits fertig.
 
 ---
 
@@ -110,7 +115,12 @@ Details: `docs/camera_workflow.md`
 
 ## Bewusst geparkt
 
-- Echte Hytale-API-Anbindung (wartet auf offizielle Dokumentation)
-- NoesisGUI-UI-Implementierung
+- Echte Hytale-API-Anbindung (wartet auf offizielle Dokumentation und laufenden Server)
 - Automatische Veröffentlichung im Spiel
-- Redaktions-UI für Spieler
+- Echte Ingame-Zustellung (Items, Mailbox)
+
+## Umgesetzt (wartete früher auf Hytale-API)
+
+- **Ingame-GUI vollständig implementiert**: Hauptmenü, Zeitungsleser, Artikel-Editor, Ausgaben-Editor als `CustomUIPage`
+- **`.ui`-Layoutdateien** für alle vier Seiten vorhanden
+- **`EditorUiBridge`** koordiniert Öffnen/Aktualisieren aller Seiten über WorldThread
