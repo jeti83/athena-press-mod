@@ -14,10 +14,11 @@ import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import com.hypixel.hytale.server.core.inventory.InventoryComponent;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
-import com.hypixel.hytale.event.PlayerConnectEvent;
-import com.hypixel.hytale.event.PlayerDisconnectEvent;
-import com.hypixel.hytale.event.PlayerInteractEvent;
-import com.hypixel.hytale.event.PlayerChatEvent;
+import com.hypixel.hytale.server.core.event.events.player.PlayerConnectEvent;
+import com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent;
+import com.hypixel.hytale.server.core.event.events.player.PlayerInteractEvent;
+import com.hypixel.hytale.server.core.event.events.player.PlayerChatEvent;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
 
 // AthenaPress Integration
 import pro.jeti.athenapress.integration.ArticleEditorView;
@@ -91,8 +92,12 @@ public class AthenaPressPlugin extends JavaPlugin {
 
         getEventRegistry().register(PlayerConnectEvent.class,    this::onPlayerConnect);
         getEventRegistry().register(PlayerDisconnectEvent.class, this::onPlayerDisconnect);
-        getEventRegistry().register(PlayerInteractEvent.class,   this::onPlayerInteract);
-        getEventRegistry().register(PlayerChatEvent.class,       this::onPlayerChat);
+        getEventRegistry().registerGlobal(PlayerInteractEvent.class, this::onPlayerInteract);
+        getEventRegistry().registerAsyncGlobal(PlayerChatEvent.class,
+                future -> future.thenApply(event -> {
+                    onPlayerChat(event);
+                    return event;
+                }));
 
         getCommandRegistry().registerCommand(new ApCommand(runtime, editorBridge));
 
@@ -168,7 +173,12 @@ public class AthenaPressPlugin extends JavaPlugin {
                 || ("HytaleAthena.AP_Camera:" + ApCommand.CAMERA_ITEM_ID).equals(itemId);
 
         if (isCamera && cameraService != null) {
-            String playerId   = event.getPlayerRef().getUuid().toString();
+            PlayerRef playerRef = event.getPlayer() != null ? event.getPlayer().getPlayerRef() : null;
+            if (playerRef == null) {
+                getLogger().at(Level.WARNING).log("AP_Camera benutzt, aber PlayerRef fehlt im PlayerInteractEvent");
+                return;
+            }
+            String playerId   = playerRef.getUuid().toString();
             String playerName = contextResolver.resolve(playerId).playerName();
             try {
                 cameraService.onCameraItemUse(playerId, playerName);
@@ -181,8 +191,8 @@ public class AthenaPressPlugin extends JavaPlugin {
     }
 
     private void onPlayerChat(PlayerChatEvent event) {
-        String playerId = event.getPlayerRef().getUuid().toString();
-        String message  = event.getMessage();
+        String playerId = event.getSender().getUuid().toString();
+        String message  = event.getContent();
 
         getLogger().at(Level.INFO)
                 .log("[Chat] id=" + playerId + " msg=" + message

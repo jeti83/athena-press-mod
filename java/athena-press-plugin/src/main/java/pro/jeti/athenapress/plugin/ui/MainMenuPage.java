@@ -15,6 +15,20 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
 public class MainMenuPage extends CustomUIPage {
 
+    private static final boolean USE_CRASH_PROBE_UI = true;
+
+    private static final String CRASH_PROBE_UI = """
+            Group {
+              LayoutMode: Middle;
+
+              Label {
+                Text: "AthenaPress GUI-Test";
+                Anchor: (Width: 360, Height: 80);
+                Style: (FontSize: 20, HorizontalAlignment: Center, VerticalAlignment: Center);
+              }
+            }
+            """;
+
     private static final String INLINE_UI = """
             Group {
               Background: (Color: #000000(0.82));
@@ -108,6 +122,11 @@ public class MainMenuPage extends CustomUIPage {
             UIEventBuilder events,
             Store<EntityStore> store
     ) {
+        if (USE_CRASH_PROBE_UI) {
+            ui.appendInline(null, CRASH_PROBE_UI);
+            return;
+        }
+
         ui.appendInline(null, INLINE_UI);
 
         if (!isAdmin) {

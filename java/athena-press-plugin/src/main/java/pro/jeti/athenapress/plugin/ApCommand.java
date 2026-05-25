@@ -7,6 +7,8 @@ import java.util.logging.Level;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.AbstractCommand;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
+import com.hypixel.hytale.server.core.entity.entities.Player;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
 
 import pro.jeti.athenapress.integration.AthenaPressIntegrationPlugin;
 import pro.jeti.athenapress.integration.HytaleNewspaperVisualRuntime;
@@ -38,6 +40,16 @@ public class ApCommand extends AbstractCommand {
 
     @Override
     protected CompletableFuture<Void> execute(CommandContext ctx) {
+        try {
+            executeSafely(ctx);
+        } catch (Exception e) {
+            LOGGER.at(Level.SEVERE).withCause(e).log("[AP] /ap konnte nicht verarbeitet werden");
+            sendMsg(ctx, "[AP] Interner Fehler beim Oeffnen der GUI. Details stehen im Server-Log.");
+        }
+        return CompletableFuture.completedFuture(null);
+    }
+
+    private void executeSafely(CommandContext ctx) {
         String playerId   = ctx.sender().getUuid().toString();
         String playerName = ctx.sender().getDisplayName();
         boolean admin     = ctx.sender().hasPermission(AP_ADMIN_PERMISSION);
@@ -52,11 +64,10 @@ public class ApCommand extends AbstractCommand {
 
         if (!ensurePlayerRegistered(ctx, playerId)) {
             sendMsg(ctx, "[AP] Spieler-Referenz nicht gefunden - bitte Server-Log pruefen oder neu verbinden.");
-            return CompletableFuture.completedFuture(null);
+            return;
         }
 
         handleCommand(ctx, playerId, playerName, admin, args);
-        return CompletableFuture.completedFuture(null);
     }
 
     private void handleCommand(
@@ -166,10 +177,15 @@ public class ApCommand extends AbstractCommand {
     private boolean ensurePlayerRegistered(CommandContext ctx, String playerId) {
         if (editorBridge.isRegistered(playerId)) return true;
         try {
-            Object sender = ctx.sender();
-            LOGGER.at(Level.INFO).log("[AP] Fallback-Registrierung via ctx.sender(): "
-                    + (sender == null ? "NULL" : sender.getClass().getName()));
-            editorBridge.registerPlayer(playerId, sender);
+            if (!ctx.isPlayer()) {
+                LOGGER.at(Level.WARNING).log("[AP] /ap wurde nicht von einem Spieler ausgefuehrt");
+                return false;
+            }
+            Player player = ctx.senderAs(Player.class);
+            PlayerRef playerRef = player != null ? player.getPlayerRef() : null;
+            LOGGER.at(Level.INFO).log("[AP] Fallback-Registrierung via senderAs(Player): "
+                    + (playerRef == null ? "NULL" : playerRef.getClass().getName()));
+            editorBridge.registerPlayer(playerId, playerRef);
             if (editorBridge.isRegistered(playerId)) return true;
         } catch (Exception e) {
             LOGGER.at(Level.WARNING).withCause(e)
