@@ -2,6 +2,8 @@ package pro.jeti.athenapress.plugin;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.CustomUIPage;
@@ -21,6 +23,8 @@ import pro.jeti.athenapress.plugin.ui.MainMenuPage;
  * öffnet die Bridge automatisch das Hauptmenü wieder.
  */
 public class EditorUiBridge {
+
+    private static final Logger LOG = Logger.getLogger("AthenaPress");
 
     @FunctionalInterface
     public interface MenuHandler {
@@ -119,17 +123,38 @@ public class EditorUiBridge {
 
     private void openPage(String playerId, PageFactory factory) {
         Object rawRef = playerRefs.get(playerId);
-        if (rawRef == null) return;
+        if (rawRef == null) {
+            LOG.log(Level.WARNING, "[AP] openPage: kein PlayerRef für {0} – lazy-registration hat nicht gegriffen", playerId);
+            return;
+        }
 
         PlayerRef hytaleRef = (PlayerRef) rawRef;
         var entityRef = hytaleRef.getReference();
         var store     = entityRef.getStore();
-        var world     = store.getExternalData().getWorld();
+        if (store == null) {
+            LOG.log(Level.WARNING, "[AP] openPage: EntityStore null für {0}", playerId);
+            return;
+        }
+        var externalData = store.getExternalData();
+        var world = externalData != null ? externalData.getWorld() : null;
+        if (world == null) {
+            LOG.log(Level.WARNING, "[AP] openPage: World null für {0}", playerId);
+            return;
+        }
 
+        LOG.log(Level.INFO, "[AP] openPage: world.execute() für {0}", playerId);
         world.execute(() -> {
-            Player hytalePlayer = store.getComponent(entityRef, Player.getComponentType());
-            if (hytalePlayer == null) return;
-            hytalePlayer.getPageManager().openCustomPage(entityRef, store, factory.create(hytaleRef));
+            try {
+                Player hytalePlayer = store.getComponent(entityRef, Player.getComponentType());
+                if (hytalePlayer == null) {
+                    LOG.log(Level.WARNING, "[AP] openPage: Player-Komponente null für {0}", playerId);
+                    return;
+                }
+                hytalePlayer.getPageManager().openCustomPage(entityRef, store, factory.create(hytaleRef));
+                LOG.log(Level.INFO, "[AP] openPage: openCustomPage() aufgerufen für {0}", playerId);
+            } catch (Exception e) {
+                LOG.log(Level.SEVERE, "[AP] openPage: Ausnahme in world.execute() für " + playerId, e);
+            }
         });
     }
 }

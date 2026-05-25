@@ -7,7 +7,6 @@ import java.util.logging.Level;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.AbstractCommand;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
-
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 
 import pro.jeti.athenapress.integration.AthenaPressIntegrationPlugin;
@@ -44,18 +43,18 @@ public class ApCommand extends AbstractCommand {
         String playerName = ctx.sender().getDisplayName();
         boolean admin     = ctx.sender().hasPermission(AP_ADMIN_PERMISSION);
 
-        String input   = ctx.getInputString().trim();
+        String input     = ctx.getInputString().trim();
         String[] rawArgs = input.isEmpty() ? new String[0] : input.split("\\s+");
-        String[] args  = (rawArgs.length > 0 && "ap".equalsIgnoreCase(rawArgs[0]))
+        String[] args    = (rawArgs.length > 0 && "ap".equalsIgnoreCase(rawArgs[0]))
                 ? java.util.Arrays.copyOfRange(rawArgs, 1, rawArgs.length)
                 : rawArgs;
 
-        LOGGER.at(Level.INFO).log("[CMD /ap] id=" + playerId + " input=\"" + input + "\"");
+        sendDbg(ctx, "CMD id=" + playerId.substring(0, 8) + "... input=\"" + input + "\" admin=" + admin);
 
-        // Spieler lazy registrieren – PlayerConnectEvent-Stub matcht ggf. nicht
-        // mit dem echten Hytale-Event. Hier beim ersten Befehl sicherstellen,
-        // dass ein echter PlayerRef (aus dem EntityStore) hinterlegt ist.
-        ensurePlayerRegistered(ctx, playerId);
+        if (!ensurePlayerRegistered(ctx, playerId)) {
+            sendMsg(ctx, "[AP] Spieler-Referenz nicht gefunden – bitte Server-Log prüfen oder neu verbinden.");
+            return CompletableFuture.completedFuture(null);
+        }
 
         handleCommand(ctx, playerId, playerName, admin, args);
         return CompletableFuture.completedFuture(null);
@@ -98,6 +97,7 @@ public class ApCommand extends AbstractCommand {
 
         // /ap ohne Argumente → Hauptmenü
         if (args.length == 0) {
+            sendDbg(ctx, "openMainMenu admin=" + admin);
             editorBridge.openMainMenu(playerId, admin);
             return;
         }
@@ -106,12 +106,14 @@ public class ApCommand extends AbstractCommand {
 
         switch (sub) {
             case "redaktion" -> {
+                sendDbg(ctx, "startArticleEditor");
                 var view = plugin.startArticleEditor(playerId, playerName, admin);
                 editorBridge.openOrUpdateArticleEditor(playerId, view);
             }
 
             case "ausgabe" -> {
                 try {
+                    sendDbg(ctx, "startIssueEditor");
                     var view = plugin.startIssueEditor(playerId, playerName, admin);
                     editorBridge.openOrUpdateIssueEditor(playerId, view);
                 } catch (IOException e) {
@@ -120,8 +122,10 @@ public class ApCommand extends AbstractCommand {
                 }
             }
 
-            case "kamera", "camera" -> editorBridge.openMainMenu(playerId, admin);
-            // Kamera über Menü-Button "Kamera holen" – direkter Befehl öffnet auch das Menü
+            case "kamera", "camera" -> {
+                sendDbg(ctx, "openMainMenu (via kamera)");
+                editorBridge.openMainMenu(playerId, admin);
+            }
 
             case "schliessen", "schließen", "close" -> {
                 plugin.onPlayerCloseNewspaper(playerId);
@@ -146,23 +150,42 @@ public class ApCommand extends AbstractCommand {
 
     private void sendMsg(CommandContext ctx, String text) {
         if (text == null || text.isBlank()) return;
-        LOGGER.at(Level.INFO).log("[AP→Spieler] " + text.replace("\n", "\\n"));
         ctx.sendMessage(Message.raw(text));
     }
 
-    private void ensurePlayerRegistered(CommandContext ctx, String playerId) {
-        if (editorBridge.getPlayerRef(playerId) != null) return;
+    /** Debug-Nachricht: erscheint ingame in grau und im Server-Log. */
+    private void sendDbg(CommandContext ctx, String info) {
+        LOGGER.at(Level.INFO).log("[AP] " + info);
+        ctx.sendMessage(Message.raw("§7[AP] " + info));
+    }
+
+    /**
+     * Stellt sicher dass ein echter PlayerRef im EditorUiBridge hinterlegt ist.
+     * Nötig weil der PlayerConnectEvent-Stub nicht mit dem echten Hytale-Event matcht.
+     *
+     * @return true wenn ein PlayerRef verfügbar ist (neu oder bereits gespeichert)
+     */
+    private boolean ensurePlayerRegistered(CommandContext ctx, String playerId) {
+        if (editorBridge.getPlayerRef(playerId) != null) return true;
         try {
             var entityRef = ctx.senderAsPlayerRef();
             var store     = entityRef.getStore();
+            if (store == null) {
+                LOGGER.at(Level.WARNING).log("[AP] EntityStore null für " + playerId);
+                return false;
+            }
             PlayerRef playerRef = store.getComponent(entityRef, PlayerRef.getComponentType());
             if (playerRef != null) {
                 editorBridge.registerPlayer(playerId, playerRef);
                 LOGGER.at(Level.INFO).log("[AP] PlayerRef lazy registriert für " + playerId);
+                return true;
             }
+            LOGGER.at(Level.WARNING).log("[AP] store.getComponent(PlayerRef) → null für " + playerId);
+            return false;
         } catch (Exception e) {
             LOGGER.at(Level.WARNING).withCause(e)
                     .log("[AP] PlayerRef-Lookup fehlgeschlagen für " + playerId);
+            return false;
         }
     }
 }
