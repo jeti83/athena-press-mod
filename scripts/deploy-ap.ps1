@@ -71,18 +71,18 @@ if (Test-Path $pluginData) {
 # Hytale sucht icon.png im Mod-Ordner bzw. im Welt-Datenordner.
 $iconsDir = "$PSScriptRoot\..\assets\icons"
 
-$apIcon      = "$iconsDir\AP-Icon.png"
-$cameraIcon  = "$iconsDir\AP-Camera-Icon.png"
+$apIcon      = "$iconsDir\AP-Icon.ico"
+$cameraIcon  = "$iconsDir\AP-Camera-Icon.ico"
 $apCameraDir = "$modsDir\HytaleAthena.AP_Camera"
 
-if (Test-Path $apCameraIcon) {
-    Copy-Item $cameraIcon "$apCameraDir\icon.png" -Force
-    Write-Host "AP_Camera icon.png gesetzt" -ForegroundColor Green
+if (Test-Path $cameraIcon) {
+    Copy-Item $cameraIcon "$apCameraDir\icon.ico" -Force
+    Write-Host "AP_Camera icon.ico gesetzt" -ForegroundColor Green
 }
 
 if ((Test-Path $apIcon) -and (Test-Path $pluginData)) {
-    Copy-Item $apIcon "$pluginData\icon.png" -Force
-    Write-Host "AthenaPress icon.png in $pluginData gesetzt" -ForegroundColor Green
+    Copy-Item $apIcon "$pluginData\icon.ico" -Force
+    Write-Host "AthenaPress icon.ico in $pluginData gesetzt" -ForegroundColor Green
 }
 
 Write-Host ""
