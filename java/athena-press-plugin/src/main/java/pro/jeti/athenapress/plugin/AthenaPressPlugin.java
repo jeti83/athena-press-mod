@@ -14,6 +14,7 @@ import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import com.hypixel.hytale.server.core.inventory.InventoryComponent;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.event.PlayerConnectEvent;
 import com.hypixel.hytale.event.PlayerDisconnectEvent;
 import com.hypixel.hytale.event.PlayerInteractEvent;
@@ -128,8 +129,18 @@ public class AthenaPressPlugin extends JavaPlugin {
         contextResolver.register(playerId, playerName);
         visualBridge.registerPlayer(playerId, event.getPlayerRef());
         cameraBridge.registerPlayer(playerId, event.getPlayerRef());
-        // editorBridge wird per ctx.senderAsPlayerRef() beim ersten /ap-Befehl registriert,
-        // weil der PlayerConnectEvent-Stub keinen Ref<EntityStore> liefert.
+
+        // editorBridge braucht Ref<EntityStore> – aus dem echten PlayerRef extrahieren,
+        // der zur Laufzeit als com.hypixel.hytale.server.core.universe.PlayerRef ankommt.
+        // ctx.senderAsPlayerRef() liefert einen Command-Context-Ref, den openCustomPage()
+        // als "Invalid entity reference" ablehnt.
+        try {
+            PlayerRef realRef = (PlayerRef) event.getPlayerRef();
+            editorBridge.registerPlayer(playerId, realRef.getReference());
+        } catch (Exception e) {
+            getLogger().at(Level.WARNING).withCause(e)
+                    .log("EditorBridge-Registrierung beim Connect fehlgeschlagen für " + playerId);
+        }
 
         runtime.onPlayerConnected(playerId);
     }
