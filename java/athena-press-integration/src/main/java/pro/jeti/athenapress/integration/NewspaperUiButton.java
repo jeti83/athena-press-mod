@@ -1,6 +1,5 @@
 package pro.jeti.athenapress.integration;
 
-@Deprecated
 public record NewspaperUiButton(
         String label,
         PlayerNewspaperUiCommand command,
