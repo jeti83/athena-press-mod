@@ -5,9 +5,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.CustomUIPage;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
 import pro.jeti.athenapress.integration.ArticleEditorView;
 import pro.jeti.athenapress.integration.IssueEditorView;
@@ -19,8 +21,9 @@ import pro.jeti.athenapress.plugin.ui.MainMenuPage;
  * Öffnet und aktualisiert die AthenaPress-GUI-Seiten (Menü, Artikel-Editor,
  * Ausgaben-Editor) über den Hytale WorldThread.
  *
- * Wenn Artikel- oder Ausgaben-Editor abgeschlossen/abgebrochen wird,
- * öffnet die Bridge automatisch das Hauptmenü wieder.
+ * playerEntityRefs speichert Ref<EntityStore> (aus ctx.senderAsPlayerRef(), thread-safe).
+ * Der PlayerRef-Lookup passiert ausschließlich innerhalb von world.execute(),
+ * weil store.getComponent() eine WorldThread-Assertion hat.
  */
 public class EditorUiBridge {
 
@@ -36,36 +39,42 @@ public class EditorUiBridge {
         void handle(String playerId, String cmd, String val);
     }
 
-    private final Map<String, Object>  playerRefs      = new ConcurrentHashMap<>();
+    @SuppressWarnings("rawtypes")
+    private final Map<String, Ref>   playerEntityRefs = new ConcurrentHashMap<>();
     private final Map<String, Boolean> playerAdminCache = new ConcurrentHashMap<>();
 
     private volatile MenuHandler   menuHandler;
     private volatile EditorHandler articleEditorHandler;
     private volatile EditorHandler issueEditorHandler;
 
-    public void setMenuHandler(MenuHandler h)          { this.menuHandler = h; }
-    public void setArticleEditorHandler(EditorHandler h) { this.articleEditorHandler = h; }
-    public void setIssueEditorHandler(EditorHandler h)   { this.issueEditorHandler = h; }
+    public void setMenuHandler(MenuHandler h)             { this.menuHandler = h; }
+    public void setArticleEditorHandler(EditorHandler h)  { this.articleEditorHandler = h; }
+    public void setIssueEditorHandler(EditorHandler h)    { this.issueEditorHandler = h; }
 
     // -----------------------------------------------------------------------
     // Spieler-Registrierung
     // -----------------------------------------------------------------------
 
-    public void registerPlayer(String playerId, Object playerRef) {
-        playerRefs.put(playerId, playerRef);
+    /**
+     * Registriert den Spieler mit seinem Ref<EntityStore>.
+     * Darf aus beliebigem Thread aufgerufen werden – kein store.getComponent() hier.
+     */
+    public void registerPlayer(String playerId, Ref<EntityStore> entityRef) {
+        if (entityRef == null) return;
+        playerEntityRefs.put(playerId, entityRef);
     }
 
     public void unregisterPlayer(String playerId) {
-        playerRefs.remove(playerId);
+        playerEntityRefs.remove(playerId);
         playerAdminCache.remove(playerId);
     }
 
-    /** Gibt den gespeicherten PlayerRef zurück – für direkte Hytale-API-Zugriffe. */
-    public Object getPlayerRef(String playerId) {
-        return playerRefs.get(playerId);
+    /** true wenn ein Ref für diesen Spieler vorhanden ist. */
+    public boolean isRegistered(String playerId) {
+        return playerEntityRefs.containsKey(playerId);
     }
 
-    /** Gibt den zuletzt gecachten Admin-Status des Spielers zurück. */
+    /** Gibt den zuletzt gecachten Admin-Status zurück. */
     public boolean getCachedAdminStatus(String playerId) {
         return playerAdminCache.getOrDefault(playerId, false);
     }
@@ -82,10 +91,6 @@ public class EditorUiBridge {
         ));
     }
 
-    /**
-     * Öffnet oder aktualisiert die Artikel-Editor-Seite.
-     * Bei SUBMITTED oder CANCELLED wird stattdessen das Hauptmenü geöffnet.
-     */
     public void openOrUpdateArticleEditor(String playerId, ArticleEditorView view) {
         if (view.isComplete() || view.isCancelled()) {
             openMainMenu(playerId, playerAdminCache.getOrDefault(playerId, false));
@@ -97,10 +102,6 @@ public class EditorUiBridge {
         ));
     }
 
-    /**
-     * Öffnet oder aktualisiert die Ausgaben-Editor-Seite.
-     * Bei SUBMITTED oder CANCELLED wird stattdessen das Hauptmenü geöffnet.
-     */
     public void openOrUpdateIssueEditor(String playerId, IssueEditorView view) {
         if (view.isComplete() || view.isCancelled()) {
             openMainMenu(playerId, playerAdminCache.getOrDefault(playerId, false));
@@ -121,20 +122,20 @@ public class EditorUiBridge {
         CustomUIPage create(PlayerRef playerRef);
     }
 
+    @SuppressWarnings("unchecked")
     private void openPage(String playerId, PageFactory factory) {
-        Object rawRef = playerRefs.get(playerId);
-        if (rawRef == null) {
-            LOG.log(Level.WARNING, "[AP] openPage: kein PlayerRef für {0} – lazy-registration hat nicht gegriffen", playerId);
+        Ref<EntityStore> entityRef = playerEntityRefs.get(playerId);
+        if (entityRef == null) {
+            LOG.log(Level.WARNING, "[AP] openPage: kein EntityRef für {0}", playerId);
             return;
         }
 
-        PlayerRef hytaleRef = (PlayerRef) rawRef;
-        var entityRef = hytaleRef.getReference();
-        var store     = entityRef.getStore();
+        var store = entityRef.getStore();
         if (store == null) {
-            LOG.log(Level.WARNING, "[AP] openPage: EntityStore null für {0}", playerId);
+            LOG.log(Level.WARNING, "[AP] openPage: Store null für {0}", playerId);
             return;
         }
+
         var externalData = store.getExternalData();
         var world = externalData != null ? externalData.getWorld() : null;
         if (world == null) {
@@ -145,12 +146,20 @@ public class EditorUiBridge {
         LOG.log(Level.INFO, "[AP] openPage: world.execute() für {0}", playerId);
         world.execute(() -> {
             try {
-                Player hytalePlayer = store.getComponent(entityRef, Player.getComponentType());
-                if (hytalePlayer == null) {
+                // PlayerRef-Lookup hier im WorldThread – store.getComponent() erlaubt
+                PlayerRef playerRef = store.getComponent(entityRef, PlayerRef.getComponentType());
+                if (playerRef == null) {
+                    LOG.log(Level.WARNING, "[AP] openPage: PlayerRef-Komponente null für {0}", playerId);
+                    return;
+                }
+
+                Player player = store.getComponent(entityRef, Player.getComponentType());
+                if (player == null) {
                     LOG.log(Level.WARNING, "[AP] openPage: Player-Komponente null für {0}", playerId);
                     return;
                 }
-                hytalePlayer.getPageManager().openCustomPage(entityRef, store, factory.create(hytaleRef));
+
+                player.getPageManager().openCustomPage(entityRef, store, factory.create(playerRef));
                 LOG.log(Level.INFO, "[AP] openPage: openCustomPage() aufgerufen für {0}", playerId);
             } catch (Exception e) {
                 LOG.log(Level.SEVERE, "[AP] openPage: Ausnahme in world.execute() für " + playerId, e);
