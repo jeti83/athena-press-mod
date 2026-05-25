@@ -3,7 +3,9 @@ package pro.jeti.athenapress.service;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -109,6 +111,7 @@ public class ValidationService {
             errors.add("Could not validate issues: " + exception.getMessage());
         }
 
+        addErrors(errors, validateDuplicateArticleIds());
         addErrors(errors, validateArticleCategories());
         addErrors(errors, validateArticleImages());
         addErrors(errors, validateSubscriberDeliveryModes());
@@ -500,6 +503,37 @@ public class ValidationService {
             return ValidationResult.valid();
         }
 
+        return ValidationResult.invalid(errors);
+    }
+
+    public ValidationResult validateDuplicateArticleIds() {
+        List<String> errors = new ArrayList<>();
+
+        List<Article> articles;
+        try {
+            articles = articleRepository.findAll();
+        } catch (Exception exception) {
+            errors.add("Could not validate duplicate article IDs: " + exception.getMessage());
+            return ValidationResult.invalid(errors);
+        }
+
+        Map<String, List<String>> idToStatuses = new HashMap<>();
+        for (Article article : articles) {
+            String id = safeId(article.id());
+            String status = article.status() != null ? article.status() : "(unknown)";
+            idToStatuses.computeIfAbsent(id, k -> new ArrayList<>()).add(status);
+        }
+
+        for (Map.Entry<String, List<String>> entry : idToStatuses.entrySet()) {
+            if (entry.getValue().size() > 1) {
+                errors.add("Duplicate article ID '" + entry.getKey() + "' appears in multiple status folders: "
+                        + String.join(", ", entry.getValue()));
+            }
+        }
+
+        if (errors.isEmpty()) {
+            return ValidationResult.valid();
+        }
         return ValidationResult.invalid(errors);
     }
 

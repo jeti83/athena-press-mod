@@ -12,7 +12,7 @@ Ziel ist ein datengetriebenes Zeitungssystem für Hytale-nahe Serverinhalte, zum
 - Ausgaben mit mehreren Artikeln
 - Zustellung an Abonnenten
 
-Aktuell ist AthenaPress noch keine direkte Hytale-API-Anbindung.
+AthenaPress ist ein laufendes Hytale-Plugin, das gegen die echte Hytale-Server-API kompiliert und ingame gestartet werden kann.
 
 Der derzeitige Fokus liegt auf:
 
@@ -20,8 +20,8 @@ Der derzeitige Fokus liegt auf:
 - stabiler Validierung
 - CLI-Werkzeugen
 - Java-Core als Vorschau-, Admin- und Debug-Werkzeug
-- Java-Integration als adapter-neutrale Mod-/Visual-Schicht
-- Vorbereitung einer nativen Hytale-UI-Anbindung ohne erfundene Hytale-API-Imports
+- Java-Integration als Mod-/Visual-Schicht
+- Ingame-GUI über die native Hytale-CustomUIPage-API
 
 ---
 
@@ -54,12 +54,11 @@ Aktueller Stand:
 
 Noch nicht enthalten:
 
-- echte Hytale-API (Hytale Server noch nicht öffentlich)
 - echte Ingame-Zustellung
 - echte Ingame-Items
-- Live-Kommunikation mit einem Server
+- Live-Kommunikation mit einem externen Server
 
-Ingame-GUI vorhanden (wartet auf Hytale-Server-Lauf):
+Ingame-GUI aktiv (läuft auf dem Hytale-Singleplayer-Server):
 
 - Hauptmenü via `/ap` (Buttons: Zeitung lesen, Kamera holen, Artikel schreiben, Ausgabe erstellen)
 - Artikel-Editor als GUI-Overlay (Kategorie per Button, Text per Chat)
@@ -167,7 +166,7 @@ Das Integration-Modul ergänzt:
 - native Hytale-Adapter-Vorbereitung
 - Visual-Runtime-Fassade für spätere Hytale-Hooks
 
-Die Integration bleibt bewusst API-neutral und importiert keine erfundenen Hytale-Klassen.
+Das Plugin-Modul (`athena-press-plugin`) kompiliert gegen die echte `HytaleServer.jar` und läuft als natives Hytale-Plugin.
 ---
 
 ## Java-/Maven-Umgebung
@@ -198,67 +197,72 @@ Errors: 0
 
 ## Java-Demo-Befehle
 
+Alle Demo-Befehle aus dem `java/`-Verzeichnis ausführen. `-pl athena-press-core` ist zwingend nötig, damit Maven das richtige Modul wählt.
+
 Standard-Preview:
 
 powershell
-mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo"
+cd java
+mvn -q exec:java -pl athena-press-core "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo"
 
 Konkrete Ausgabe anzeigen:
 
 powershell
-mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=issue_0002"
+mvn -q exec:java -pl athena-press-core "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=issue_0002"
 
 Ausgaben auflisten:
 
 powershell
-mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--list"
+mvn -q exec:java -pl athena-press-core "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--list"
 bzw.
 powershell
-mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--liste"
+mvn -q exec:java -pl athena-press-core "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--liste"
 
 Artikel auflisten:
-mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--articles"
+
+powershell
+mvn -q exec:java -pl athena-press-core "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--articles"
 bzw.
-mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--artikel"
+mvn -q exec:java -pl athena-press-core "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--artikel"
 
 Ausgabe validieren:
 
 powershell
-mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--validate issue_0002"
+mvn -q exec:java -pl athena-press-core "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--validate issue_0002"
 bzw.
 powershell
-mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--pruefen issue_0002"
+mvn -q exec:java -pl athena-press-core "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--pruefen issue_0002"
 
 Statusübersicht:
 
 powershell
-mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--status"
+mvn -q exec:java -pl athena-press-core "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--status"
 
 bzw.
 powershell
-mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--uebersicht"
+mvn -q exec:java -pl athena-press-core "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--uebersicht"
 
 Hilfe:
 
 powershell
-mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--hilfe"
+mvn -q exec:java -pl athena-press-core "-Dexec.mainClass=pro.jeti.athenapress.AthenaPressDemo" "-Dexec.args=--hilfe"
 
 ---
 
 ## Java-Integration Visual-Preview
 
-Das Integration-Modul kann echte veröffentlichte Ausgaben bereits als adapter-neutrale Doppelseiten-/Blockstruktur ausgeben.
+Das Integration-Modul kann echte veröffentlichte Ausgaben als Doppelseiten-/Blockstruktur ausgeben.
 
-Aus dem Modulordner:
+Alle Befehle aus `java/` mit `-pl athena-press-integration -am` (damit athena-press-core als Abhängigkeit gebaut wird):
 
 powershell
-cd java/athena-press-integration
-mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.integration.AthenaPressVisualPreviewDemo" "-Dexec.args=--visual-preview issue_0002"
+cd java
+mvn -q exec:java -pl athena-press-integration -am "-Dexec.mainClass=pro.jeti.athenapress.integration.AthenaPressVisualPreviewDemo" "-Dexec.args=--visual-preview issue_0002"
 
 Deutscher Alias:
 
 powershell
-mvn -q exec:java "-Dexec.mainClass=pro.jeti.athenapress.integration.AthenaPressVisualPreviewDemo" "-Dexec.args=--vorschau issue_0002"
+mvn -q exec:java -pl athena-press-integration -am "-Dexec.mainClass=pro.jeti.athenapress.integration.AthenaPressVisualPreviewDemo" "-Dexec.args=--vorschau issue_0002"
 
 Diese Ausgabe ist nur ein Debug-/Admin-Einstieg für die native Visual-Struktur, keine HTML- oder Browserlösung.
 
@@ -266,7 +270,7 @@ Bildvorschau als echte PNG-Doppelseiten:
 
 powershell
 cd java
-mvn exec:java -pl athena-press-integration "-Dexec.mainClass=pro.jeti.athenapress.integration.AthenaPressVisualPngPreviewDemo" "-Dexec.args=issue_0003"
+mvn exec:java -pl athena-press-integration -am "-Dexec.mainClass=pro.jeti.athenapress.integration.AthenaPressVisualPngPreviewDemo" "-Dexec.args=issue_0003"
 
 Die PNG-Dateien werden standardmäßig unter folgendem Ordner erzeugt:
 
@@ -449,13 +453,9 @@ g_sacp "Update AthenaPress README"
 
 ---
 
-## Aktuelle Grenze
+## Aktueller Stand
 
-AthenaPress ist aktuell ein lokales Backend-/Core-/Integrationskonzept.
+Das Hytale-Plugin läuft. `/ap` öffnet das Hauptmenü, Artikel- und Ausgaben-Editor sind ingame bedienbar.
 
-Die eigentliche Hytale-Integration kommt später.
-
-Bis dahin gilt:
-
-Erst Datenmodell, Validierung, Visual-Preview und adapter-neutrale Integration stabilisieren. Danach echte Hytale-Hooks.
+Nächste Schritte: echte Ingame-Zustellung, Ingame-Items, Mehrspielerbetrieb.
 
