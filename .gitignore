@@ -8,3 +8,6 @@ __pycache__/
 
 # HytaleServer.jar – manuell herunterladen, nicht einchecken
 java/libraries/HytaleServer.jar
+
+# Temporär extrahierte Klassen aus jar xf (Analyse-Artefakte)
+com/
