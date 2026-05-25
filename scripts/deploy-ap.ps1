@@ -8,7 +8,7 @@
 #   3. manifest.json aus JAR → Saves\<Welt>\mods\pro.jeti_AthenaPress\
 #      (Hytale Client erwartet dort eine Kopie für Versions-Check;
 #       ohne diese Datei erscheint eine harmlose DEBUG-Warnung 4x im Log)
-#   4. Mod-Icons → jeweilige Mod-Ordner (icon.png Konvention)
+#   4. Mod-Icons → jeweilige Mod-Ordner (icon-256.png, 256x256 PNG)
 
 $ErrorActionPreference = "Stop"
 
@@ -68,21 +68,21 @@ if (Test-Path $pluginData) {
 }
 
 # ── 4. Mod-Icons deployen ────────────────────────────────────────────────────
-# Hytale sucht icon.png im Mod-Ordner bzw. im Welt-Datenordner.
+# Hytale erwartet icon-256.png (256x256 PNG) im Mod-Ordner.
 $iconsDir = "$PSScriptRoot\..\assets\icons"
 
-$apIcon      = "$iconsDir\AP-Icon.ico"
-$cameraIcon  = "$iconsDir\AP-Camera-Icon.ico"
+$apIcon      = "$iconsDir\AP-Icon-256.png"
+$cameraIcon  = "$iconsDir\AP-Camera-Icon-256.png"
 $apCameraDir = "$modsDir\HytaleAthena.AP_Camera"
 
 if (Test-Path $cameraIcon) {
-    Copy-Item $cameraIcon "$apCameraDir\icon.ico" -Force
-    Write-Host "AP_Camera icon.ico gesetzt" -ForegroundColor Green
+    Copy-Item $cameraIcon "$apCameraDir\icon-256.png" -Force
+    Write-Host "AP_Camera icon-256.png gesetzt" -ForegroundColor Green
 }
 
 if ((Test-Path $apIcon) -and (Test-Path $pluginData)) {
-    Copy-Item $apIcon "$pluginData\icon.ico" -Force
-    Write-Host "AthenaPress icon.ico in $pluginData gesetzt" -ForegroundColor Green
+    Copy-Item $apIcon "$pluginData\icon-256.png" -Force
+    Write-Host "AthenaPress icon-256.png in $pluginData gesetzt" -ForegroundColor Green
 }
 
 Write-Host ""
