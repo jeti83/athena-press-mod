@@ -159,14 +159,22 @@ public class ApCommand extends AbstractCommand {
     }
 
     /**
-     * Prüft ob der Spieler beim Connect-Event registriert wurde.
-     * Fehlt der Eintrag, war der PlayerConnectEvent noch nicht verarbeitet –
-     * der Spieler soll sich neu verbinden.
+     * Stellt sicher, dass ein PlayerRef im EditorUiBridge hinterlegt ist.
+     * Normalfall: Registrierung erfolgt in onPlayerConnect.
+     * Fallback: ctx.sender() ist zur Laufzeit ein com.hypixel.hytale.server.core.universe.PlayerRef.
      */
     private boolean ensurePlayerRegistered(CommandContext ctx, String playerId) {
         if (editorBridge.isRegistered(playerId)) return true;
-        LOGGER.at(Level.WARNING).log("[AP] PlayerRef nicht gefunden fuer " + playerId
-                + " - neu verbinden oder Server-Log pruefen.");
+        try {
+            Object sender = ctx.sender();
+            LOGGER.at(Level.INFO).log("[AP] Fallback-Registrierung via ctx.sender(): "
+                    + (sender == null ? "NULL" : sender.getClass().getName()));
+            editorBridge.registerPlayer(playerId, sender);
+            if (editorBridge.isRegistered(playerId)) return true;
+        } catch (Exception e) {
+            LOGGER.at(Level.WARNING).withCause(e)
+                    .log("[AP] Fallback-Registrierung fehlgeschlagen fuer " + playerId);
+        }
         return false;
     }
 }

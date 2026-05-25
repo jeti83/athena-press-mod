@@ -122,16 +122,21 @@ public class AthenaPressPlugin extends JavaPlugin {
     // -----------------------------------------------------------------------
 
     private void onPlayerConnect(PlayerConnectEvent event) {
+        Object rawRef = event.getPlayerRef();
+        getLogger().at(Level.INFO)
+                .log("[Connect] getPlayerRef() = " + (rawRef == null ? "NULL" : rawRef.getClass().getName()));
+
         String playerId   = event.getPlayerRef().getUuid().toString();
         String playerName = event.getPlayerRef().getUsername();
 
         contextResolver.register(playerId, playerName);
-        visualBridge.registerPlayer(playerId, event.getPlayerRef());
-        cameraBridge.registerPlayer(playerId, event.getPlayerRef());
+        visualBridge.registerPlayer(playerId, rawRef);
+        cameraBridge.registerPlayer(playerId, rawRef);
+        editorBridge.registerPlayer(playerId, rawRef);
 
-        // editorBridge speichert den PlayerRef als Object (selbes Muster wie visualBridge/cameraBridge).
-        // getReference() wird lazy beim Öffnen der Seite aufgerufen, nicht hier.
-        editorBridge.registerPlayer(playerId, event.getPlayerRef());
+        getLogger().at(Level.INFO)
+                .log("[Connect] editorBridge registriert: " + editorBridge.isRegistered(playerId)
+                     + " fuer " + playerId.substring(0, 8));
 
         runtime.onPlayerConnected(playerId);
     }
