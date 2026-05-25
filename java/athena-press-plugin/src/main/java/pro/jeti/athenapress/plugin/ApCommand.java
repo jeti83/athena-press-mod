@@ -136,6 +136,26 @@ public class ApCommand extends AbstractCommand {
                 editorBridge.openMainMenu(playerId, admin, ProbeMode.EVENTS);
             }
 
+            case "uiactivate" -> {
+                sendDbg(ctx, "openMainMenu probe=events_activate");
+                editorBridge.openMainMenu(playerId, admin, ProbeMode.EVENTS_ACTIVATE);
+            }
+
+            case "uiactivatenodata" -> {
+                sendDbg(ctx, "openMainMenu probe=events_activate_no_data");
+                editorBridge.openMainMenu(playerId, admin, ProbeMode.EVENTS_ACTIVATE_NO_DATA);
+            }
+
+            case "uiactivateunlocked" -> {
+                sendDbg(ctx, "openMainMenu probe=events_activate_unlocked");
+                editorBridge.openMainMenu(playerId, admin, ProbeMode.EVENTS_ACTIVATE_UNLOCKED);
+            }
+
+            case "uidismiss" -> {
+                sendDbg(ctx, "openMainMenu probe=events_dismiss");
+                editorBridge.openMainMenu(playerId, admin, ProbeMode.EVENTS_DISMISS);
+            }
+
             case "uinormal" -> {
                 sendDbg(ctx, "openMainMenu probe=normal");
                 editorBridge.openMainMenu(playerId, admin, ProbeMode.NORMAL);

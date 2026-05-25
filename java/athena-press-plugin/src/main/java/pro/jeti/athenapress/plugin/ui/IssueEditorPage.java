@@ -6,7 +6,7 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
 import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
-import com.hypixel.hytale.server.core.entity.entities.player.pages.CustomUIPage;
+import com.hypixel.hytale.server.core.entity.entities.player.pages.InteractiveCustomUIPage;
 import com.hypixel.hytale.server.core.ui.builder.EventData;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
@@ -19,10 +19,9 @@ import pro.jeti.athenapress.integration.IssueEditorView;
  * Ingame-GUI für den Ausgaben-Editor.
  *
  * Artikelauswahl (SELECT_ARTICLES) erfolgt per Chat (Nummern eingeben).
- * Für Schritte mit eindeutiger Aktion (Weiter/Überspringen/Einreichen)
- * werden anklickbare Buttons angezeigt.
+ * Eingaben erfolgen vorerst per Chat; die GUI dient als stabile Schrittanzeige.
  */
-public class IssueEditorPage extends CustomUIPage {
+public class IssueEditorPage extends InteractiveCustomUIPage<UiEventData> {
 
     private static final String INLINE_UI = """
             Group {
@@ -31,14 +30,20 @@ public class IssueEditorPage extends CustomUIPage {
 
               Group {
                 Background: (Color: #1a2436);
-                Anchor: (Width: 580, Height: 560);
+                Anchor: (Width: 580, Height: 540);
                 LayoutMode: Top;
                 Padding: (Horizontal: 20, Top: 12, Bottom: 8);
 
                 Label #StepLabel {
                   Anchor: (Height: 20);
-                  Padding: (Bottom: 4);
                   Style: (FontSize: 11, TextColor: #96a9be, VerticalAlignment: Center);
+                  Text: "";
+                }
+
+                Label #PromptLabel {
+                  Anchor: (Height: 96);
+                  Padding: (Top: 4, Bottom: 6);
+                  Style: (FontSize: 13, TextColor: #d0d8e8, VerticalAlignment: Center);
                   Text: "";
                 }
 
@@ -49,16 +54,17 @@ public class IssueEditorPage extends CustomUIPage {
                   Text: "";
                 }
 
-                Label #PromptLabel {
-                  Anchor: (Height: 200);
-                  Padding: (Bottom: 10);
-                  Style: (FontSize: 13, TextColor: #d0d8e8, Wrap: true, VerticalAlignment: Top);
-                  Text: "";
-                }
-
                 Group #ActionButtons {
                   LayoutMode: Top;
                   FlexWeight: 1;
+
+                  Label #ChatInputHint {
+                    Text: "Esc druecken, Eingabe in den Chat schreiben. Der naechste Schritt oeffnet sich automatisch.";
+                    Anchor: (Height: 56);
+                    Padding: (Full: 8);
+                    Style: (FontSize: 13, TextColor: #d0d8e8, HorizontalAlignment: Center,
+                            VerticalAlignment: Center);
+                  }
                 }
 
                 Group #NavBar {
@@ -83,7 +89,7 @@ public class IssueEditorPage extends CustomUIPage {
             IssueEditorView view,
             BiConsumer<String, String> onCommand
     ) {
-        super(hytaleRef, CustomPageLifetime.CanDismissOrCloseThroughInteraction);
+        super(hytaleRef, CustomPageLifetime.CanDismissOrCloseThroughInteraction, UiEventData.CODEC);
         this.view = view;
         this.onCommand = onCommand;
     }
@@ -97,11 +103,11 @@ public class IssueEditorPage extends CustomUIPage {
     ) {
         ui.appendInline(null, INLINE_UI);
 
-        ui.set("#StepLabel", stepLabel());
-        ui.set("#PromptLabel", safeStr(view.prompt()));
+        ui.set("#StepLabel.Text", stepLabel());
+        ui.set("#PromptLabel.Text", safeStr(view.prompt()));
 
         if (view.message() != null && !view.message().isBlank()) {
-            ui.set("#MessageLabel", view.message());
+            ui.set("#MessageLabel.Text", view.message());
         } else {
             ui.remove("#MessageLabel");
         }
@@ -109,18 +115,16 @@ public class IssueEditorPage extends CustomUIPage {
         buildActionButtons(ui, events);
 
         events.addEventBinding(CustomUIEventBindingType.Activating, "#BtnCancel",
-                EventData.of("cmd", "cancel"));
-        events.addEventBinding(CustomUIEventBindingType.Dismissing, null,
-                EventData.of("cmd", "cancel"));
+                EventData.of("Cmd", "cancel"), false);
     }
 
     @Override
     public void handleDataEvent(
-            Ref<EntityStore> ref, Store<EntityStore> store, String json
+            Ref<EntityStore> ref, Store<EntityStore> store, UiEventData data
     ) {
-        String cmd = extractField(json, "cmd");
+        String cmd = data != null ? data.cmd() : null;
         if (cmd == null) return;
-        String val = extractField(json, "val");
+        String val = data.val();
         onCommand.accept(cmd, val != null ? val : "");
     }
 
@@ -139,30 +143,17 @@ public class IssueEditorPage extends CustomUIPage {
     }
 
     private void buildActionButtons(UICommandBuilder ui, UIEventBuilder events) {
-        switch (view.step()) {
-            case CHOOSE_MAIN_ARTICLE -> {
-                ui.append("#ActionButtons",
-                        "TextButton #BtnUseFirst { Text: \"Ersten Artikel als Titelartikel →\"; "
-                        + "Padding: (Full: 8); FlexWeight: 1; }");
-                events.addEventBinding(CustomUIEventBindingType.Activating, "#BtnUseFirst",
-                        EventData.of("cmd", "select").put("val", "weiter"));
-            }
-            case ENTER_SUBTITLE -> {
-                ui.append("#ActionButtons",
-                        "TextButton #BtnSkipSubtitle { Text: \"Ohne Untertitel weiter →\"; "
-                        + "Padding: (Full: 8); FlexWeight: 1; }");
-                events.addEventBinding(CustomUIEventBindingType.Activating, "#BtnSkipSubtitle",
-                        EventData.of("cmd", "select").put("val", "weiter"));
-            }
-            case REVIEW -> {
-                ui.append("#ActionButtons",
-                        "TextButton #BtnSubmit { Text: \"Ausgabe einreichen ✓\"; "
-                        + "Padding: (Full: 10); FlexWeight: 1; }");
-                events.addEventBinding(CustomUIEventBindingType.Activating, "#BtnSubmit",
-                        EventData.of("cmd", "select").put("val", "einreichen"));
-            }
-            default -> { /* SELECT_ARTICLES: Spieler gibt Nummern im Chat ein */ }
-        }
+        ui.set("#ChatInputHint.Text", chatInputHint());
+    }
+
+    private String chatInputHint() {
+        return switch (view.step()) {
+            case SELECT_ARTICLES -> "Esc druecken, Artikelnummern in den Chat schreiben.";
+            case CHOOSE_MAIN_ARTICLE -> "Esc druecken, Titelartikel-Auswahl in den Chat schreiben.";
+            case ENTER_SUBTITLE -> "Esc druecken, Untertitel oder 'weiter' in den Chat schreiben.";
+            case REVIEW -> "Esc druecken, 'einreichen' oder 'abbrechen' in den Chat schreiben.";
+            default -> "Esc druecken, Eingabe in den Chat schreiben.";
+        };
     }
 
     // -----------------------------------------------------------------------

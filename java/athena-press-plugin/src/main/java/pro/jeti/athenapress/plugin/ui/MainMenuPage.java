@@ -6,20 +6,24 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
 import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
-import com.hypixel.hytale.server.core.entity.entities.player.pages.CustomUIPage;
+import com.hypixel.hytale.server.core.entity.entities.player.pages.InteractiveCustomUIPage;
 import com.hypixel.hytale.server.core.ui.builder.EventData;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
-public class MainMenuPage extends CustomUIPage {
+public class MainMenuPage extends InteractiveCustomUIPage<UiEventData> {
 
     public enum ProbeMode {
         MINIMAL,
         PANEL,
         BUTTONS,
         EVENTS,
+        EVENTS_ACTIVATE,
+        EVENTS_ACTIVATE_NO_DATA,
+        EVENTS_ACTIVATE_UNLOCKED,
+        EVENTS_DISMISS,
         NORMAL
     }
 
@@ -195,7 +199,7 @@ public class MainMenuPage extends CustomUIPage {
             Consumer<String> onCommand,
             ProbeMode probeMode
     ) {
-        super(hytaleRef, CustomPageLifetime.CanDismissOrCloseThroughInteraction);
+        super(hytaleRef, CustomPageLifetime.CanDismissOrCloseThroughInteraction, UiEventData.CODEC);
         this.isAdmin = isAdmin;
         this.onCommand = onCommand;
         this.probeMode = probeMode;
@@ -224,11 +228,35 @@ public class MainMenuPage extends CustomUIPage {
             case EVENTS -> {
                 ui.appendInline(null, BUTTON_PROBE_UI);
                 events.addEventBinding(CustomUIEventBindingType.Activating, "#BtnReadNewspaper",
-                        EventData.of("cmd", "open_newspaper"));
+                        EventData.of("Cmd", "open_newspaper"), false);
                 events.addEventBinding(CustomUIEventBindingType.Activating, "#BtnGiveCamera",
-                        EventData.of("cmd", "give_camera"));
-                events.addEventBinding(CustomUIEventBindingType.Dismissing, null,
-                        EventData.of("cmd", "close"));
+                        EventData.of("Cmd", "give_camera"), false);
+                return;
+            }
+            case EVENTS_ACTIVATE -> {
+                ui.appendInline(null, BUTTON_PROBE_UI);
+                events.addEventBinding(CustomUIEventBindingType.Activating, "#BtnReadNewspaper",
+                        EventData.of("Cmd", "open_newspaper"), false);
+                events.addEventBinding(CustomUIEventBindingType.Activating, "#BtnGiveCamera",
+                        EventData.of("Cmd", "give_camera"), false);
+                return;
+            }
+            case EVENTS_ACTIVATE_NO_DATA -> {
+                ui.appendInline(null, BUTTON_PROBE_UI);
+                events.addEventBinding(CustomUIEventBindingType.Activating, "#BtnReadNewspaper");
+                events.addEventBinding(CustomUIEventBindingType.Activating, "#BtnGiveCamera");
+                return;
+            }
+            case EVENTS_ACTIVATE_UNLOCKED -> {
+                ui.appendInline(null, BUTTON_PROBE_UI);
+                events.addEventBinding(CustomUIEventBindingType.Activating, "#BtnReadNewspaper",
+                        EventData.of("Cmd", "open_newspaper"), false);
+                events.addEventBinding(CustomUIEventBindingType.Activating, "#BtnGiveCamera",
+                        EventData.of("Cmd", "give_camera"), false);
+                return;
+            }
+            case EVENTS_DISMISS -> {
+                ui.appendInline(null, BUTTON_PROBE_UI);
                 return;
             }
             case NORMAL -> {
@@ -243,27 +271,25 @@ public class MainMenuPage extends CustomUIPage {
         }
 
         events.addEventBinding(CustomUIEventBindingType.Activating, "#BtnReadNewspaper",
-                EventData.of("cmd", "open_newspaper"));
+                EventData.of("Cmd", "open_newspaper"), false);
         events.addEventBinding(CustomUIEventBindingType.Activating, "#BtnGiveCamera",
-                EventData.of("cmd", "give_camera"));
+                EventData.of("Cmd", "give_camera"), false);
         events.addEventBinding(CustomUIEventBindingType.Activating, "#BtnClose",
-                EventData.of("cmd", "close"));
-        events.addEventBinding(CustomUIEventBindingType.Dismissing, null,
-                EventData.of("cmd", "close"));
+                EventData.of("Cmd", "close"), false);
 
         if (isAdmin) {
             events.addEventBinding(CustomUIEventBindingType.Activating, "#BtnNewArticle",
-                    EventData.of("cmd", "start_article_editor"));
+                    EventData.of("Cmd", "start_article_editor"), false);
             events.addEventBinding(CustomUIEventBindingType.Activating, "#BtnNewIssue",
-                    EventData.of("cmd", "start_issue_editor"));
+                    EventData.of("Cmd", "start_issue_editor"), false);
         }
     }
 
     @Override
     public void handleDataEvent(
-            Ref<EntityStore> ref, Store<EntityStore> store, String json
+            Ref<EntityStore> ref, Store<EntityStore> store, UiEventData data
     ) {
-        String cmd = extractField(json, "cmd");
+        String cmd = data != null ? data.cmd() : null;
         if (cmd != null) onCommand.accept(cmd);
     }
 

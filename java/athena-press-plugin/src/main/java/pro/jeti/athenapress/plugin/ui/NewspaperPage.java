@@ -6,7 +6,7 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
 import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
-import com.hypixel.hytale.server.core.entity.entities.player.pages.CustomUIPage;
+import com.hypixel.hytale.server.core.entity.entities.player.pages.InteractiveCustomUIPage;
 import com.hypixel.hytale.server.core.ui.builder.EventData;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
@@ -27,7 +27,42 @@ import pro.jeti.athenapress.integration.PlayerNewspaperVisualView;
  * Navigations-Buttons. Events (Weiter, Zurück, Schließen, Seite wählen)
  * werden per onCommand-Callback an die Runtime weitergeleitet.
  */
-public class NewspaperPage extends CustomUIPage {
+public class NewspaperPage extends InteractiveCustomUIPage<UiEventData> {
+
+    private static final boolean USE_SAFE_PROBE_UI = true;
+
+    private static final String PROBE_UI = """
+            Group {
+              Background: (Color: #000000(0.82));
+              LayoutMode: Middle;
+
+              Group {
+                Background: (Color: #1a2436);
+                Anchor: (Width: 760, Height: 420);
+                LayoutMode: Top;
+                Padding: (Horizontal: 20, Top: 12, Bottom: 12);
+
+                Label #ProbeTitle {
+                  Anchor: (Height: 36);
+                  Style: (FontSize: 18, RenderBold: true, HorizontalAlignment: Center,
+                          TextColor: #ffffff, VerticalAlignment: Center);
+                  Text: "AthenaPress Zeitung";
+                }
+
+                Label #ProbeMessage {
+                  FlexWeight: 1;
+                  Style: (FontSize: 15, TextColor: #d0d8e8, HorizontalAlignment: Center,
+                          VerticalAlignment: Center);
+                  Text: "Zeitungsseite geladen";
+                }
+
+                TextButton #BtnClose {
+                  Anchor: (Height: 44);
+                  Text: "Schliessen";
+                }
+              }
+            }
+            """;
 
     private static final String INLINE_UI = """
             Group {
@@ -131,7 +166,7 @@ public class NewspaperPage extends CustomUIPage {
             PlayerNewspaperVisualView view,
             BiConsumer<String, String> onCommand
     ) {
-        super(hytaleRef, CustomPageLifetime.CanDismissOrCloseThroughInteraction);
+        super(hytaleRef, CustomPageLifetime.CanDismissOrCloseThroughInteraction, UiEventData.CODEC);
         this.view      = view;
         this.player    = player;
         this.onCommand = onCommand;
@@ -144,10 +179,18 @@ public class NewspaperPage extends CustomUIPage {
             UIEventBuilder events,
             Store<EntityStore> store
     ) {
+        if (USE_SAFE_PROBE_UI) {
+            ui.appendInline(null, PROBE_UI);
+            ui.set("#ProbeTitle.Text", view.title());
+            events.addEventBinding(CustomUIEventBindingType.Activating, "#BtnClose",
+                    EventData.of("Cmd", "close"), false);
+            return;
+        }
+
         ui.appendInline(null, INLINE_UI);
 
         // Titel setzen
-        ui.set("#Title", view.title() + "  –  " + view.spreadStatus().label());
+        ui.set("#Title.Text", view.title() + "  –  " + view.spreadStatus().label());
 
         boolean showingArticle = view.hasLeftPage();
 
@@ -168,23 +211,21 @@ public class NewspaperPage extends CustomUIPage {
         // Standard Button-Events
         if (view.hasPreviousSpread()) {
             events.addEventBinding(CustomUIEventBindingType.Activating, "#BtnBack",
-                    EventData.of("cmd", "back"));
+                    EventData.of("Cmd", "back"), false);
         }
         if (view.hasNextSpread()) {
             events.addEventBinding(CustomUIEventBindingType.Activating, "#BtnNext",
-                    EventData.of("cmd", "next"));
+                    EventData.of("Cmd", "next"), false);
         }
         events.addEventBinding(CustomUIEventBindingType.Activating, "#BtnClose",
-                EventData.of("cmd", "close"));
-        events.addEventBinding(CustomUIEventBindingType.Dismissing, null,
-                EventData.of("cmd", "close"));
+                EventData.of("Cmd", "close"), false);
     }
 
     @Override
     public void handleDataEvent(
-            Ref<EntityStore> ref, Store<EntityStore> store, String json
+            Ref<EntityStore> ref, Store<EntityStore> store, UiEventData data
     ) {
-        String cmd = extractField(json, "cmd");
+        String cmd = data != null ? data.cmd() : null;
         if (cmd == null) return;
 
         switch (cmd) {
@@ -192,7 +233,7 @@ public class NewspaperPage extends CustomUIPage {
             case "back"   -> onCommand.accept("back",   "");
             case "close"  -> onCommand.accept("close",  "");
             case "spread" -> {
-                String idx = extractField(json, "idx");
+                String idx = data.val();
                 onCommand.accept("spread", idx != null ? idx : "0");
             }
             default -> { /* unbekannt, ignorieren */ }
@@ -226,15 +267,15 @@ public class NewspaperPage extends CustomUIPage {
             caption  = img.caption();
         }
 
-        ui.set("#ArticleTitle",    safeStr(title));
-        ui.set("#ArticleSubtitle", safeStr(subtitle));
-        ui.set("#ArticleBody",     safeStr(body).trim());
-        ui.set("#ArticleCaption",  safeStr(caption));
+        ui.set("#ArticleTitle.Text",    safeStr(title));
+        ui.set("#ArticleSubtitle.Text", safeStr(subtitle));
+        ui.set("#ArticleBody.Text",     safeStr(body).trim());
+        ui.set("#ArticleCaption.Text",  safeStr(caption));
 
         if (!imgFile.isBlank()) {
             // Bild aus Mod-Asset-Pack: Common/Images/<assetPath>
-            ui.set("#ArticleImage",
-                    "Background: (TexturePath: \"Images/" + imgFile + "\", ScaleType: Fill)");
+            ui.set("#ArticleImage.Background",
+                    "(TexturePath: \"Images/" + imgFile + "\", ScaleType: Fill)");
         } else {
             ui.remove("#ArticleImage");
             ui.remove("#ArticleCaption");
@@ -251,13 +292,13 @@ public class NewspaperPage extends CustomUIPage {
             String label = escape(item.label());
             if (item.current()) label = "▶ " + label;
 
-            ui.append("#ArticleList",
+            ui.appendInline("#ArticleList",
                     "TextButton #" + btnId + " { Text: \"" + label + "\"; " +
                     "Padding: (Full: 8); FlexWeight: 1; }");
 
             events.addEventBinding(CustomUIEventBindingType.Activating, "#" + btnId,
-                    EventData.of("cmd", "spread")
-                             .put("idx", String.valueOf(item.spreadIndex())));
+                    EventData.of("Cmd", "spread")
+                             .put("Val", String.valueOf(item.spreadIndex())), false);
         }
     }
 

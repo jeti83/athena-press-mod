@@ -46,8 +46,11 @@ public class NewspaperVisualBridge implements HytaleNewspaperVisualUiBridge {
         // zur Laufzeit immer com.hypixel.hytale.server.core.universe.PlayerRef.
         PlayerRef hytaleRef = (PlayerRef) rawRef;
         var entityRef = hytaleRef.getReference();
+        if (entityRef == null) return;
         var store     = entityRef.getStore();
+        if (store == null || store.getExternalData() == null) return;
         var world     = store.getExternalData().getWorld();
+        if (world == null) return;
 
         world.execute(() -> {
             Player hytalePlayer = store.getComponent(entityRef, Player.getComponentType());
@@ -68,8 +71,11 @@ public class NewspaperVisualBridge implements HytaleNewspaperVisualUiBridge {
 
         PlayerRef hytaleRef = (PlayerRef) rawRef;
         var entityRef = hytaleRef.getReference();
+        if (entityRef == null) return;
         var store     = entityRef.getStore();
+        if (store == null || store.getExternalData() == null) return;
         var world     = store.getExternalData().getWorld();
+        if (world == null) return;
 
         world.execute(() -> {
             Player hytalePlayer = store.getComponent(entityRef, Player.getComponentType());

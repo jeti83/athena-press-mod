@@ -23,6 +23,7 @@ public class IssueEditorService {
     }
 
     public IssueEditorView startEditing(String playerId, String playerName, boolean admin) throws IOException {
+        // TODO: Decide whether admins may include draft articles in new issues.
         List<Article> published = articleRepository.findAll().stream()
                 .filter(a -> "published".equals(a.status()))
                 .toList();

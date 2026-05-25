@@ -6,7 +6,7 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
 import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
-import com.hypixel.hytale.server.core.entity.entities.player.pages.CustomUIPage;
+import com.hypixel.hytale.server.core.entity.entities.player.pages.InteractiveCustomUIPage;
 import com.hypixel.hytale.server.core.ui.builder.EventData;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
@@ -23,7 +23,7 @@ import pro.jeti.athenapress.integration.ArticleEditorView;
  * Titel und Fließtext werden weiterhin per Chat eingegeben –
  * die Seite aktualisiert sich nach jeder Chat-Eingabe automatisch.
  */
-public class ArticleEditorPage extends CustomUIPage {
+public class ArticleEditorPage extends InteractiveCustomUIPage<UiEventData> {
 
     private static final String INLINE_UI = """
             Group {
@@ -92,6 +92,14 @@ public class ArticleEditorPage extends CustomUIPage {
                 Group #ActionButtons {
                   LayoutMode: Top;
                   FlexWeight: 1;
+
+                  Label #ChatInputHint {
+                    Text: "Esc druecken, Eingabe in den Chat schreiben. Der naechste Schritt oeffnet sich automatisch.";
+                    Anchor: (Height: 56);
+                    Padding: (Full: 8);
+                    Style: (FontSize: 13, TextColor: #d0d8e8, HorizontalAlignment: Center,
+                            VerticalAlignment: Center);
+                  }
                 }
 
                 Group #NavBar {
@@ -116,7 +124,7 @@ public class ArticleEditorPage extends CustomUIPage {
             ArticleEditorView view,
             BiConsumer<String, String> onCommand
     ) {
-        super(hytaleRef, CustomPageLifetime.CanDismissOrCloseThroughInteraction);
+        super(hytaleRef, CustomPageLifetime.CanDismissOrCloseThroughInteraction, UiEventData.CODEC);
         this.view = view;
         this.onCommand = onCommand;
     }
@@ -130,11 +138,11 @@ public class ArticleEditorPage extends CustomUIPage {
     ) {
         ui.appendInline(null, INLINE_UI);
 
-        ui.set("#StepLabel", stepLabel());
-        ui.set("#PromptLabel", safeStr(view.prompt()));
+        ui.set("#StepLabel.Text", stepLabel());
+        ui.set("#PromptLabel.Text", safeStr(view.prompt()));
 
         if (view.message() != null && !view.message().isBlank()) {
-            ui.set("#MessageLabel", view.message());
+            ui.set("#MessageLabel.Text", view.message());
         } else {
             ui.remove("#MessageLabel");
         }
@@ -143,18 +151,16 @@ public class ArticleEditorPage extends CustomUIPage {
         buildActionButtons(ui, events);
 
         events.addEventBinding(CustomUIEventBindingType.Activating, "#BtnCancel",
-                EventData.of("cmd", "cancel"));
-        events.addEventBinding(CustomUIEventBindingType.Dismissing, null,
-                EventData.of("cmd", "cancel"));
+                EventData.of("Cmd", "cancel"), false);
     }
 
     @Override
     public void handleDataEvent(
-            Ref<EntityStore> ref, Store<EntityStore> store, String json
+            Ref<EntityStore> ref, Store<EntityStore> store, UiEventData data
     ) {
-        String cmd = extractField(json, "cmd");
+        String cmd = data != null ? data.cmd() : null;
         if (cmd == null) return;
-        String val = extractField(json, "val");
+        String val = data.val();
         onCommand.accept(cmd, val != null ? val : "");
     }
 
@@ -179,44 +185,25 @@ public class ArticleEditorPage extends CustomUIPage {
         String bodyPreview = view.currentBody()     != null ? "Text: "      + truncate(view.currentBody(), 80)  : "";
         String imgText     = view.currentImage()    != null ? "Bild: "      + view.currentImage()               : "";
 
-        if (titleText.isBlank())   { ui.remove("#FieldTitle"); }       else { ui.set("#FieldTitle",       titleText);   }
-        if (catText.isBlank())     { ui.remove("#FieldCategory"); }    else { ui.set("#FieldCategory",    catText);     }
-        if (bodyPreview.isBlank()) { ui.remove("#FieldBodyPreview"); } else { ui.set("#FieldBodyPreview", bodyPreview); }
-        if (imgText.isBlank())     { ui.remove("#FieldImage"); }       else { ui.set("#FieldImage",       imgText);     }
+        if (titleText.isBlank())   { ui.remove("#FieldTitle"); }       else { ui.set("#FieldTitle.Text",       titleText);   }
+        if (catText.isBlank())     { ui.remove("#FieldCategory"); }    else { ui.set("#FieldCategory.Text",    catText);     }
+        if (bodyPreview.isBlank()) { ui.remove("#FieldBodyPreview"); } else { ui.set("#FieldBodyPreview.Text", bodyPreview); }
+        if (imgText.isBlank())     { ui.remove("#FieldImage"); }       else { ui.set("#FieldImage.Text",       imgText);     }
     }
 
     private void buildActionButtons(UICommandBuilder ui, UIEventBuilder events) {
-        ArticleEditorStep step = view.step();
+        ui.set("#ChatInputHint.Text", chatInputHint());
+    }
 
-        if (step == ArticleEditorStep.ENTER_CATEGORY
-                && view.availableCategories() != null
-                && !view.availableCategories().isEmpty()) {
-            int i = 0;
-            for (String cat : view.availableCategories()) {
-                String btnId = "Cat_" + i;
-                ui.append("#ActionButtons",
-                        "TextButton #" + btnId + " { Text: \"" + escape(cat) + "\"; "
-                        + "Padding: (Full: 8); FlexWeight: 1; }");
-                events.addEventBinding(CustomUIEventBindingType.Activating, "#" + btnId,
-                        EventData.of("cmd", "select").put("val", cat));
-                i++;
-            }
-
-        } else if (step == ArticleEditorStep.ATTACH_IMAGE) {
-            ui.append("#ActionButtons",
-                    "TextButton #BtnSkipImage { Text: \"Ohne Bild weiter →\"; "
-                    + "Padding: (Full: 8); FlexWeight: 1; }");
-            events.addEventBinding(CustomUIEventBindingType.Activating, "#BtnSkipImage",
-                    EventData.of("cmd", "select").put("val", "weiter"));
-
-        } else if (step == ArticleEditorStep.REVIEW) {
-            ui.append("#ActionButtons",
-                    "TextButton #BtnSubmit { Text: \"Artikel einreichen ✓\"; "
-                    + "Padding: (Full: 10); FlexWeight: 1; }");
-            events.addEventBinding(CustomUIEventBindingType.Activating, "#BtnSubmit",
-                    EventData.of("cmd", "select").put("val", "einreichen"));
-        }
-        // ENTER_TITLE, ENTER_BODY: kein Button – Spieler tippt im Chat
+    private String chatInputHint() {
+        return switch (view.step()) {
+            case ENTER_TITLE -> "Esc druecken, Artikeltitel in den Chat schreiben.";
+            case ENTER_CATEGORY -> "Esc druecken, Kategorie exakt in den Chat schreiben.";
+            case ENTER_BODY -> "Esc druecken, Artikeltext in den Chat schreiben.";
+            case ATTACH_IMAGE -> "Esc druecken, Foto-Nummer oder 'weiter' in den Chat schreiben.";
+            case REVIEW -> "Esc druecken, 'einreichen' oder 'abbrechen' in den Chat schreiben.";
+            default -> "Esc druecken, Eingabe in den Chat schreiben.";
+        };
     }
 
     // -----------------------------------------------------------------------
