@@ -5,9 +5,10 @@
 # Was dieses Skript macht:
 #   1. Maven-Build (athena-press-integration + athena-press-plugin)
 #   2. Shaded JAR → %APPDATA%\Hytale\UserData\Mods\
-#   3. manifest.json → Saves\<Welt>\mods\pro.jeti_AthenaPress\
+#   3. manifest.json aus JAR → Saves\<Welt>\mods\pro.jeti_AthenaPress\
 #      (Hytale Client erwartet dort eine Kopie für Versions-Check;
 #       ohne diese Datei erscheint eine harmlose DEBUG-Warnung 4x im Log)
+#   4. Mod-Icons → jeweilige Mod-Ordner (icon.png Konvention)
 
 $ErrorActionPreference = "Stop"
 
@@ -64,6 +65,24 @@ if (Test-Path $pluginData) {
 } else {
     Write-Host "Welt-Datenordner nicht gefunden: $pluginData" -ForegroundColor Yellow
     Write-Host "  (normal beim ersten Start – manifest.json wird beim naechsten Deploy gesetzt)" -ForegroundColor DarkGray
+}
+
+# ── 4. Mod-Icons deployen ────────────────────────────────────────────────────
+# Hytale sucht icon.png im Mod-Ordner bzw. im Welt-Datenordner.
+$iconsDir = "$PSScriptRoot\..\assets\icons"
+
+$apIcon      = "$iconsDir\AP-Icon.png"
+$cameraIcon  = "$iconsDir\AP-Camera-Icon.png"
+$apCameraDir = "$modsDir\HytaleAthena.AP_Camera"
+
+if (Test-Path $apCameraIcon) {
+    Copy-Item $cameraIcon "$apCameraDir\icon.png" -Force
+    Write-Host "AP_Camera icon.png gesetzt" -ForegroundColor Green
+}
+
+if ((Test-Path $apIcon) -and (Test-Path $pluginData)) {
+    Copy-Item $apIcon "$pluginData\icon.png" -Force
+    Write-Host "AthenaPress icon.png in $pluginData gesetzt" -ForegroundColor Green
 }
 
 Write-Host ""
