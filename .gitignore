@@ -1,6 +1,9 @@
 target/
 **/target/
 
+# Release-Pakete (erzeugt von scripts/build-release.ps1)
+dist/
+
 __pycache__/
 *.pyc
 

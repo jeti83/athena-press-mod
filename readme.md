@@ -400,6 +400,7 @@ docs/data_model.md
 docs/integration_architecture.md
 docs/mod_mvp.md
 docs/backend_status.md
+docs/installation.md
 
 `docs/commands.md` enthält die Befehlsübersicht.
 
