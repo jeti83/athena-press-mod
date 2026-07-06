@@ -25,6 +25,7 @@
 | **Kamera-Item-Modell (3D)** | `█░░░░░░░░░` 10 % | ⏳ Blockbench-Umbau ausstehend |
 | **Ingame-Zustellung** | `░░░░░░░░░░`  5 % | ⏳ geplant |
 | **Mehrspielerbetrieb** | `███░░░░░░░` 30 % | ⏳ SessionManager vorbereitet |
+| **Deployment (Server-Admin-Installer)** | `██████████` 100 % | ✅ Release-Paket + Installer fertig |
 
 **Gesamtfortschritt (gewichtet):** `███████░░░` ca. 65 %
 
@@ -60,7 +61,7 @@ Das Plugin läuft auf dem Hytale-Singleplayer-Server. Folgende Hytale-API-Teile 
 | Chat-Eingabe | `PlayerChatEvent` (registerAsyncGlobal) | ✅ |
 | GUI öffnen | `InteractiveCustomUIPage<UiEventData>` | 🔄 Probe-Modi OK |
 | `/ap`-Befehl | `AbstractCommand` | ✅ |
-| PlayerRef-Zugriff | `event.getPlayer().getPlayerRef()` | ✅ |
+| PlayerRef-Zugriff | `event.getPlayer().getPlayerRef()` | ✅ (deprecated, siehe 3.6) |
 | Kamera-Screenshot-Watcher | `WatchService` auf Screenshot-Ordner | ✅ |
 
 ---
@@ -151,7 +152,13 @@ Flow: Schritt-für-Schritt per Button-Wahl und Chat-Eingabe (IssueEditorService)
 Das Plugin ist mit der echten Hytale-API verbunden. Alle Event-Klassen kommen aus dem korrekten Paket `com.hypixel.hytale.server.core.event.events.player.*`.
 
 **Bekannte offene Punkte:**
-- `getPlayerRef()` in `Player` ist `@Deprecated` — Hytale signalisiert API-Änderung; Ersatz noch zu ermitteln
+- `getPlayerRef()` in `Player` ist `@Deprecated(forRemoval=true)`. Ersatz identifiziert:
+  `PlayerEvent.getPlayerRef()` liefert bereits einen `Ref<EntityStore>`, aus dem sich die
+  `PlayerRef`-Komponente per `store.getComponent(ref, PlayerRef.getComponentType())` holen
+  liesse — das muss aber innerhalb von `world.execute()` passieren. Der Umbau der zwei
+  betroffenen Stellen (`AthenaPressPlugin.onPlayerInteract`, `ApCommand.ensurePlayerRegistered`)
+  wurde bewusst zurueckgestellt, solange das GUI-System noch im Crash-Debugging steckt;
+  aktuell per `@SuppressWarnings({"deprecation","removal"})` dokumentiert.
 - GUI in `NORMAL`-Modus (vollständiges Layout) noch in Debugging-Phase
 - `ui.remove()` und `InteractiveCustomUIPage`-Verhalten unter Test
 
@@ -166,6 +173,18 @@ Das Plugin ist mit der echten Hytale-API verbunden. Alle Event-Klassen kommen au
 | `/ap uiactivate` | Activating-Events | 🔄 Test läuft |
 | `/ap uidismiss` | Dismissing-Event | 🔄 Test läuft |
 | `/ap uinormal` | Volles Hauptmenü | 🔄 in Debugging |
+
+#### 3.7 Deployment für Server-Admins `██████████` 100 %
+
+Server-Admins ohne eigenes Java/Maven koennen AthenaPress ueber ein fertiges Release-Paket
+installieren, siehe [`docs/installation.md`](installation.md):
+
+- `scripts/build-release.ps1` (Mod-Entwickler) baut Plugin-JAR + Asset-Pack + Icons zu
+  `dist/athena-press-release-<version>.zip` mit `release-info.json` fuer den Installer.
+- `tools/install_athena_press.py` (Server-Admin) installiert dieses Paket interaktiv oder
+  non-interaktiv (Welten-Auswahl, `--dry-run`, `--non-interactive` fuer Automatisierung).
+- Ergaenzt (nicht ersetzt) `scripts/deploy-ap.ps1`, das weiterhin fuer die lokale
+  Entwicklungs-Iteration des Mod-Autors gedacht ist.
 
 ---
 
@@ -291,7 +310,7 @@ athena-press-mod/
 |---|---|
 | NORMAL-Modus ohne Crash | 🔄 Probe-Test laeuft |
 | `ui.remove()` API-Verhalten klaeren | 🔄 offen |
-| `@Deprecated getPlayerRef()` Ersatz finden | 🔄 offen |
+| `@Deprecated getPlayerRef()` Ersatz finden | 🔄 Ersatz identifiziert, WorldThread-Umbau zurueckgestellt |
 | Zeitung lesen via `/ap` (Visual-Runtime) | ⏳ nach GUI-Fix |
 
 ### Mittelfristig – Spielflow `███░░░░░░░`
@@ -343,7 +362,7 @@ Spieler haelt Kamera-Item -> linke Maustaste
 |---|---|---|
 | `Unused key(s) in 'EditorTool_LaserPointer': BuilderTool.BrushData` | Hytale-interne Item-Datei mit veralteten Feldern | keine – Hytale ignoriert unbekannte Keys |
 | `Texture width/height must be a multiple of 32: HalfBlock_CustomSide_Clay_Raw_Brick.png` | Hytale-interne Textur mit 48x48 px | keine – Rendering-Warnung des Engines |
-| `getPlayerRef() ... veraltet und wurde zum Entfernen markiert` | Hytale markiert API als deprecated | funktioniert noch; Ersatz-API zu ermitteln |
+| `getPlayerRef() ... veraltet und wurde zum Entfernen markiert` | Hytale markiert API als deprecated | funktioniert noch; Ersatz identifiziert (siehe 3.6), Umbau zurueckgestellt; bewusst per `@SuppressWarnings` unterdrueckt |
 
 ---
 
