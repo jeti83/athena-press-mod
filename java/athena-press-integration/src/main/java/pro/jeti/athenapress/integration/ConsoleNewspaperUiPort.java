@@ -3,6 +3,7 @@ package pro.jeti.athenapress.integration;
 @Deprecated
 public class ConsoleNewspaperUiPort implements PlayerNewspaperUiPort {
 
+    @Deprecated
     @Override
     public void show(PlayerNewspaperResponse response) {
         if (response == null) {
@@ -17,6 +18,7 @@ public class ConsoleNewspaperUiPort implements PlayerNewspaperUiPort {
         System.out.print(response.text());
     }
 
+    @Deprecated
     @Override
     public void show(NewspaperUiView view) {
         if (view == null) {
@@ -41,6 +43,7 @@ public class ConsoleNewspaperUiPort implements PlayerNewspaperUiPort {
         }
     }
 
+    @Deprecated
     @Override
     public void close(String playerId) {
         System.out.println("Zeitungs-UI geschlossen für Spieler: " + playerId);

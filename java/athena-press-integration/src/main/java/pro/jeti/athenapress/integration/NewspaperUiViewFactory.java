@@ -6,6 +6,7 @@ import java.util.List;
 @Deprecated
 public class NewspaperUiViewFactory {
 
+    @Deprecated
     public NewspaperUiView fromResponse(PlayerNewspaperResponse response) {
         if (response == null) {
             return NewspaperUiView.error(

@@ -7,6 +7,7 @@ public class PlayerNewspaperInteractionService {
 
     private final AthenaPressIntegrationPlugin plugin;
 
+    @Deprecated
     public PlayerNewspaperInteractionService(AthenaPressIntegrationPlugin plugin) {
         if (plugin == null) {
             throw new IllegalArgumentException("plugin must not be null");
@@ -15,26 +16,32 @@ public class PlayerNewspaperInteractionService {
         this.plugin = plugin;
     }
 
+    @Deprecated
     public String handleOpenIssue(String playerId, String issueId) throws IOException {
         return plugin.onPlayerOpenNewspaper(playerId, issueId);
     }
 
+    @Deprecated
     public String handleShowOverview(String playerId) {
         return plugin.onPlayerRequestOverview(playerId);
     }
 
+    @Deprecated
     public String handleSelectArticle(String playerId, int articleNumber) {
         return plugin.onPlayerSelectArticle(playerId, articleNumber);
     }
 
+    @Deprecated
     public String handleSelectArticle(String playerId, String articleId) {
         return plugin.onPlayerSelectArticle(playerId, articleId);
     }
 
+    @Deprecated
     public void handleCloseIssue(String playerId) {
         plugin.onPlayerCloseNewspaper(playerId);
     }
 
+    @Deprecated
     public String handleAction(
             PlayerNewspaperAction action,
             String playerId,
@@ -43,6 +50,7 @@ public class PlayerNewspaperInteractionService {
         return handleActionResponse(action, playerId, value).text();
     }
 
+    @Deprecated
     public PlayerNewspaperResponse handleActionResponse(
             PlayerNewspaperAction action,
             String playerId,
@@ -90,6 +98,7 @@ public class PlayerNewspaperInteractionService {
         };
     }
     
+    @Deprecated
     public PlayerNewspaperResponse handleUiCommand(
             String playerId,
             PlayerNewspaperUiCommand command

@@ -9,6 +9,7 @@ public class HytaleNewspaperUiPort implements PlayerNewspaperUiPort {
     private final HytaleNewspaperUiBridge uiBridge;
     private final Map<String, HytalePlayerContext> playersById = new HashMap<>();
 
+    @Deprecated
     public HytaleNewspaperUiPort(HytaleNewspaperUiBridge uiBridge) {
         if (uiBridge == null) {
             throw new IllegalArgumentException("uiBridge must not be null");
@@ -17,6 +18,7 @@ public class HytaleNewspaperUiPort implements PlayerNewspaperUiPort {
         this.uiBridge = uiBridge;
     }
 
+    @Deprecated
     public void registerPlayer(HytalePlayerContext player) {
         if (player == null) {
             return;
@@ -25,6 +27,7 @@ public class HytaleNewspaperUiPort implements PlayerNewspaperUiPort {
         playersById.put(player.playerId(), player);
     }
 
+    @Deprecated
     public void unregisterPlayer(String playerId) {
         if (playerId == null || playerId.isBlank()) {
             return;
@@ -33,6 +36,7 @@ public class HytaleNewspaperUiPort implements PlayerNewspaperUiPort {
         playersById.remove(playerId);
     }
 
+    @Deprecated
     @Override
     public void show(PlayerNewspaperResponse response) {
         if (response == null) {
@@ -42,6 +46,7 @@ public class HytaleNewspaperUiPort implements PlayerNewspaperUiPort {
         show(new NewspaperUiViewFactory().fromResponse(response));
     }
 
+    @Deprecated
     @Override
     public void show(NewspaperUiView view) {
         if (view == null || view.playerId() == null) {
@@ -61,6 +66,7 @@ public class HytaleNewspaperUiPort implements PlayerNewspaperUiPort {
         uiBridge.openOrUpdate(player, view);
     }
 
+    @Deprecated
     @Override
     public void close(String playerId) {
         if (playerId == null || playerId.isBlank()) {

@@ -9,6 +9,7 @@ public class PlayerNewspaperUiController {
     private final PlayerNewspaperUiPort uiPort;
     private final NewspaperUiViewFactory viewFactory;
 
+    @Deprecated
     public PlayerNewspaperUiController(
             PlayerNewspaperInteractionService interactionService,
             PlayerNewspaperUiPort uiPort
@@ -16,6 +17,7 @@ public class PlayerNewspaperUiController {
         this(interactionService, uiPort, new NewspaperUiViewFactory());
     }
 
+    @Deprecated
     public PlayerNewspaperUiController(
             PlayerNewspaperInteractionService interactionService,
             PlayerNewspaperUiPort uiPort,
@@ -38,26 +40,32 @@ public class PlayerNewspaperUiController {
         this.viewFactory = viewFactory;
     }
 
+    @Deprecated
     public void openIssue(String playerId, String issueId) {
         handleCommand(playerId, PlayerNewspaperUiCommand.openIssue(issueId));
     }
 
+    @Deprecated
     public void showOverview(String playerId) {
         handleCommand(playerId, PlayerNewspaperUiCommand.showOverview());
     }
 
+    @Deprecated
     public void selectArticle(String playerId, int articleNumber) {
         handleCommand(playerId, PlayerNewspaperUiCommand.selectArticle(articleNumber));
     }
 
+    @Deprecated
     public void selectArticle(String playerId, String articleId) {
         handleCommand(playerId, PlayerNewspaperUiCommand.selectArticle(articleId));
     }
 
+    @Deprecated
     public void closeIssue(String playerId) {
         handleCommand(playerId, PlayerNewspaperUiCommand.closeIssue());
     }
 
+    @Deprecated
     public void handleCommand(
             String playerId,
             PlayerNewspaperUiCommand command

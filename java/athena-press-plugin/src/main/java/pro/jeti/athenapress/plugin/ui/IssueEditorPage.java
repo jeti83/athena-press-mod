@@ -159,18 +159,4 @@ public class IssueEditorPage extends InteractiveCustomUIPage<UiEventData> {
     // -----------------------------------------------------------------------
 
     private String safeStr(String s) { return s == null ? "" : s; }
-
-    private String extractField(String json, String key) {
-        if (json == null || key == null) return null;
-        String search = "\"" + key + "\"";
-        int ki = json.indexOf(search);
-        if (ki < 0) return null;
-        int colon = json.indexOf(':', ki + search.length());
-        if (colon < 0) return null;
-        int q1 = json.indexOf('"', colon + 1);
-        if (q1 < 0) return null;
-        int q2 = json.indexOf('"', q1 + 1);
-        if (q2 < 0) return null;
-        return json.substring(q1 + 1, q2);
-    }
 }

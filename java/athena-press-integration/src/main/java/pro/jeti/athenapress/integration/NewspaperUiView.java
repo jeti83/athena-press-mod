@@ -14,10 +14,12 @@ public record NewspaperUiView(
         List<NewspaperUiButton> buttons
 ) {
 
+    @Deprecated
     public NewspaperUiView {
         buttons = buttons == null ? List.of() : List.copyOf(buttons);
     }
 
+    @Deprecated
     public static NewspaperUiView closed(String playerId, String body) {
         return new NewspaperUiView(
                 playerId,
@@ -31,6 +33,7 @@ public record NewspaperUiView(
         );
     }
 
+    @Deprecated
     public static NewspaperUiView error(String playerId, String body) {
         return new NewspaperUiView(
                 playerId,
@@ -47,6 +50,7 @@ public record NewspaperUiView(
         );
     }
 
+    @Deprecated
     public static NewspaperUiView message(
             String playerId,
             String title,

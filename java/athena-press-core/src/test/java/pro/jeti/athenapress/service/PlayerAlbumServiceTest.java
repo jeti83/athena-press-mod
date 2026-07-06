@@ -72,7 +72,7 @@ class PlayerAlbumServiceTest {
 
     @Test
     void listFavoritesSortsFavoritesFirst() throws IOException {
-        PlayerPhoto p1 = service.addPhoto("Jeti", "cam_001.png", "Normal");
+        service.addPhoto("Jeti", "cam_001.png", "Normal");
         PlayerPhoto p2 = service.addPhoto("Jeti", "cam_002.png", "Favorit");
         service.toggleFavorite("Jeti", p2.id());
 

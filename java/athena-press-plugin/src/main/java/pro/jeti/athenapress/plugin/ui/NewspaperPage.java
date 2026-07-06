@@ -157,7 +157,6 @@ public class NewspaperPage extends InteractiveCustomUIPage<UiEventData> {
             """;
 
     private final PlayerNewspaperVisualView view;
-    private final HytalePlayerContext player;
     private final BiConsumer<String, String> onCommand;
 
     public NewspaperPage(
@@ -168,7 +167,6 @@ public class NewspaperPage extends InteractiveCustomUIPage<UiEventData> {
     ) {
         super(hytaleRef, CustomPageLifetime.CanDismissOrCloseThroughInteraction, UiEventData.CODEC);
         this.view      = view;
-        this.player    = player;
         this.onCommand = onCommand;
     }
 
@@ -304,21 +302,6 @@ public class NewspaperPage extends InteractiveCustomUIPage<UiEventData> {
 
     // -----------------------------------------------------------------------
     // Hilfsmethoden
-
-    /** Extrahiert einen String-Wert aus minimalem JSON: {"key":"value"} */
-    private String extractField(String json, String key) {
-        if (json == null || key == null) return null;
-        String search = "\"" + key + "\"";
-        int ki = json.indexOf(search);
-        if (ki < 0) return null;
-        int colon = json.indexOf(':', ki + search.length());
-        if (colon < 0) return null;
-        int q1 = json.indexOf('"', colon + 1);
-        if (q1 < 0) return null;
-        int q2 = json.indexOf('"', q1 + 1);
-        if (q2 < 0) return null;
-        return json.substring(q1 + 1, q2);
-    }
 
     /** Öffentlicher Wrapper für das protected close() von CustomUIPage. */
     public void requestClose() {

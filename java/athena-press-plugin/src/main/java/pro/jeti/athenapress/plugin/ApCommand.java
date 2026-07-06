@@ -220,6 +220,9 @@ public class ApCommand extends AbstractCommand {
      * Normalfall: Registrierung erfolgt in onPlayerConnect.
      * Fallback: ctx.sender() ist zur Laufzeit ein com.hypixel.hytale.server.core.universe.PlayerRef.
      */
+    @SuppressWarnings({"deprecation", "removal"}) // Player.getPlayerRef() ist die einzige aktuelle
+    // Quelle fuer PlayerRef hier; ein Ersatz erfordert store.getComponent(...) in world.execute()
+    // (siehe Memory).
     private boolean ensurePlayerRegistered(CommandContext ctx, String playerId) {
         if (editorBridge.isRegistered(playerId)) return true;
         try {

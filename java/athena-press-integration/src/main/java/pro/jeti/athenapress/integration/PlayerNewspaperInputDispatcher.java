@@ -6,12 +6,14 @@ public class PlayerNewspaperInputDispatcher {
     private final PlayerNewspaperUiController uiController;
     private final PlayerNewspaperInputMapper inputMapper;
 
+    @Deprecated
     public PlayerNewspaperInputDispatcher(
             PlayerNewspaperUiController uiController
     ) {
         this(uiController, new PlayerNewspaperInputMapper());
     }
 
+    @Deprecated
     public PlayerNewspaperInputDispatcher(
             PlayerNewspaperUiController uiController,
             PlayerNewspaperInputMapper inputMapper
@@ -28,6 +30,7 @@ public class PlayerNewspaperInputDispatcher {
         this.inputMapper = inputMapper;
     }
 
+    @Deprecated
     public void dispatch(PlayerNewspaperInputEvent event) {
         if (event == null) {
             return;

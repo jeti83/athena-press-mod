@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+@SuppressWarnings("deprecation") // testet den deprecateten Text-Fallback bewusst
 class PlayerNewspaperLifecycleHandlerTest {
 
     @TempDir

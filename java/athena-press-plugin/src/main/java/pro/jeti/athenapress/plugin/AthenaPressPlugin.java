@@ -157,6 +157,9 @@ public class AthenaPressPlugin extends JavaPlugin {
         contextResolver.unregister(playerId);
     }
 
+    @SuppressWarnings({"deprecation", "removal"}) // Player.getPlayerRef() ist die einzige aktuelle
+    // Quelle fuer PlayerRef hier; ein Ersatz erfordert store.getComponent(...) in world.execute()
+    // (siehe Memory).
     private void onPlayerInteract(PlayerInteractEvent event) {
         var item = event.getItemInHand();
         if (item == null || item.isEmpty()) return;

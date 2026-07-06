@@ -10,6 +10,7 @@ public record PlayerNewspaperResponse(
         boolean closeRequested
 ) {
 
+    @Deprecated
     public static PlayerNewspaperResponse of(
             String playerId,
             PlayerNewspaperAction action,
@@ -27,6 +28,7 @@ public record PlayerNewspaperResponse(
         );
     }
 
+    @Deprecated
     public static PlayerNewspaperResponse closed(
             String playerId,
             PlayerNewspaperAction action,

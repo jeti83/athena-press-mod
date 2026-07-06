@@ -5,6 +5,7 @@ public class HytaleNewspaperInputAdapter {
 
     private final PlayerNewspaperInputDispatcher inputDispatcher;
 
+    @Deprecated
     public HytaleNewspaperInputAdapter(PlayerNewspaperInputDispatcher inputDispatcher) {
         if (inputDispatcher == null) {
             throw new IllegalArgumentException("inputDispatcher must not be null");
@@ -13,6 +14,7 @@ public class HytaleNewspaperInputAdapter {
         this.inputDispatcher = inputDispatcher;
     }
 
+    @Deprecated
     public void onNpcInteraction(HytalePlayerContext player, String issueId) {
         if (player == null) {
             return;
@@ -23,6 +25,7 @@ public class HytaleNewspaperInputAdapter {
         );
     }
 
+    @Deprecated
     public void onItemUse(HytalePlayerContext player, String issueId) {
         if (player == null) {
             return;
@@ -33,6 +36,7 @@ public class HytaleNewspaperInputAdapter {
         );
     }
 
+    @Deprecated
     public void onUiButton(HytalePlayerContext player, String command, String value) {
         if (player == null) {
             return;
@@ -43,6 +47,7 @@ public class HytaleNewspaperInputAdapter {
         );
     }
 
+    @Deprecated
     public void onChatCommand(HytalePlayerContext player, String command, String value) {
         if (player == null) {
             return;
@@ -53,6 +58,7 @@ public class HytaleNewspaperInputAdapter {
         );
     }
 
+    @Deprecated
     public void onKeyBind(HytalePlayerContext player, String command, String value) {
         if (player == null) {
             return;
@@ -63,6 +69,7 @@ public class HytaleNewspaperInputAdapter {
         );
     }
 
+    @Deprecated
     public void onServerTrigger(HytalePlayerContext player, String command, String value) {
         if (player == null) {
             return;

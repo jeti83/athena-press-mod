@@ -2,9 +2,9 @@ package pro.jeti.athenapress.integration;
 
 @Deprecated
 public enum NewspaperUiScreenType {
-    CLOSED,
-    ERROR,
-    OVERVIEW,
-    ARTICLE,
-    MESSAGE
+    @Deprecated CLOSED,
+    @Deprecated ERROR,
+    @Deprecated OVERVIEW,
+    @Deprecated ARTICLE,
+    @Deprecated MESSAGE
 }

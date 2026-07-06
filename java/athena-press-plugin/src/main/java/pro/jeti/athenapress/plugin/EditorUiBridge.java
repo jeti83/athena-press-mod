@@ -77,7 +77,6 @@ public class EditorUiBridge {
      * Gibt den Ref<EntityStore> für direkte WorldThread-Zugriffe zurück (z.B. giveCameraItem).
      * Gibt null zurück wenn kein PlayerRef bekannt oder getReference() noch null ist.
      */
-    @SuppressWarnings("unchecked")
     public Ref<EntityStore> getEntityRef(String playerId) {
         Object raw = playerRefs.get(playerId);
         if (raw == null) return null;

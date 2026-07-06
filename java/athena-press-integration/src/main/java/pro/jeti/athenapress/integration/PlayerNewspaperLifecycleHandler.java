@@ -62,6 +62,7 @@ public class PlayerNewspaperLifecycleHandler {
         closeVisualNewspaperForDisconnectedPlayer(playerId);
     }
 
+    @SuppressWarnings("deprecation") // NewspaperUiView ist der bewusst beibehaltene Text-Fallback
     private void handleSessionTimeout(String playerId) {
         if (playerId == null || playerId.isBlank()) {
             return;

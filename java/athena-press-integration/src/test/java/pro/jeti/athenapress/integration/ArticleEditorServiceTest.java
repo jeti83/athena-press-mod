@@ -3,7 +3,6 @@ package pro.jeti.athenapress.integration;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -13,7 +12,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import pro.jeti.athenapress.model.Category;
 import pro.jeti.athenapress.repository.CategoryRepository;
 import pro.jeti.athenapress.repository.PlayerAlbumRepository;
 import pro.jeti.athenapress.service.ArticleWriteService;
