@@ -61,10 +61,9 @@ public class ArticleEditorSession {
     }
 
     public void skipImage() {
-        // TODO: Support real text-only articles without writing a placeholder image.
-        this.imagePath = "placeholders/no_image.png";
+        this.imagePath = null;
         this.imageCaption = null;
-        this.imageSourceType = "placeholder";
+        this.imageSourceType = null;
         this.step = ArticleEditorStep.REVIEW;
     }
 

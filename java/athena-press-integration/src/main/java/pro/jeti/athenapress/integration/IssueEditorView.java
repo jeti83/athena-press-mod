@@ -18,7 +18,6 @@ public record IssueEditorView(
     public boolean isCancelled()  { return step == IssueEditorStep.CANCELLED; }
 
     public static IssueEditorView listArticles(List<Article> articles) {
-        // TODO: Replace this long prompt with a scrollable/paginated in-game article list.
         StringBuilder prompt = new StringBuilder(
                 "Wähle Artikel für die Ausgabe (Nummern kommasepariert, z.B. '1,3' oder 'alle'):\n");
         if (articles == null || articles.isEmpty()) {

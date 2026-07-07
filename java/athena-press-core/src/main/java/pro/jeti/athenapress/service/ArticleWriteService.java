@@ -50,12 +50,14 @@ public class ArticleWriteService {
 
         root.put("body", safe(request.body(), ""));
 
-        ObjectNode image = objectMapper.createObjectNode();
-        image.put("file", safe(request.imagePath(), "placeholders/no_image.png"));
-        image.put("caption", request.imageCaption() != null ? request.imageCaption() : "");
-        image.put("credit", safe(request.playerName(), "unknown"));
-        image.put("sourceType", safe(request.imageSourceType(), "placeholder"));
-        root.set("image", image);
+        if (request.imagePath() != null && !request.imagePath().isBlank()) {
+            ObjectNode image = objectMapper.createObjectNode();
+            image.put("file", request.imagePath());
+            image.put("caption", request.imageCaption() != null ? request.imageCaption() : "");
+            image.put("credit", safe(request.playerName(), "unknown"));
+            image.put("sourceType", safe(request.imageSourceType(), "placeholder"));
+            root.set("image", image);
+        }
 
         ObjectNode location = objectMapper.createObjectNode();
         location.put("enabled", false);

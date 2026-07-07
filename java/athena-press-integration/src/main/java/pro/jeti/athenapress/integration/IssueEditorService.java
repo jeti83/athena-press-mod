@@ -23,13 +23,12 @@ public class IssueEditorService {
     }
 
     public IssueEditorView startEditing(String playerId, String playerName, boolean admin) throws IOException {
-        // TODO: Decide whether admins may include draft articles in new issues.
-        List<Article> published = articleRepository.findAll().stream()
-                .filter(a -> "published".equals(a.status()))
+        List<Article> available = articleRepository.findAll().stream()
+                .filter(a -> "published".equals(a.status()) || (admin && "draft".equals(a.status())))
                 .toList();
-        IssueEditorSession session = new IssueEditorSession(playerName, admin, published);
+        IssueEditorSession session = new IssueEditorSession(playerName, admin, available);
         sessionsByPlayerId.put(playerId, session);
-        return IssueEditorView.listArticles(published);
+        return IssueEditorView.listArticles(available);
     }
 
     public IssueEditorView handleInput(String playerId, String input) throws IOException {

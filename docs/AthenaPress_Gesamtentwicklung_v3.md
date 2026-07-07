@@ -321,6 +321,7 @@ athena-press-mod/
 | Ausgaben-Editor via GUI vollstaendig bedienbar | 🔄 Flow implementiert |
 | Kamera-Item-Modell (Blockbench, `.blockymodel`) | ⏳ Referenzmodell vorhanden |
 | HUD-toggle bei Kamera-Aufnahme | ⏳ API-Verhalten klaeren |
+| Feingranulare Redaktionsrollen (z.B. "nur eigene Drafts sichtbar") | ⏳ offen — `AuthorInfo` traegt aktuell keine Spieler-ID, nur `name`/`displayName`; Admins duerfen seit 2026-07-07 pauschal alle Drafts in Ausgaben aufnehmen (`IssueEditorService.startEditing`) |
 
 ### Langfristig – Mehrspielerbetrieb `░░░░░░░░░░`
 

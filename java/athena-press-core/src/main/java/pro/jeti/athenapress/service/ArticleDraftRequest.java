@@ -25,9 +25,9 @@ public record ArticleDraftRequest(
                 null,
                 categoryId,
                 body,
-                "placeholders/no_image.png",
                 null,
-                "placeholder"
+                null,
+                null
         );
     }
 }

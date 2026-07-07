@@ -88,6 +88,22 @@ class ValidationServiceImageTest {
     }
 
     @Test
+    void validateArticleImagesAcceptsArticleWithoutImageField() throws IOException {
+        writeDraftArticle("""
+                {
+                  "id": "article_test",
+                  "status": "draft",
+                  "categoryId": "server_news",
+                  "title": "Testartikel"
+                }
+                """);
+
+        ValidationResult result = createValidationService().validateArticleImages();
+
+        assertTrue(result.isValid());
+    }
+
+    @Test
     void validateArticleImagesAcceptsCameraMarkerWithoutLocalFile() throws IOException {
         writeDraftArticle("""
                 {

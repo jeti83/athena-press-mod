@@ -30,7 +30,7 @@ public class IssueEditorPage extends InteractiveCustomUIPage<UiEventData> {
 
               Group {
                 Background: (Color: #1a2436);
-                Anchor: (Width: 580, Height: 540);
+                Anchor: (Width: 580, Height: 664);
                 LayoutMode: Top;
                 Padding: (Horizontal: 20, Top: 12, Bottom: 8);
 
@@ -40,11 +40,22 @@ public class IssueEditorPage extends InteractiveCustomUIPage<UiEventData> {
                   Text: "";
                 }
 
-                Label #PromptLabel {
-                  Anchor: (Height: 96);
+                Group #PromptScroll {
+                  Anchor: (Height: 220);
                   Padding: (Top: 4, Bottom: 6);
-                  Style: (FontSize: 13, TextColor: #d0d8e8, VerticalAlignment: Center);
-                  Text: "";
+                  LayoutMode: TopScrolling;
+                  ScrollbarStyle: (
+                    Spacing: 6, Size: 6,
+                    Background: (TexturePath: "Common/Scrollbar.png", Border: 3),
+                    Handle: (TexturePath: "Common/ScrollbarHandle.png", Border: 3),
+                    HoveredHandle: (TexturePath: "Common/ScrollbarHandleHovered.png", Border: 3),
+                    DraggedHandle: (TexturePath: "Common/ScrollbarHandleDragged.png", Border: 3)
+                  );
+
+                  Label #PromptLabel {
+                    Style: (FontSize: 13, TextColor: #d0d8e8);
+                    Text: "";
+                  }
                 }
 
                 Label #MessageLabel {

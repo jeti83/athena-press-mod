@@ -58,6 +58,7 @@ class ArticleEditorServiceTest {
 
         Path draftFile = tempDir.resolve("articles/draft/" + result.draftId() + ".json");
         assertTrue(Files.exists(draftFile));
+        assertFalse(Files.readString(draftFile).contains("\"image\""));
     }
 
     @Test

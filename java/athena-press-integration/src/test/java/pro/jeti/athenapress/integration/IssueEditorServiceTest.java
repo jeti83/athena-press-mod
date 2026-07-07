@@ -133,6 +133,24 @@ class IssueEditorServiceTest {
     }
 
     @Test
+    void startEditingAsAdminIncludesDraftArticles() throws IOException {
+        writeDraftArticle();
+
+        IssueEditorView view = service.startEditing("player1", "Redakteur", true);
+
+        assertTrue(view.prompt().contains("Entwurfsartikel"));
+    }
+
+    @Test
+    void startEditingAsNonAdminExcludesDraftArticles() throws IOException {
+        writeDraftArticle();
+
+        IssueEditorView view = service.startEditing("player1", "Redakteur", false);
+
+        assertFalse(view.prompt().contains("Entwurfsartikel"));
+    }
+
+    @Test
     void activeSessionCountIsTracked() throws IOException {
         service.startEditing("player1", "Redakteur", true);
         service.startEditing("player2", "Chef", true);
@@ -183,6 +201,30 @@ class IssueEditorServiceTest {
                   "tags": [],
                   "createdAt": "2026-05-02T10:00:00+02:00",
                   "publishedAt": "2026-05-02T12:00:00+02:00"
+                }
+                """);
+    }
+
+    private void writeDraftArticle() throws IOException {
+        Path draft = tempDir.resolve("articles").resolve("draft");
+        Files.createDirectories(draft);
+
+        Files.writeString(draft.resolve("article_0003.json"), """
+                {
+                  "id": "article_0003",
+                  "status": "draft",
+                  "categoryId": "server_news",
+                  "title": "Entwurfsartikel",
+                  "subtitle": "",
+                  "teaser": "",
+                  "summary": "",
+                  "author": { "playerName": "Jeti", "playerUuid": "unknown" },
+                  "body": "Noch nicht veroeffentlicht.",
+                  "image": { "file": "placeholders/no_image.png", "caption": "", "credit": "", "sourceType": "placeholder" },
+                  "location": { "enabled": false, "world": "", "x": 0, "y": 0, "z": 0 },
+                  "tags": [],
+                  "createdAt": "2026-05-03T10:00:00+02:00",
+                  "publishedAt": null
                 }
                 """);
     }
